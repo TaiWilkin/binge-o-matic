@@ -13,9 +13,9 @@ class CheeseList extends Component {
   }
 
   render() {
-    const cheeses = this.props.cheeses.map((cheese, i) => (
-      <li key={i}>
-        {cheese}
+    const cheeses = this.props.cheeses.map(cheese => (
+      <li key={cheese._id}>
+        {cheese.name}
       </li>
     ));
 
