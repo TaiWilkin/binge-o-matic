@@ -1,0 +1,45 @@
+* {
+	box-sizing: border-box;
+	text-align: center
+}
+
+img {
+	height: 75px;
+	display: inline-block;
+	margin: 5px;
+}
+
+p, button {
+	display: inline-block
+}
+
+.userList {
+	float: right;
+	width: 50%;
+	border: 1px solid black
+}
+
+.searchList {
+	float: left;
+	width: 50%;
+	border: 1px solid black
+}
+
+li {
+	list-style: none;
+	border: 1px solid red;
+	width: 50%;
+	margin: auto
+}
+
+input {
+	height: 50px;
+	width: 500px;
+	margin: 20px
+}
+
+button {
+	font-size: 2em;
+	vertical-align: center;
+	margin: 10px
+}

@@ -5,7 +5,7 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 
-import CheeseList from './components/cheese-list';
+import Bingeomatic from './components/bingeomatic';
 import cheeseReducer from './reducers/cheese.js';
 
 
@@ -15,7 +15,7 @@ const store = createStore(cheeseReducer, window.__REDUX_DEVTOOLS_EXTENSION__ && 
 
 ReactDOM.render(
   <Provider store={store}>
-    <CheeseList />
+    <Bingeomatic />
   </Provider>,
   document.getElementById('app')
 );
