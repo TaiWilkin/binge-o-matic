@@ -1,13 +1,23 @@
 import React from 'react';
+import {connect} from 'react-redux';
 
-export default class SearchMovie extends React.Component {
+import * as actions from '../actions';
+
+export class SearchMovie extends React.Component {
 	constructor(props) {
 		super(props);
 		this.onClick = this.onClick.bind(this);
 	}
 
 	onClick() {
-		console.log(`Adding ${this.props.id} to UserList and deleting ${this.props.id} from SearchList}`)
+		console.log("adding", this.props.id);
+		let movie = {
+			"id": this.props.id,
+			"title": this.props.title,
+			"release_date": this.props.date,
+			"poster_path": this.props.img
+		}		
+		this.props.dispatch(actions.addMovie(movie));
 	}
 
 	render() {
@@ -25,4 +35,6 @@ export default class SearchMovie extends React.Component {
 	);
 	} 
 }
+
+export default connect()(SearchMovie);
 
