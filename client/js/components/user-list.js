@@ -14,9 +14,9 @@ class UserList extends Component {
   }
 
   render() {
-    const movies = this.props.userMovies.map((movie, index) => (
+    const movies = this.props.userMovies.sort((x, y) => y.release_date < x.release_date).map((movie, index) => (
          <UserMovie key={index} id={movie.id} img={movie.poster_path} title={movie.title} date={movie.release_date} />
-  ));
+    ));
 
     return (
       <div className="userList">

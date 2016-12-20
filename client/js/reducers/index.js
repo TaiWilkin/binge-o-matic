@@ -35,6 +35,12 @@ const moviesReducer = (state=initialState, action) => {
     return Object.assign({}, state, {loading: true});
   }
   else if (action.type === actions.SEARCH_MOVIES_SUCCESS) {
+    // let movies = action.movies.results.map(movie => {
+    //   if movie. 
+    //   return {
+
+    //   }
+    // })
     return Object.assign(
       {},
       state,
