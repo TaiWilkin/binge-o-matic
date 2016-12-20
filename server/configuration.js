@@ -95,3 +95,5 @@ const TMDB_configuration = {
     "videos"
   ]
 }
+
+export default TMDB_configuration;

@@ -38,8 +38,6 @@ export const fetchMovies = () => (dispatch) => {
   })
 }
 
-const searchUrl = "https://api.themoviedb.org/3/search/movie?api_key=0469b2e223fa411387635db85c0f4be7&language=en-US&query=Star%20Trek&page=1&include_adult=false";
-
 export const SEARCH_MOVIES_REQUEST = 'SEARCH_MOVIES_REQUEST';
 export const searchMoviesRequest = () => ({
   type: SEARCH_MOVIES_REQUEST
@@ -57,8 +55,11 @@ export const searchMoviesError = (error) => ({
   error
 });
 
-export const searchMovies = () => (dispatch) => {
+export const searchMovies = (query) => {
+  return (dispatch) => {
   dispatch(searchMoviesRequest())
+
+  let searchUrl = `https://api.themoviedb.org/3/search/movie?api_key=0469b2e223fa411387635db85c0f4be7&language=en-US&query=${query}&page=1&include_adult=false`;
 
   fetch(searchUrl)
   .then(res => {
@@ -76,4 +77,5 @@ export const searchMovies = () => (dispatch) => {
     console.error('searchMoviesError', err);
     searchMoviesError(err);
   })
+}
 }

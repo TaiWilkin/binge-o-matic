@@ -8,11 +8,6 @@ class SearchList extends Component {
     super(props);
   }
 
-  componentDidMount() {
-    console.log('did mount');
-    this.props.dispatch(actions.searchMovies());
-  }
-
   render() {
     const movies = this.props.searchMovies.map((movie, index) => (
       <SearchMovie key={index} id={movie.id} img={movie.poster_path} title={movie.title} date={movie.release_date} />

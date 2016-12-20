@@ -11,6 +11,7 @@ export class Search extends React.Component {
 
     searchMovies() {
         const movieName = this.movieNameInput.value;
+        this.props.dispatch(actions.searchMovies(movieName));
         console.log("now searching for", movieName);
     }
 
