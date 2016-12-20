@@ -1,13 +1,16 @@
 import React from 'react';
+import {connect} from 'react-redux';
 
-export default class UserMovie extends React.Component {
+import * as actions from '../actions';
+
+export class UserMovie extends React.Component {
 	constructor(props) {
 		super(props);
 		this.onClick = this.onClick.bind(this);
 	}
 
 	onClick() {
-		console.log("Deleting", this.props.id)
+		this.props.dispatch(actions.deleteMovie(this.props.id));
 	}
 
 	render() {
@@ -23,3 +26,5 @@ export default class UserMovie extends React.Component {
 	} 
 }
 
+
+export default connect()(UserMovie);
