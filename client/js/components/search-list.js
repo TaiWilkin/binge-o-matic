@@ -9,23 +9,30 @@ class SearchList extends Component {
   }
 
   render() {
-    const movies = this.props.searchMovies.map((movie, index) => (
-      <SearchMovie key={index} id={movie.id} img={movie.poster_path} title={movie.title} date={movie.release_date} />
+    const movies = this.props.searchMovies.map(movie => (
+      <SearchMovie
+        key={movie.id}
+        {...movie}
+        isOnUserList={this.props.userMovies.findIndex(userMovie =>
+          userMovie.id === movie.id) >= 0
+        }
+      />
     ));
 
     return (
       <div className="searchList">
-      <h2>Search Results</h2>
-      <ul>
-        {movies}
-      </ul>
+        <h2>Search Results</h2>
+        <ul>
+          {movies}
+        </ul>
       </div>
     );
   }
 }
 
 const mapStateToProps = (state, props) => ({
-  searchMovies: state.searchMovies
+  searchMovies: state.searchMovies,
+  userMovies: state.userMovies
 });
 
 export default connect(mapStateToProps)(SearchList);
