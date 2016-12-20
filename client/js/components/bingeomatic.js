@@ -14,9 +14,12 @@ class Bingeomatic extends Component {
     return (
       <div className="bingomatic">
         <h1>Binge-o-matic</h1>
-        <Search />
-        <SearchList />
-        <UserList />
+        <div>
+          <Search />
+          <SearchList />
+          <UserList />
+        </div>
+        <div className="tmdbLogo"><img src="https://www.themoviedb.org/assets/23e473036b28a59bd5dcfde9c671b1c5/images/v4/logos/312x276-primary-green.png" />This product uses the TMDb API but is not endorsed or certified by TMDb.</div>
       </div>
     )
   }
