@@ -24,6 +24,8 @@ app.use(express.static(process.env.CLIENT_PATH));
 
 app.use(bodyParser.json());
 
+// ---- GET ----
+
 app.get('/movies', function(req, res) {
   knex('movies').select('*')
   .then(movies => {
@@ -33,12 +35,48 @@ app.get('/movies', function(req, res) {
   .catch(error=> res.sendStatus(422));
 });
 
-app.get('/movies/:movieId', function(req, res) {
-  knex('movies').select('*').where({id: req.params.movieId})
-  .then(movie => {
-    res.status(200).json(movie);
+// app.get('/movies/:movieId', function(req, res) {
+//   knex('movies').select('*').where({id: req.params.movieId})
+//   .then(movie => {
+//     res.status(200).json(movie);
+//   })
+//   .catch(error => res.sendStatus(422));
+// });
+
+// ---- POST ----
+
+app.post('/movies', function({ body }, res) {
+
+  knex('movies').insert(body)
+
+  .then(status => {
+    console.log(status)
+    res.status(201).json({message: "success"});
   })
-  .catch(error=> res.sendStatus(422));
+
+  .catch(error => {
+    console.error(error);
+    res.status(409).json({error: error.detail});
+  });
+
+});
+
+// ---- DELETE ----
+
+app.delete('/movies/:movieId', function({ params }, res) {
+
+  knex('movies').where('id', params.movieId).del()
+
+  .then(status => {
+    console.log(status)
+    res.status(202).json({message: "deleted"});
+  })
+
+  .catch(error => {
+    console.error(error);
+    res.status(404).json({error: error.detail});
+  });
+
 });
 
 function runServer() {
