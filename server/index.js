@@ -67,9 +67,10 @@ app.delete('/movies/:movieId', function({ params }, res) {
 
   knex('movies').where('id', params.movieId).del()
 
-  .then(status => {
-    console.log(status)
-    res.status(202).json({message: "deleted"});
+  .then(() => knex('movies').select('*'))
+  .then(movies => {
+    console.log(movies);
+    res.status(202).json(movies);
   })
 
   .catch(error => {
