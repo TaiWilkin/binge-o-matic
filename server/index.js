@@ -49,9 +49,11 @@ app.post('/movies', function({ body }, res) {
 
   knex('movies').insert(body)
 
-  .then(status => {
-    console.log(status)
-    res.status(201).json({message: "success"});
+  .then(() => knex('movies').select('*'))
+
+  .then(movies => {
+    console.log('added movieId:', body.id);
+    res.status(201).json(movies);
   })
 
   .catch(error => {
@@ -68,8 +70,9 @@ app.delete('/movies/:movieId', function({ params }, res) {
   knex('movies').where('id', params.movieId).del()
 
   .then(() => knex('movies').select('*'))
+
   .then(movies => {
-    console.log(movies);
+    console.log('deleted id', params.movieId);
     res.status(202).json(movies);
   })
 
