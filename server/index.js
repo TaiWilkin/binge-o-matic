@@ -63,8 +63,21 @@ app.post('/movies', function({ body }, res) {
 
 // ---- DELETE ----
 
-// TODO
+app.delete('/movies/:movieId', function({ params }, res) {
 
+  knex('movies').where('id', params.movieId).del()
+
+  .then(status => {
+    console.log(status)
+    res.status(202).json({message: "deleted"});
+  })
+
+  .catch(error => {
+    console.error(error);
+    res.status(404).json({error: error.detail});
+  });
+
+});
 
 function runServer() {
   return new Promise((resolve, reject) => {
