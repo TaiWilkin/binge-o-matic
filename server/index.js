@@ -46,7 +46,7 @@ app.get('/movies', function(req, res) {
 // ---- POST ----
 
 app.post('/movies', function({ body }, res) {
-
+  console.log(body);
   knex('movies').insert(body)
 
   .then(status => {

@@ -64,7 +64,7 @@ const moviesReducer = (state=initialState, action) => {
       {
         loading: false,
         error: null,
-        searchMovies: action.movies,
+        userMovies: action.movies,
       }
     );
   }

@@ -119,3 +119,47 @@ export const deleteMovie = (id) => (dispatch) => {
   })
 }
 
+export const ADD_MOVIE_REQUEST = 'ADD_MOVIE_REQUEST';
+export const addMovieRequest = () => ({
+  type: ADD_MOVIE_REQUEST
+});
+
+export const ADD_MOVIE_SUCCESS = 'ADD_MOVIE_SUCCESS';
+export const addMovieSuccess = (movies) => ({
+  type: ADD_MOVIE_SUCCESS,
+  movies
+});
+
+export const ADD_MOVIE_ERROR = 'ADD_MOVIE_ERROR';
+export const addMovieError = (error) => ({
+  type: ADD_MOVIE_ERROR,
+  error
+});
+
+export const addMovie = (movie) => (dispatch) => {
+  dispatch(addMovieRequest())
+
+  fetch(userUrl, {  
+          method: 'post',  
+          headers: {  
+            "Content-type": "application/json; charset=utf-8"  
+          },  
+          body: JSON.stringify(body)
+        })
+  .then(res => {
+    console.log('addMovieRequest', res);
+    if (!res.ok) {
+      const error = new Error(res.statusText);
+      error.response = res;
+      throw error;
+    }
+    return res;
+  })
+  .then(res => res.json())
+  .then(data => dispatch(addMovieSuccess(data)))
+  .catch(err => {
+    console.error('addMovieError', err);
+    addMovieError(err);
+  })
+}
+
