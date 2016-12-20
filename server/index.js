@@ -1,13 +1,17 @@
 import 'babel-polyfill';
 import express from 'express';
-import cheeseList from './cheese-list';
-import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
-import Cheese from './models/cheese';
 
-
-mongoose.Promise = global.Promise;
-const DATABASE_URL = 'mongodb://localhost/cheese';
+var knex = require('knex')({
+  client: 'pg',
+  connection: {
+    host: 'elmer-02.db.elephantsql.com',
+    user: 'gphrldmg',
+    password: 'hcI5frNj5V4-HbZui9QHgFEyzaq30FDC',
+    database: 'gphrldmg'
+  },
+  debug: true
+});
 
 const HOST = process.env.HOST;
 const PORT = process.env.PORT || 8080;
@@ -20,37 +24,37 @@ app.use(express.static(process.env.CLIENT_PATH));
 
 app.use(bodyParser.json());
 
-app.post('/cheeses/:cheese_name', function(req, res) {
-    Cheese.create({name: req.params.cheese_name})
-    .then(cheese => res.status(201).json(cheese._id))
-    .catch(error => res.sendStatus(422));
-})
-
-app.get('/cheeses', function(req, res) {
-  console.log('request received...');
-  Cheese.find().then(cheeseList => res.status(200).json(cheeseList))
+app.get('/movies', function(req, res) {
+  knex('movies').select('*')
+  .then(movies => {
+    console.log(movies);
+    res.status(200).json(movies);
+  })
   .catch(error=> res.sendStatus(422));
 });
 
-var runServer = function(callback) {
-    mongoose.connect(DATABASE_URL, function(err) {
-        if (err && callback) {
-            return callback(err);
-        }
+app.get('/movies/:movieId', function(req, res) {
+  knex('movies').select('*').where({id: req.params.movieId})
+  .then(movie => {
+    res.status(200).json(movie);
+  })
+  .catch(error=> res.sendStatus(422));
+});
 
-        app.listen(PORT, function() {
-            console.log('Listening on localhost:' + PORT);
-            if (callback) {
-                callback();
-            }
-        });
+function runServer() {
+  return new Promise((resolve, reject) => {
+    app.listen(PORT, HOST, (err) => {
+      if (err) {
+        console.error(err);
+        reject(err);
+      }
+
+      const host = HOST || 'localhost';
+      console.log(`Listening on ${host}:${PORT}`);
     });
-};
+  });
+}
 
 if (require.main === module) {
-    runServer(function(err) {
-        if (err) {
-            console.error(err);
-        }
-    });
-};
+  runServer();
+}
