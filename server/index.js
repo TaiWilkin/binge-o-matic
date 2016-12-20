@@ -49,11 +49,11 @@ app.post('/movies', function({ body }, res) {
   console.log(body);
   knex('movies').insert(body)
 
-  .then(status => {
-    console.log(status)
-    res.status(201).json({message: "success"});
+  .then(() => knex('movies').select('*'))
+  .then(movies => {
+    console.log(movies);
+    res.status(202).json(movies);
   })
-
   .catch(error => {
     console.error(error);
     res.status(409).json({error: error.detail});

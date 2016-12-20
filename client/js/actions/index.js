@@ -144,7 +144,7 @@ export const addMovie = (movie) => (dispatch) => {
           headers: {  
             "Content-type": "application/json; charset=utf-8"  
           },  
-          body: JSON.stringify(body)
+          body: JSON.stringify(movie)
         })
   .then(res => {
     console.log('addMovieRequest', res);

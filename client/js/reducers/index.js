@@ -77,6 +77,30 @@ const moviesReducer = (state=initialState, action) => {
         error: action.error
       }
     );
+  } else if (action.type === actions.ADD_MOVIE_REQUEST) {
+    return Object.assign({}, state, {loading: true});
+  }
+  else if (action.type === actions.ADD_MOVIE_SUCCESS) {
+    console.log("MOVIES:", action.movies);
+    return Object.assign(
+      {},
+      state,
+      {
+        loading: false,
+        error: null,
+        userMovies: action.movies,
+      }
+    );
+  }
+  else if (action.type === actions.ADD_MOVIE_ERROR) {
+    return Object.assign(
+      {},
+      state,
+      {
+        loading: false,
+        error: action.error
+      }
+    );
   }
 
   return state;
