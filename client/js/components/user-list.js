@@ -15,7 +15,7 @@ class UserList extends Component {
 
   render() {
     const movies = this.props.userMovies.map((movie, index) => (
-         <UserMovie key={index} id={movie.id} img={movie.poster_url} title={movie.title} date={movie.release_date} />
+         <UserMovie key={index} id={movie.id} img={movie.poster_path} title={movie.title} date={movie.release_date} />
   ));
 
     return (
