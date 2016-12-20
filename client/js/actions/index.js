@@ -60,8 +60,7 @@ export const searchMovies = (query) => {
   return (dispatch) => {
   dispatch(searchMoviesRequest())
 
-  let searchUrl = `https://api.themoviedb.org/3/search/multi?api_key=0469b2e223fa411387635db85c0f4be7&language=en-US&query=${query}&page=1&include_adult=false`;
-
+  let searchUrl = `http://localhost:8080/search/${query}`
   fetch(searchUrl)
   .then(res => {
     console.log('searchMoviesRequest', res);
