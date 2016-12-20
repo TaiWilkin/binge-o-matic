@@ -1,3 +1,4 @@
+
 const userUrl = "http://localhost:8080/movies";
 
 export const FETCH_MOVIES_REQUEST = 'FETCH_MOVIES_REQUEST';
@@ -79,3 +80,42 @@ export const searchMovies = (query) => {
   })
 }
 }
+
+export const DELETE_MOVIE_REQUEST = 'DELETE_MOVIE_REQUEST';
+export const deleteMovieRequest = () => ({
+  type: DELETE_MOVIE_REQUEST
+});
+
+export const DELETE_MOVIE_SUCCESS = 'DELETE_MOVIE_SUCCESS';
+export const deleteMovieSuccess = (movies) => ({
+  type: DELETE_MOVIE_SUCCESS,
+  movies
+});
+
+export const DELETE_MOVIE_ERROR = 'DELETE_MOVIE_ERROR';
+export const deleteMovieError = (error) => ({
+  type: DELETE_MOVIE_ERROR,
+  error
+});
+
+export const deleteMovie = (id) => (dispatch) => {
+  dispatch(deleteMovieRequest())
+
+  fetch(userUrl + '/' + id, {method: 'delete'})
+  .then(res => {
+    console.log('deleteMovieRequest', res);
+    if (!res.ok) {
+      const error = new Error(res.statusText);
+      error.response = res;
+      throw error;
+    }
+    return res;
+  })
+  .then(res => res.json())
+  .then(data => dispatch(deleteMovieSuccess(data)))
+  .catch(err => {
+    console.error('deleteMovieError', err);
+    deleteMovieError(err);
+  })
+}
+
