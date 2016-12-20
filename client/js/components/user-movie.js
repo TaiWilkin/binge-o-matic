@@ -19,7 +19,7 @@ export class UserMovie extends React.Component {
     <li className="movie" id={this.props.id}>
       <h4>{this.props.title}</h4>
       <img src={img} />
-      <p>{this.props.date}</p>
+      <p>{this.props.release_date}</p>
       <button onClick={this.onClick}>
         Delete
       </button>

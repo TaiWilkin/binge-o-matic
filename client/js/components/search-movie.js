@@ -30,11 +30,13 @@ export class SearchMovie extends React.Component {
     if (this.props.img === null) {
       img = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Clapboard.svg/1000px-Clapboard.svg.png";
     }
+    console.log('search-movie props', this.props);
+
     return (
     <li className="movie" id={this.props.id} style={alreadyOnListStyling}>
       <h4>{this.props.title}</h4>
       <img src={img} />
-      <p>{this.props.date}</p>
+      <p>{this.props.release_date}</p>
       <button onClick={this.onClick}>Add</button>
     </li>
   );
