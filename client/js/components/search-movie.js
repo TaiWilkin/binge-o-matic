@@ -14,20 +14,20 @@ export class SearchMovie extends React.Component {
     let movie = {
       "id": this.props.id,
       "title": this.props.title,
-      "release_date": this.props.date,
+      "release_date": this.props.release_date,
       "poster_path": this.props.poster_path
     }
     this.props.dispatch(actions.addMovie(movie));
   }
 
   render() {
-    let img = `https://image.tmdb.org/t/p/w300${this.props.poster_path}`;
+    let img = `https://image.tmdb.org/t/p/w92${this.props.poster_path}`;
 
     const alreadyOnListStyling = {
       backgroundColor: this.props.isOnUserList ? "lightgrey" : "none"
     };
 
-    if (this.props.img === null) {
+    if (!this.props.poster_path) {
       img = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Clapboard.svg/1000px-Clapboard.svg.png";
     }
     console.log('search-movie props', this.props);

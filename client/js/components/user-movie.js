@@ -14,7 +14,7 @@ export class UserMovie extends React.Component {
   }
 
   render() {
-    let img = `https://image.tmdb.org/t/p/w300${this.props.poster_path}`;
+    let img = `https://image.tmdb.org/t/p/w92${this.props.poster_path}`;
     return (
     <li className="movie" id={this.props.id}>
       <h4>{this.props.title}</h4>

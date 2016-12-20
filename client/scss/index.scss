@@ -4,9 +4,9 @@
 }
 
 img {
-	height: 100px;
 	display: inline-block;
 	margin: 5px;
+	width: 92px;
 }
 
 p, button {
@@ -15,21 +15,21 @@ p, button {
 
 .userList {
 	float: right;
-	width: 50%;
-	border: 1px solid black
+	width: 70%;
+	background: aliceblue;
 }
 
 .searchList {
 	float: left;
-	width: 50%;
-	border: 1px solid black
+	width: 30%;
+	border: 1px solid black;
 }
 
 li {
 	list-style: none;
-	border: 1px solid red;
-	width: 50%;
-	margin: auto
+	border: 1px solid blue;
+	width: 75%;
+	margin: auto;
 }
 
 input {
