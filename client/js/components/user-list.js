@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../actions/cheese';
+import * as actions from '../actions';
 import UserMovie from './user-movie';
 
 class UserList extends Component {
@@ -10,13 +10,13 @@ class UserList extends Component {
 
   componentDidMount() {
     console.log('did mount');
-    this.props.dispatch(actions.fetchCheeses());
+    this.props.dispatch(actions.fetchMovies());
   }
 
   render() {
     const movies = this.props.userMovies.map((movie, index) => (
-      <UserMovie key={index} id={movie.id} img={movie.img} title={movie.title} date={movie.date} />
-    ));
+         <UserMovie key={index} id={movie.id} img={movie.poster_url} title={movie.title} date={movie.release_date} />
+  ));
 
     return (
       <div className="userList">
@@ -30,7 +30,7 @@ class UserList extends Component {
 }
 
 const mapStateToProps = (state, props) => ({
-  userMovies: state.cheeses
+  userMovies: state.userMovies
 });
 
 export default connect(mapStateToProps)(UserList);

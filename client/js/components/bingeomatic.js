@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../actions/cheese';
+import * as actions from '../actions';
 import UserList from './user-list';
 import SearchList from './search-list';
 import Search from './search';

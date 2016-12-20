@@ -11,10 +11,11 @@ export default class UserMovie extends React.Component {
 	}
 
 	render() {
+		let img = `https://image.tmdb.org/t/p/w300${this.props.img}`;
 		return (
 		<li className="movie" id={this.props.id}>
 			<h4>{this.props.title}</h4>
-			<img src={this.props.img} />
+			<img src={img} />
 			<p>{this.props.date}</p>
 			<button onClick={this.onClick}>Delete</button>
 		</li>

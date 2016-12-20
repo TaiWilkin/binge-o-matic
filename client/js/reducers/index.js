@@ -1,27 +1,51 @@
-import * as actions from '../actions/cheese';
+import * as actions from '../actions';
 
 const initialState = {
-  cheeses: [],
+  userMovies: [],
+  searchMovies: [],
   loading: false,
   error: null
 };
 
-const cheeseReducer = (state=initialState, action) => {
-  if (action.type === actions.FETCH_CHEESES_REQUEST) {
+const moviesReducer = (state=initialState, action) => {
+  if (action.type === actions.FETCH_MOVIES_REQUEST) {
     return Object.assign({}, state, {loading: true});
   }
-  else if (action.type === actions.FETCH_CHEESES_SUCCESS) {
+  else if (action.type === actions.FETCH_MOVIES_SUCCESS) {
     return Object.assign(
       {},
       state,
       {
         loading: false,
         error: null,
-        cheeses: action.cheeses
+        userMovies: action.movies
       }
     );
   }
-  else if (action.type === actions.FETCH_CHEESES_ERROR) {
+  else if (action.type === actions.FETCH_MOVIES_ERROR) {
+    return Object.assign(
+      {},
+      state,
+      {
+        loading: false,
+        error: action.error
+      }
+    );
+  } else if (action.type === actions.SEARCH_MOVIES_REQUEST) {
+    return Object.assign({}, state, {loading: true});
+  }
+  else if (action.type === actions.SEARCH_MOVIES_SUCCESS) {
+    return Object.assign(
+      {},
+      state,
+      {
+        loading: false,
+        error: null,
+        searchMovies: action.movies.results,
+      }
+    );
+  }
+  else if (action.type === actions.SEARCH_MOVIES_ERROR) {
     return Object.assign(
       {},
       state,
@@ -35,4 +59,4 @@ const cheeseReducer = (state=initialState, action) => {
   return state;
 }
 
-export default cheeseReducer;
+export default moviesReducer;

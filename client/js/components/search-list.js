@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../actions/cheese';
+import * as actions from '../actions';
 import SearchMovie from './search-movie';
 
 class SearchList extends Component {
@@ -10,12 +10,12 @@ class SearchList extends Component {
 
   componentDidMount() {
     console.log('did mount');
-    this.props.dispatch(actions.fetchCheeses());
+    this.props.dispatch(actions.searchMovies());
   }
 
   render() {
     const movies = this.props.searchMovies.map((movie, index) => (
-      <SearchMovie key={index} id={movie.id} img={movie.img} title={movie.title} date={movie.date} />
+      <SearchMovie key={index} id={movie.id} img={movie.poster_path} title={movie.title} date={movie.release_date} />
     ));
 
     return (
@@ -30,7 +30,7 @@ class SearchList extends Component {
 }
 
 const mapStateToProps = (state, props) => ({
-  searchMovies: state.cheeses
+  searchMovies: state.searchMovies
 });
 
 export default connect(mapStateToProps)(SearchList);
