@@ -1,6 +1,7 @@
 import 'babel-polyfill';
 import express from 'express';
 import bodyParser from 'body-parser';
+import 'isomorphic-fetch';
 
 var knex = require('knex')({
   client: 'pg',
@@ -81,6 +82,28 @@ app.delete('/movies/:movieId', function({ params }, res) {
   });
 
 });
+
+
+// ---- SEARCH API ----
+app.get('/search/:query', function({ params }, res) {
+  let searchUrl = `https://api.themoviedb.org/3/search/multi?api_key=0469b2e223fa411387635db85c0f4be7&language=en-US&query=${params.query}&page=1&include_adult=false`;
+  fetch(searchUrl)
+  .then(res => {
+    if (!res.ok) {
+      const error = new Error(res.statusText);
+      error.response = res;
+      throw error;
+    }
+    return res;
+  })
+  .then(res => res.json())
+  .then(data => res.status(200).json(data))
+  .catch(err => {
+      console.error('searchMoviesError', err);
+      res.status(500).json(err);
+  });
+});
+
 
 function runServer() {
   return new Promise((resolve, reject) => {
