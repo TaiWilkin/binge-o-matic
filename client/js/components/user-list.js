@@ -14,23 +14,28 @@ class UserList extends Component {
   }
 
   render() {
-    const movies = this.props.userMovies.sort((x, y) => y.release_date < x.release_date).map((movie, index) => (
-         <UserMovie key={index} id={movie.id} img={movie.poster_path} title={movie.title} date={movie.release_date} />
-    ));
+    const movies = this.props.userMovies
+      .sort((x, y) => y.release_date < x.release_date)
+      .map(movie => (
+        <UserMovie
+          key={movie.id}
+          {...movie}
+        />
+        ));
 
-    return (
-      <div className="userList">
-      <h2>Your List</h2>
-      <ul>
-        {movies}
-      </ul>
-      </div>
-    );
+      return (
+        <div className="userList">
+          <h2>Your List</h2>
+          <ul>
+            {movies}
+          </ul>
+        </div>
+      );
+    }
   }
-}
 
-const mapStateToProps = (state, props) => ({
-  userMovies: state.userMovies
-});
+  const mapStateToProps = (state, props) => ({
+    userMovies: state.userMovies
+  });
 
-export default connect(mapStateToProps)(UserList);
+  export default connect(mapStateToProps)(UserList);
