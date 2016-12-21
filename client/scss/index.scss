@@ -63,7 +63,7 @@ button {
   background-image: linear-gradient(to bottom, #a8dcff, #135985);
   border-radius: 28px;
   text-shadow: 2px 1px 3px #000000;
-  font-family: Georgia;
+  font-family: 'Raleway', sans-serif;
   color: #ffffff;
   font-size: 20px;
   padding: 10px 20px 10px 20px;
@@ -76,8 +76,24 @@ button:hover {
   text-decoration: none;
 }
 
+.search {
+	width: 450px;
+}
 
-.search, .getList {
+.searchbar {
+	width: 320px;
+}
+
+.getList, .listmaker {
+	width: 400px;
+}
+
+
+.listselectors, .listbar {
+	width: 270px;
+}
+
+.search, .getList, .listmaker {
 	background-color: #f6f6f6;
 	background-image: linear-gradient(top, #f6f6f6, #eae8e8);
 	border-color: #dedede #bababa #aaa #bababa;
@@ -88,15 +104,14 @@ button:hover {
 	margin: 25px auto;
 	overflow: hidden;
 	padding: 8px;
-	width: 450px;
 	display: inline-block;
 }
 
-.search {
+.search, .listmaker {
 	margin-left: 25px;
 }
 
-.searchbar, .listselectors {
+.searchbar, .listselectors, .listbar {
 	border: 1px solid #CCC;
 	box-shadow: 0 1px 1px #ddd inset, 0 1px 0 #FFF;
 	border-radius: 3px;
@@ -105,7 +120,6 @@ button:hover {
 	font-size: 1em;
 	height: 40px;
 	padding: 10px;
-	width: 320px;
 }
 
 .submit {
@@ -120,10 +134,14 @@ button:hover {
 	padding: 0;
 	text-shadow: 0 1px 0 rgba(0, 0 ,0, .3);
 	width: 100px;
-	  border-radius: 5px;
+	border-radius: 5px;
 }
 
 p, li>button {
 	display: inline-block;
 	margin: 10px;
+}
+
+.footer {
+	margin-top: 150px;
 }

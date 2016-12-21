@@ -55,7 +55,8 @@ const moviesReducer = (state=initialState, action) => {
         error: action.error
       }
       );
-  } else if (action.type === actions.SEARCH_MOVIES_REQUEST) {
+  } 
+  else if (action.type === actions.SEARCH_MOVIES_REQUEST) {
     return Object.assign({}, state, {loading: true});
   }
   else if (action.type === actions.SEARCH_MOVIES_SUCCESS) {
@@ -88,7 +89,8 @@ const moviesReducer = (state=initialState, action) => {
         error: action.error
       }
       );
-  } else if (action.type === actions.DELETE_MOVIE_REQUEST) {
+  } 
+  else if (action.type === actions.DELETE_MOVIE_REQUEST) {
     return Object.assign({}, state, {loading: true});
   }
   else if (action.type === actions.DELETE_MOVIE_SUCCESS) {
@@ -112,7 +114,8 @@ const moviesReducer = (state=initialState, action) => {
         error: action.error
       }
       );
-  } else if (action.type === actions.ADD_MOVIE_REQUEST) {
+  } 
+  else if (action.type === actions.ADD_MOVIE_REQUEST) {
     return Object.assign({}, state, {loading: true});
   }
   else if (action.type === actions.ADD_MOVIE_SUCCESS) {
@@ -136,7 +139,8 @@ const moviesReducer = (state=initialState, action) => {
         error: action.error
       }
       );
-  } else if (action.type === actions.GET_SEASONS_REQUEST) {
+  } 
+  else if (action.type === actions.GET_SEASONS_REQUEST) {
     return Object.assign({}, state, {loading: true});
   }
   else if (action.type === actions.GET_SEASONS_SUCCESS) {
@@ -150,7 +154,8 @@ const moviesReducer = (state=initialState, action) => {
         userMovies: movies,
       }
       );
-  } else if (action.type === actions.GET_SEASONS_ERROR) {
+  } 
+  else if (action.type === actions.GET_SEASONS_ERROR) {
     return Object.assign(
       {},
       state,
@@ -200,19 +205,45 @@ const moviesReducer = (state=initialState, action) => {
       lists: action.lists,
     }
     );
- }
- else if (action.type === actions.GET_LISTS_ERROR) {
-  return Object.assign(
-    {},
-    state,
-    {
-      loading: false,
-      error: action.error
-    }
-    );
   }
-
-return state;
+  else if (action.type === actions.GET_LISTS_ERROR) {
+    return Object.assign(
+      {},
+      state,
+      {
+        loading: false,
+        error: action.error
+      }
+      );
+  }
+  else if (action.type === actions.ADD_LIST_REQUEST) {
+    return Object.assign({}, state, {loading: true});
+  }
+  else if (action.type === actions.ADD_LIST_SUCCESS) {
+    let lists = state.lists.slice();
+    lists = [...lists, action.list];
+    return Object.assign(
+      {},
+      state,
+      {
+        loading: false,
+        error: null,
+        list: action.list.id,
+        lists: lists
+      }
+      );
+  }
+  else if (action.type === actions.ADD_LIST_ERROR) {
+    return Object.assign(
+      {},
+      state,
+      {
+        loading: false,
+        error: action.error
+      }
+      );
+  } 
+  return state;
 }
 
 export default moviesReducer;
