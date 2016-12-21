@@ -184,7 +184,6 @@ const moviesReducer = (state=initialState, action) => {
     );
   }
   else if (action.type === actions.SET_LIST) {
-    console.log(action);
     return Object.assign({}, state, {list: action.id});
   }
   else if (action.type === actions.GET_LISTS_REQUEST) {
@@ -198,7 +197,6 @@ const moviesReducer = (state=initialState, action) => {
       loading: false,
       error: null,
       lists: action.lists,
-
     }
     );
  }

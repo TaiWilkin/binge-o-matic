@@ -23,7 +23,9 @@ class ListSelect extends React.Component {
   handleSubmit(event) {
   	event.preventDefault();
     console.log(this.state.id)
-    this.props.dispatch(actions.setList(this.state.id));
+    return Promise.resolve(this.props.dispatch(actions.setList(this.state.id)))
+    .then(() => this.props.dispatch(actions.fetchMovies(this.props.list)))
+    .catch(error => console.log(error));
   }
 
   render() {
@@ -43,4 +45,9 @@ class ListSelect extends React.Component {
   }
 }
 
-export default connect()(ListSelect);
+  const mapStateToProps = (state, props) => ({
+    userMovies: state.userMovies,
+    list: state.list
+  });
+
+export default connect(mapStateToProps)(ListSelect);

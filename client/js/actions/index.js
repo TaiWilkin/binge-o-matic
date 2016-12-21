@@ -1,4 +1,5 @@
 
+
 const userUrl = "http://localhost:8080/movies";
 const seasonsUrl = "http://localhost:8080/seasons";
 const episodesUrl = "http://localhost:8080/episodes";
@@ -21,10 +22,10 @@ export const fetchMoviesError = (error) => ({
   error
 });
 
-export const fetchMovies = () => (dispatch) => {
+export const fetchMovies = (listId) => (dispatch) => {
   dispatch(fetchMoviesRequest())
 
-  fetch(userUrl)
+  fetch(listsUrl + '/' + listId)
   .then(res => {
     console.log('fetchMoviesRequest');
     if (!res.ok) {
