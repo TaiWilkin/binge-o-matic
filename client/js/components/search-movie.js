@@ -15,7 +15,8 @@ export class SearchMovie extends React.Component {
       "id": this.props.id,
       "title": this.props.title,
       "release_date": this.props.release_date,
-      "poster_path": this.props.poster_path
+      "poster_path": this.props.poster_path,
+      "media_type": this.props.media_type
     }
     this.props.dispatch(actions.addMovie(movie));
   }
@@ -30,7 +31,6 @@ export class SearchMovie extends React.Component {
     if (!this.props.poster_path) {
       img = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Clapboard.svg/1000px-Clapboard.svg.png";
     }
-    console.log('search-movie props', this.props);
 
     return (
     <li className="movie" id={this.props.id} style={alreadyOnListStyling}>
