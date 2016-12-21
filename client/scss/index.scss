@@ -77,7 +77,7 @@ button:hover {
 }
 
 
-.search {
+.search, .getList {
 	background-color: #f6f6f6;
 	background-image: linear-gradient(top, #f6f6f6, #eae8e8);
 	border-color: #dedede #bababa #aaa #bababa;
@@ -89,9 +89,14 @@ button:hover {
 	overflow: hidden;
 	padding: 8px;
 	width: 450px;
+	display: inline-block;
 }
 
-.searchbar {
+.search {
+	margin-left: 25px;
+}
+
+.searchbar, .listselectors {
 	border: 1px solid #CCC;
 	box-shadow: 0 1px 1px #ddd inset, 0 1px 0 #FFF;
 	border-radius: 3px;

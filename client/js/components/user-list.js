@@ -9,11 +9,6 @@ class UserList extends Component {
     super(props);
   }
 
-  componentDidMount() {
-    console.log('did mount');
-    this.props.dispatch(actions.fetchMovies());
-  }
-
   render() {
     const movies = this.props.userMovies
       .map(movie => {

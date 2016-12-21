@@ -9,20 +9,25 @@ export class Search extends React.Component {
     this.searchMovies = this.searchMovies.bind(this);
   }
 
-  searchMovies() {
+  searchMovies(e) {
+    e.preventDefault();
     const movieName = this.movieNameInput.value;
     this.props.dispatch(actions.searchMovies(movieName));
+    setTimeout(() => this.movieNameInput.value = "", 750);
     console.log("now searching for", movieName);
   }
 
   render() {
     return (
-      <div className="search">
+      <form className="search" onSubmit={this.searchMovies}>
+        <label>
+        Search for Movies/Shows:
         <input className="searchbar" type="text" ref={ref => this.movieNameInput = ref} />
+        </label>
         <button className="submit" type="button" onClick={this.searchMovies}>
           Search
         </button>
-      </div>
+      </form>
     );
   }
 }

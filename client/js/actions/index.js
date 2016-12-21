@@ -1,7 +1,9 @@
 
+
 const userUrl = "http://localhost:8080/movies";
 const seasonsUrl = "http://localhost:8080/seasons";
 const episodesUrl = "http://localhost:8080/episodes";
+const listsUrl = "http://localhost:8080/lists";
 
 export const FETCH_MOVIES_REQUEST = 'FETCH_MOVIES_REQUEST';
 export const fetchMoviesRequest = () => ({
@@ -20,10 +22,10 @@ export const fetchMoviesError = (error) => ({
   error
 });
 
-export const fetchMovies = () => (dispatch) => {
+export const fetchMovies = (listId) => (dispatch) => {
   dispatch(fetchMoviesRequest())
 
-  fetch(userUrl)
+  fetch(listsUrl + '/' + listId)
   .then(res => {
     console.log('fetchMoviesRequest');
     if (!res.ok) {
@@ -247,3 +249,46 @@ export const getEpisodes = (season) => (dispatch) => {
   })
 }
 
+export const GET_LISTS_REQUEST = 'GET_LISTS_REQUEST';
+export const getListsRequest = () => ({
+  type: GET_LISTS_REQUEST
+});
+
+export const GET_LISTS_SUCCESS = 'GET_LISTS_SUCCESS';
+export const getListsSuccess = (lists) => ({
+  type: GET_LISTS_SUCCESS,
+  lists
+});
+
+export const GET_LISTS_ERROR = 'GET_LISTS_ERROR';
+export const getListsError = (error) => ({
+  type: GET_LISTS_ERROR,
+  error
+});
+
+export const getLists = () => (dispatch) => {
+  dispatch(getListsRequest())
+
+  fetch(episodesUrl + '/lists')
+  .then(res => {
+    console.log('getListsRequest');
+    if (!res.ok) {
+      const error = new Error(res.statusText);
+      error.response = res;
+      throw error;
+    }
+    return res;
+  })
+  .then(res => res.json())
+  .then(data => dispatch(getListsSuccess(data)))
+  .catch(err => {
+    console.error('getListsError', err);
+    getListsError(err);
+  })
+}
+
+export const SET_LIST = 'SET_LIST';
+export const setList = (id) => ({
+  type: SET_LIST,
+  id
+});

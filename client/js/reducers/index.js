@@ -182,7 +182,34 @@ const moviesReducer = (state=initialState, action) => {
       error: action.error
     }
     );
-}
+  }
+  else if (action.type === actions.SET_LIST) {
+    return Object.assign({}, state, {list: action.id});
+  }
+  else if (action.type === actions.GET_LISTS_REQUEST) {
+    return Object.assign({}, state, {loading: true});
+  }
+  else if (action.type === actions.GET_LISTS_SUCCESS) {
+   return Object.assign(
+    {},
+    state,
+    {
+      loading: false,
+      error: null,
+      lists: action.lists,
+    }
+    );
+ }
+ else if (action.type === actions.GET_LISTS_ERROR) {
+  return Object.assign(
+    {},
+    state,
+    {
+      loading: false,
+      error: action.error
+    }
+    );
+  }
 
 return state;
 }
