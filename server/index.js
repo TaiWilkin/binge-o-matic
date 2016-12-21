@@ -28,7 +28,7 @@ app.use(bodyParser.json());
 
 // ---- GET ----
 
-// TODO: remove
+// TODO: DEPRECATED
 app.get('/movies', function(req, res) {
   knex('movies').select('*')
   .then(movies => {
@@ -60,21 +60,12 @@ app.get('/lists/:list_id', function({ params }, res) {
   .catch(error=> res.sendStatus(422));
 });
 
-// app.get('/movies/:movieId', function(req, res) {
-//   knex('movies').select('*').where({id: req.params.movieId})
-//   .then(movie => {
-//     res.status(200).json(movie);
-//   })
-//   .catch(error => res.sendStatus(422));
-// });
-
 // ---- POST ----
 
+// DEPRECATED
 app.post('/movies', function({ body }, res) {
   knex('movies').insert(body)
-
   .then(() => knex('movies').select('*'))
-
   .then(movies => {
     res.status(202).json(movies);
   })
@@ -82,7 +73,18 @@ app.post('/movies', function({ body }, res) {
     console.error(error);
     res.status(409).json({error: error.detail});
   });
+});
 
+app.post('/lists/:name', function({ params }, res) {
+  const { name } = params;
+  knex('lists').insert({ name }).returning('id')
+  .then(([id]) => {
+    res.status(201).json({ name, id });
+  })
+  .catch(error => {
+    console.error(error);
+    res.status(409).json({error: error.detail});
+  });
 });
 
 // ---- DELETE ----
@@ -129,7 +131,8 @@ app.get('/search/:query', function({ params }, res) {
 
 
 // ---- SEARCH API SEASONS ----
-app.post('/seasons/:show_id', function({ params }, res) {
+app.post('/seasons/:listid/:show_id', function({ params }, res) {
+  // let {listid, showid} = params;
   let searchUrl = `https://api.themoviedb.org/3/tv/${params.show_id}?api_key=0469b2e223fa411387635db85c0f4be7&language=en-US`;
   fetch(searchUrl)
   .then(res => {
@@ -150,7 +153,7 @@ app.post('/seasons/:show_id', function({ params }, res) {
         poster_path: season.poster_path,
         media_type: 'season',
         parent_show: data.id,
-        number: season.season_number 
+        number: season.season_number
       }
     })
     return knex('movies').insert(seasons);
@@ -167,7 +170,7 @@ app.post('/seasons/:show_id', function({ params }, res) {
 
 // ---- SEARCH API EPISODES ----
 
-app.post('/episodes/:show_id/:show_season', function(req, res) {
+app.post('/episodes/:listid/:show_id/:show_season', function(req, res) {
   let searchUrl = `https://api.themoviedb.org/3/tv/${req.params.show_id}/season/${req.params.show_season}?api_key=0469b2e223fa411387635db85c0f4be7&language=en-US`;
   fetch(searchUrl)
   .then(res => {
