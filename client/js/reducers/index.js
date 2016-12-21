@@ -21,6 +21,9 @@ const sortMovies = (movies) => {
         result = 1;
       }
     }
+    if (result === 0) {
+      result = a.episode - b.episode;
+    }
     return result;
   });
   return movies;
@@ -64,7 +67,7 @@ const moviesReducer = (state=initialState, action) => {
         release_date: movie.first_air_date || movie.release_date
       };
     });
-    movies = sortMovies(action.movies);
+    movies = sortMovies(movies);
     return Object.assign(
       {},
       state,
