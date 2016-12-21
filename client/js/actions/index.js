@@ -269,7 +269,7 @@ export const getListsError = (error) => ({
 export const getLists = () => (dispatch) => {
   dispatch(getListsRequest())
 
-  fetch(episodesUrl + '/lists')
+  fetch(listsUrl)
   .then(res => {
     console.log('getListsRequest');
     if (!res.ok) {

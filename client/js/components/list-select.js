@@ -13,7 +13,7 @@ class ListSelect extends React.Component {
   }
 
   componentDidMount() {
-  	// this.props.dispatch(actions.getLists());
+  	this.props.dispatch(actions.getLists());
   }
 
   handleChange(event) {
@@ -29,8 +29,7 @@ class ListSelect extends React.Component {
   }
 
   render() {
-  	const lists = [{name: "list1", id: 1}, {name: "list2", id: 2}, {name: "list3", id: 3}];
-  	let options = lists.map(list => (<option key={list.id} value={list.id}>{list.name}</option>));
+  	let options = this.props.lists.map(list => (<option key={list.id} value={list.id}>{list.name}</option>));
     return (
       <form className="getList" onSubmit={this.handleSubmit}>
         <label>
@@ -47,7 +46,8 @@ class ListSelect extends React.Component {
 
   const mapStateToProps = (state, props) => ({
     userMovies: state.userMovies,
-    list: state.list
+    list: state.list,
+    lists: state.lists
   });
 
 export default connect(mapStateToProps)(ListSelect);
