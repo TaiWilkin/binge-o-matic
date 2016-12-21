@@ -4,7 +4,8 @@ const initialState = {
   userMovies: [],
   searchMovies: [],
   loading: false,
-  error: null
+  error: null,
+  lists: []
 };
 
 const sortMovies = (movies) => {
