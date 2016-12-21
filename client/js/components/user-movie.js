@@ -16,7 +16,8 @@ export class UserMovie extends React.Component {
   }
 
   addSeasons() {
-    this.props.dispatch(actions.getSeasons(this.props.id));
+    let path = `/${this.props.list}/${this.props.id}`;
+    this.props.dispatch(actions.getSeasons(path));
   }
 
   addEpisodes() {

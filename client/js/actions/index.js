@@ -184,10 +184,10 @@ export const getSeasonsError = (error) => ({
   error
 });
 
-export const getSeasons = (id) => (dispatch) => {
+export const getSeasons = (path) => (dispatch) => {
   dispatch(getSeasonsRequest())
 
-  fetch(seasonsUrl + '/' + id, {method: 'post'})
+  fetch(seasonsUrl + path, {method: 'post'})
   .then(res => {
     console.log('getSeasonsRequest');
     if (!res.ok) {
@@ -225,7 +225,7 @@ export const getEpisodesError = (error) => ({
 export const getEpisodes = (season) => (dispatch) => {
   dispatch(getEpisodesRequest())
 
-  fetch(episodesUrl + '/' + season.parent_show + '/' + season.number, 
+  fetch(episodesUrl + '/' + season.list + '/' + season.parent_show + '/' + season.number, 
           {method: 'post',           
           headers: {  
             "Content-type": "application/json; charset=utf-8"  
@@ -292,3 +292,47 @@ export const setList = (id) => ({
   type: SET_LIST,
   id
 });
+
+export const ADD_LIST_REQUEST = 'ADD_LIST_REQUEST';
+export const addListRequest = () => ({
+  type: ADD_LIST_REQUEST
+});
+
+export const ADD_LIST_SUCCESS = 'ADD_LIST_SUCCESS';
+export const addListSuccess = (list) => ({
+  type: ADD_LIST_SUCCESS,
+  list
+});
+
+export const ADD_LIST_ERROR = 'ADD_LIST_ERROR';
+export const addListError = (error) => ({
+  type: ADD_LIST_ERROR,
+  error
+});
+
+export const addList = (list) => (dispatch) => {
+  dispatch(addListRequest())
+
+  fetch(listsUrl, {  
+          method: 'post',  
+          headers: {  
+            "Content-type": "application/json; charset=utf-8"  
+          },  
+          body: JSON.stringify(list)
+        })
+  .then(res => {
+    console.log('addListRequest');
+    if (!res.ok) {
+      const error = new Error(res.statusText);
+      error.response = res;
+      throw error;
+    }
+    return res;
+  })
+  .then(res => res.json())
+  .then(list => dispatch(addListSuccess(list)))
+  .catch(err => {
+    console.error('addListError', err);
+    addListError(err);
+  })
+}

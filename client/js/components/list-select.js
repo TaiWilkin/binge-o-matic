@@ -38,7 +38,7 @@ class ListSelect extends React.Component {
             {options}
           </select>
         </label>
-        <input className="submit" type="submit" value="Submit" />
+        <button className="submit" type="submit">Get List</button>
       </form>
     );
   }
