@@ -26,7 +26,7 @@ export class NewList extends React.Component {
         <input className="listbar" type="text" ref={ref => this.listNameInput = ref} />
         </label>
         <button className="submit" type="button" onClick={this.addList}>
-          Search
+          Create List
         </button>
       </form>
     );
