@@ -8,26 +8,33 @@ Movies table -- gets updated -- master list of all items on all lists
 ## Table: movies
 ....
 
-## Table: ListContent
-ListID (pri key) | Id (foreign key) | Watched?
-:---------------:|-----------------:|:--------:
-List1 | 12356 | true
-List1 | 123465 | false
-List2 | 14563465 | false
+## Table: `list_items`
+id => list_details | id => movies |
+:---------------:|-----------------:|
+List1 | 12356
+List1 | 123465
+List2 | 14563465
 
-## Table: ListDetails
+## Table: `list_details`
 ListID | ListName |
 :-----:|:--------:|
 001 | Cartoons
 002 | Sci-Fi
 
-## UserLists (much later...)
+## Table: `user_lists` (much later...)
 UserID | ListID
 -----| ------
 User1 | List1
 User2 | List2
 User3 | List3
 
+## Table: `user_watched_list` (even later...)
+UserID | ShowID
+:--: | :--:
+User1 | 13435
+User1 | 235435
+User2 | 44234
+User2 | 13435
 
 ### Options for flow:
 - Persist in a navbar
@@ -35,12 +42,13 @@ User3 | List3
   - Selected listID stored in state
 
 ---
-### Functional Representation of other users lists
-- See all others?
-- Have concept of 'friends' vs. strangers?
-
----
 
 ### Step 1
 - Choose a list
 - Retrieve items off that list
+
+## Flow of `POST`ing new item to a list:
+1. App sends array of one or more `movieId`s as JSON to `/lists/:listId`
+
+
+(http://3i2lq13pvwgh2ffbbxk9da411le.wpengine.netdna-cdn.com/wp-content/uploads/2015/11/tv.jpg)

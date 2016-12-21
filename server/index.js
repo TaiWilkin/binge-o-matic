@@ -27,11 +27,35 @@ app.use(bodyParser.json());
 
 // ---- GET ----
 
+// TODO: remove
 app.get('/movies', function(req, res) {
   knex('movies').select('*')
   .then(movies => {
     console.log(movies);
     res.status(200).json(movies);
+  })
+  .catch(error=> res.sendStatus(422));
+});
+
+// List of lists
+app.get('/lists', function(req, res) {
+  knex('lists').select('*')
+  .then(lists => {
+    console.log(lists);
+    res.status(200).json(lists);
+  })
+  .catch(error=> res.sendStatus(422));
+});
+
+// Movies on a list
+app.get('/lists/:list_id', function({ params }, res) {
+  knex('movies')
+    .select('*')
+    .join('list_items', 'movies.id', '=', 'list_items.show_id')
+    .where('list_items.list_id', params.list_id)
+  .then(shows => {
+    // console.log(`shows on list: ${params.list_id}`, shows);
+    res.status(200).json(shows);
   })
   .catch(error=> res.sendStatus(422));
 });
