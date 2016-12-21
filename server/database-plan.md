@@ -47,3 +47,47 @@ User3 | List3
 ### Step 1
 - Choose a list
 - Retrieve items off that list
+
+```js
+app.get('/lists'
+    returns a list of names and their ids
+
+app.get('/lists/:listId')
+    returns a list of movies (our regular get)
+
+app.post('/lists'), body: {name: listname}    // TODO
+    creates a new list, return list of lists
+
+app.post('lists/:listId'), body: movieId  //
+    our regular posts (edit all post commands to this)
+    add to movies table only if not already in it
+    regardless of prior step, add movie.id to ListContent table
+
+app.post('lists/:listId/episodes/:showId/:seasonId')
+    ^doublecheck endpoint!
+
+
+app.delete('/lists/:listId')
+    deletes the whole list
+
+app.delete('lists/:listId/:id')
+    deletes item off of list and its children off the list
+    (get the ids of all items that need to be deleted, THEN delete from listTable)
+
+app.put('/lists/:listId'), body: {name: listname}
+    change list name, return list of Lists?
+app.put('/lists/:listId'), body: {watched: true/false}
+    change whether show is marked as watched
+```
+
+
+```
+starting with a new DB here...
+
+User does a search...
+Results sent back to App (not put in movies table)
+
+User adds an item to UserList
+- sends Movie object to /list/:listId endpoint
+1. Server adds Movie to Movies table
+2. Server adds ListID / MovieId to ListContent table
