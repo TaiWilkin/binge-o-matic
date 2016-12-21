@@ -7,3 +7,10 @@ CREATE TABLE IF NOT EXISTS "public"."movies" (
     PRIMARY KEY ("id"),
     UNIQUE ("id")
 );
+
+CREATE TABLE IF NOT EXISTS "public"."List_Items" (
+    "id" serial NOT NULL,
+    "name" text NOT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE ("id")
+);
