@@ -313,13 +313,7 @@ export const addListError = (error) => ({
 export const addList = (list) => (dispatch) => {
   dispatch(addListRequest())
 
-  fetch(listsUrl, {  
-          method: 'post',  
-          headers: {  
-            "Content-type": "application/json; charset=utf-8"  
-          },  
-          body: JSON.stringify(list)
-        })
+  fetch(listsUrl + '/' + list.name, {method: 'post'})
   .then(res => {
     console.log('addListRequest');
     if (!res.ok) {
