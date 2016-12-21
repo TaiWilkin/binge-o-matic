@@ -11,7 +11,7 @@ var knex = require('knex')({
     password: 'hcI5frNj5V4-HbZui9QHgFEyzaq30FDC',
     database: 'gphrldmg'
   },
-  debug: true,
+  // debug: true,
   pool: { min: 0, max: 4 }
 });
 
@@ -118,8 +118,8 @@ app.post('/seasons/:show_id', function({ params }, res) {
   })
   .then(res => res.json())
   .then(data => {
-    const seasonPromises = data.seasons.map(season => {
-      return knex('movies').insert({
+    const seasons = data.seasons.map(season => {
+      return {
         title: data.name,
         id: season.id,
         release_date: season.air_date,
@@ -127,9 +127,9 @@ app.post('/seasons/:show_id', function({ params }, res) {
         media_type: 'season',
         parent_show: data.id,
         number: season.season_number 
-      })
+      }
     })
-    return Promise.all(seasonPromises)
+    return knex('movies').insert(seasons);
   })
   .then(() => knex('movies').select('*'))
   .then(movies => {
@@ -145,7 +145,6 @@ app.post('/seasons/:show_id', function({ params }, res) {
 
 app.post('/episodes/:show_id/:show_season', function(req, res) {
   let searchUrl = `https://api.themoviedb.org/3/tv/${req.params.show_id}/season/${req.params.show_season}?api_key=0469b2e223fa411387635db85c0f4be7&language=en-US`;
-  console.log("SEARCH URL:", searchUrl);
   fetch(searchUrl)
   .then(res => {
     if (!res.ok) {
@@ -157,8 +156,8 @@ app.post('/episodes/:show_id/:show_season', function(req, res) {
   })
   .then(res => res.json())
   .then(data => {
-    const episodesPromises = data.episodes.map(episode => {
-      return knex('movies').insert({
+    const episodes = data.episodes.map(episode => {
+      return {
         id: episode.id,
         title: req.body.title,
         episode: episode.name,
@@ -168,9 +167,9 @@ app.post('/episodes/:show_id/:show_season', function(req, res) {
         parent_season: req.body.id,
         parent_show: req.body.parent_show,
         number: episode.episode_number
-      })
+      }
     })
-    return Promise.all(episodesPromises)
+    return knex('movies').insert(episodes);
   })
   .then(() => knex('movies').select('*'))
   .then(movies => {

@@ -4,6 +4,7 @@ import * as actions from '../actions';
 import UserList from './user-list';
 import SearchList from './search-list';
 import Search from './search';
+import ListSelect from './list-select';
 
 class Bingeomatic extends Component {
   constructor(props) {
@@ -14,6 +15,7 @@ class Bingeomatic extends Component {
     return (
       <div className="bingomatic">
         <h1>Binge-o-matic</h1>
+        <ListSelect />
         <Search />
         <div className="lists">
           <SearchList />
