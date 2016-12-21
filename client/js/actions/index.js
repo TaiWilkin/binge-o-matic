@@ -1,5 +1,7 @@
 
 const userUrl = "http://localhost:8080/movies";
+const seasonsUrl = "http://localhost:8080/seasons";
+const episodesUrl = "http://localhost:8080/episodes";
 
 export const FETCH_MOVIES_REQUEST = 'FETCH_MOVIES_REQUEST';
 export const fetchMoviesRequest = () => ({
@@ -23,7 +25,7 @@ export const fetchMovies = () => (dispatch) => {
 
   fetch(userUrl)
   .then(res => {
-    console.log('fetchMoviesRequest', res);
+    console.log('fetchMoviesRequest');
     if (!res.ok) {
       const error = new Error(res.statusText);
       error.response = res;
@@ -63,7 +65,7 @@ export const searchMovies = (query) => {
   let searchUrl = `http://localhost:8080/search/${query}`
   fetch(searchUrl)
   .then(res => {
-    console.log('searchMoviesRequest', res);
+    console.log('searchMoviesRequest');
     if (!res.ok) {
       const error = new Error(res.statusText);
       error.response = res;
@@ -102,7 +104,7 @@ export const deleteMovie = (id) => (dispatch) => {
 
   fetch(userUrl + '/' + id, {method: 'delete'})
   .then(res => {
-    console.log('deleteMovieRequest', res);
+    console.log('deleteMovieRequest');
     if (!res.ok) {
       const error = new Error(res.statusText);
       error.response = res;
@@ -146,7 +148,7 @@ export const addMovie = (movie) => (dispatch) => {
           body: JSON.stringify(movie)
         })
   .then(res => {
-    console.log('addMovieRequest', res);
+    console.log('addMovieRequest');
     if (!res.ok) {
       const error = new Error(res.statusText);
       error.response = res;
@@ -159,6 +161,89 @@ export const addMovie = (movie) => (dispatch) => {
   .catch(err => {
     console.error('addMovieError', err);
     addMovieError(err);
+  })
+}
+
+
+export const GET_SEASONS_REQUEST = 'GET_SEASONS_REQUEST';
+export const getSeasonsRequest = () => ({
+  type: GET_SEASONS_REQUEST
+});
+
+export const GET_SEASONS_SUCCESS = 'GET_SEASONS_SUCCESS';
+export const getSeasonsSuccess = (movies) => ({
+  type: GET_SEASONS_SUCCESS,
+  movies
+});
+
+export const GET_SEASONS_ERROR = 'GET_SEASONS_ERROR';
+export const getSeasonsError = (error) => ({
+  type: GET_SEASONS_ERROR,
+  error
+});
+
+export const getSeasons = (id) => (dispatch) => {
+  dispatch(getSeasonsRequest())
+
+  fetch(seasonsUrl + '/' + id, {method: 'post'})
+  .then(res => {
+    console.log('getSeasonsRequest');
+    if (!res.ok) {
+      const error = new Error(res.statusText);
+      error.response = res;
+      throw error;
+    }
+    return res;
+  })
+  .then(res => res.json())
+  .then(data => dispatch(getSeasonsSuccess(data)))
+  .catch(err => {
+    console.error('getSeasonsError', err);
+    getSeasonsError(err);
+  })
+}
+
+export const GET_EPISODES_REQUEST = 'GET_EPISODES_REQUEST';
+export const getEpisodesRequest = () => ({
+  type: GET_EPISODES_REQUEST
+});
+
+export const GET_EPISODES_SUCCESS = 'GET_EPISODES_SUCCESS';
+export const getEpisodesSuccess = (movies) => ({
+  type: GET_EPISODES_SUCCESS,
+  movies
+});
+
+export const GET_EPISODES_ERROR = 'GET_EPISODES_ERROR';
+export const getEpisodesError = (error) => ({
+  type: GET_EPISODES_ERROR,
+  error
+});
+
+export const getEpisodes = (season) => (dispatch) => {
+  dispatch(getEpisodesRequest())
+
+  fetch(episodesUrl + '/' + season.parent_show + '/' + season.number, 
+          {method: 'post',           
+          headers: {  
+            "Content-type": "application/json; charset=utf-8"  
+          },  
+          body: JSON.stringify(season)
+        })
+  .then(res => {
+    console.log('getEpisodesRequest');
+    if (!res.ok) {
+      const error = new Error(res.statusText);
+      error.response = res;
+      throw error;
+    }
+    return res;
+  })
+  .then(res => res.json())
+  .then(data => dispatch(getEpisodesSuccess(data)))
+  .catch(err => {
+    console.error('getEpisodesError', err);
+    getEpisodesError(err);
   })
 }
 

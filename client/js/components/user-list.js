@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import UserMovie from './user-movie';
+import Episode from './episode'
 
 class UserList extends Component {
   constructor(props) {
@@ -15,13 +16,18 @@ class UserList extends Component {
 
   render() {
     const movies = this.props.userMovies
-      .sort((x, y) => y.release_date < x.release_date)
-      .map(movie => (
-        <UserMovie
+      .map(movie => {
+        if (movie.media_type === 'episode') {
+        return (<Episode
           key={movie.id}
           {...movie}
-        />
-        ));
+        />);
+        }
+        return (<UserMovie
+          key={movie.id}
+          {...movie}
+        />);
+        });
 
       return (
         <div className="userList">

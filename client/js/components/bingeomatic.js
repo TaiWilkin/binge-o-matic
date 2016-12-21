@@ -14,8 +14,8 @@ class Bingeomatic extends Component {
     return (
       <div className="bingomatic">
         <h1>Binge-o-matic</h1>
-        <div>
-          <Search />
+        <Search />
+        <div className="lists">
           <SearchList />
           <UserList />
         </div>

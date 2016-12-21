@@ -18,8 +18,8 @@ export class Search extends React.Component {
   render() {
     return (
       <div className="search">
-        <input type="text" ref={ref => this.movieNameInput = ref} />
-        <button type="button" onClick={this.searchMovies}>
+        <input className="searchbar" type="text" ref={ref => this.movieNameInput = ref} />
+        <button className="submit" type="button" onClick={this.searchMovies}>
           Search
         </button>
       </div>
