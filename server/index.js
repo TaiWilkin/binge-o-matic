@@ -66,7 +66,8 @@ app.post('/movies', function({ body }, res) {
 app.delete('/movies/:movieId', function({ params }, res) {
 
   knex('movies').where('id', params.movieId).del()
-
+  .then(() => knex('movies').where('parent_show', params.movieId).del())
+  .then(() => knex('movies').where('parent_season', params.movieId).del())
   .then(() => knex('movies').select('*'))
 
   .then(movies => {
