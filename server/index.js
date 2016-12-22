@@ -198,8 +198,12 @@ app.delete('/lists/:list_id', ({ params: { list_id }}, res) => {
     .where({ id: list_id })
     .del()
   )
-  .then((count) =>
-    res.status(205).json({ count })
+  .then(() =>
+    knex('lists')
+    .select('*')
+  )
+  .then(lists =>
+    res.status(202).json(lists)
   )
   .catch(error => {
     console.error(error);
