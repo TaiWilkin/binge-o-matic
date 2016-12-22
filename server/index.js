@@ -75,6 +75,20 @@ app.post('/movies', function({ body }, res) {
   });
 });
 
+app.post('/lists/:listId/show', function({ body, params }, res) {
+  knex('movies').select('*').where()
+
+  knex('movies').insert(body)
+  .then(() => knex('movies').select('*'))
+  .then(movies => {
+    res.status(202).json(movies);
+  })
+  .catch(error => {
+    console.error(error);
+    res.status(409).json({error: error.detail});
+  });
+});
+
 app.post('/lists/:name', function({ params }, res) {
   const { name } = params;
   knex('lists').insert({ name }).returning('id')
