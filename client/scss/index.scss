@@ -4,15 +4,15 @@
 }
 
 body {
-	background-color: #4040a1;
+	background-color: #618685;
 	text-align: center;
 }
 
 .searchList {
 	width: 30%;
 	float: left;
-	background-color: #36486b;
-	li {background-color: #618685;
+	background-color: #fefbd8;
+	li {background-color: #80ced6;
 	margin-right: 50px;}
 }
 
@@ -23,8 +23,8 @@ img {
 .userList {
 	width: 70%;
 	float: right;
-	background-color: #618685;
-	li {background-color: #36486b;}
+	background-color: #80ced6;
+	li {background-color: #fefbd8;}
 }
 
 .tmdbLogo, h1 {
@@ -34,7 +34,7 @@ img {
 	clear: both;
 	text-align: center;
 	padding: 10px;
-	background-color: #fefbd8;
+	background-color: #d5f4e6;
 }
 
 .lists {
