@@ -16,9 +16,9 @@ export class SearchMovie extends React.Component {
       "title": this.props.title,
       "release_date": this.props.release_date,
       "poster_path": this.props.poster_path,
-      "media_type": this.props.media_type
+      "media_type": this.props.media_type 
     }
-    this.props.dispatch(actions.addMovie(movie));
+    this.props.dispatch(actions.addMovie(movie, this.props.list));
   }
 
   render() {
@@ -43,4 +43,8 @@ export class SearchMovie extends React.Component {
   }
 }
 
-export default connect()(SearchMovie);
+const mapStateToProps = (state, props) => ({
+  list: state.list
+});
+
+export default connect(mapStateToProps)(SearchMovie);

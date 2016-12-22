@@ -139,10 +139,10 @@ export const addMovieError = (error) => ({
   error
 });
 
-export const addMovie = (movie) => (dispatch) => {
+export const addMovie = (movie, list) => (dispatch) => {
   dispatch(addMovieRequest())
 
-  fetch(userUrl, {  
+  fetch(listsUrl + '/' + list + "/show", {  
           method: 'post',  
           headers: {  
             "Content-type": "application/json; charset=utf-8"  
