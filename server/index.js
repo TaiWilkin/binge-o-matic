@@ -107,18 +107,17 @@ app.post('/lists/:name', function({ params: { name } }, res) {
 
 // ---- DELETE ----
 
-app.delete('/shows/:movieId', function({ params }, res) {
+app.delete('/lists/:listId/shows/:movieId', function({ params }, res) {
 
-  knex('shows').where('id', params.movieId).del()
-  .then(() => knex('shows').where('parent_show', params.movieId).del())
-  .then(() => knex('shows').where('parent_season', params.movieId).del())
-  .then(() => knex('shows').select('*'))
-
+  knex('public.list_items').where({'show_id': params.movieId, 'list_id': params.listId}).del()
+  // .then(() => knex('shows').where({'parent_show': params.movieId}).select('id'))
+  // .then((ids) => knex('public.list_items').where({'list_id': params.listId}).whereIn('show_id', ids).del())
+  // .then(() => knex('shows').where({'parent_season': params.movieId}).select('id'))
+  // .then((ids) => knex('public.list_items').where({'list_id': params.listId}).whereIn('show_id', ids).del())
+  .then(() => knex('shows').select('*').join('list_items', 'shows.id', '=', 'list_items.show_id').where('list_items.list_id', params.listId))
   .then(shows => {
-    console.log('deleted id', params.movieId);
-    res.status(202).json(shows);
+    res.status(200).json(shows);
   })
-
   .catch(error => {
     console.error(error);
     res.status(404).json({error: error.detail});
@@ -148,83 +147,88 @@ app.get('/search/:query', function({ params }, res) {
 });
 
 
-// ---- SEARCH API SEASONS ----
-app.post('/seasons/:listid/:show_id', function({ params }, res) {
-  // let {listid, showid} = params;
-  let searchUrl = `https://api.themoviedb.org/3/tv/${params.show_id}?api_key=0469b2e223fa411387635db85c0f4be7&language=en-US`;
-  fetch(searchUrl)
-  .then(res => {
-    if (!res.ok) {
-      const error = new Error(res.statusText);
-      error.response = res;
-      throw error;
-    }
-    return res;
-  })
-  .then(res => res.json())
-  .then(data => {
-    const seasons = data.seasons.map(season => {
-      return {
-        title: data.name,
-        id: season.id,
-        release_date: season.air_date,
-        poster_path: season.poster_path,
-        media_type: 'season',
-        parent_show: data.id,
-        number: season.season_number
-      }
-    })
-    return knex('shows').insert(seasons);
-  })
-  .then(() => knex('shows').select('*'))
-  .then(shows => {
-    res.status(202).json(shows);
-  })
-  .catch(err => {
-    console.error('searchSeasonsError', err);
-    res.status(500).json(err);
-  });
-});
+// // ---- SEARCH API SEASONS ----
+// app.post('/seasons/:listid/:show_id', function({ params }, res) {
+//   // let {listid, showid} = params;
+//   let searchUrl = `https://api.themoviedb.org/3/tv/${params.show_id}?api_key=0469b2e223fa411387635db85c0f4be7&language=en-US`;
+//   fetch(searchUrl)
+//   .then(res => {
+//     if (!res.ok) {
+//       const error = new Error(res.statusText);
+//       error.response = res;
+//       throw error;
+//     }
+//     return res;
+//   })
+//   .then(res => res.json())
+//   .then(data => {
+//     let seasons = data.seasons.map(season => {
+//       const seasonObject = {
+//         title: data.name,
+//         id: season.id,
+//         release_date: season.air_date,
+//         poster_path: season.poster_path,
+//         media_type: 'season',
+//         parent_show: data.id,
+//         number: season.season_number
+//       }
+//       return knex('shows').insert(seasons).whereNotExists(knex('shows').where('id', season.id));
+//     });
+//     const list = data.seasons.map(season => {
+//       return knex('shows').insert({show_id: season.id, list_id: params.listid}).whereNotExists(knex('shows').where({show_id: season.id, list_id: params.listid}))
+//     });
+//     let seasons_list = seasons.push(...list);
+//     return Promise.all(seasons_list)
+//   })
+//   .then(() => knex('shows').select('*').join('list_items', 'shows.id', '=', 'list_items.show_id').where('list_items.list_id', params.listid))
+//   .then(shows => {
+//     res.status(200).json(shows);
+//   })
+//   .catch(err => {
+//     console.error('searchSeasonsError', err);
+//     res.status(500).json(err);
+//   });
+// });
 
-// ---- SEARCH API EPISODES ----
+// // ---- SEARCH API EPISODES ----
 
-app.post('/episodes/:listid/:show_id/:show_season', function(req, res) {
-  let searchUrl = `https://api.themoviedb.org/3/tv/${req.params.show_id}/season/${req.params.show_season}?api_key=0469b2e223fa411387635db85c0f4be7&language=en-US`;
-  fetch(searchUrl)
-  .then(res => {
-    if (!res.ok) {
-      const error = new Error(res.statusText);
-      error.response = res;
-      throw error;
-    }
-    return res;
-  })
-  .then(res => res.json())
-  .then(data => {
-    const episodes = data.episodes.map(episode => {
-      return {
-        id: episode.id,
-        title: req.body.title,
-        episode: episode.name,
-        release_date: episode.air_date,
-        poster_path: episode.still_path,
-        media_type: 'episode',
-        parent_season: req.body.id,
-        parent_show: req.body.parent_show,
-        number: episode.episode_number
-      }
-    })
-    return knex('shows').insert(episodes);
-  })
-  .then(() => knex('shows').select('*'))
-  .then(shows => {
-    res.status(202).json(shows);
-  })
-  .catch(err => {
-    console.error('searchSeasonsError', err);
-    res.status(500).json(err);
-  });
-});
+// app.post('/episodes/:listid/:show_id/:show_season', function(req, res) {
+//   let searchUrl = `https://api.themoviedb.org/3/tv/${req.params.show_id}/season/${req.params.show_season}?api_key=0469b2e223fa411387635db85c0f4be7&language=en-US`;
+//   fetch(searchUrl)
+//   .then(res => {
+//     if (!res.ok) {
+//       const error = new Error(res.statusText);
+//       error.response = res;
+//       throw error;
+//     }
+//     return res;
+//   })
+//   .then(res => res.json())
+//   .then(data => {
+//     const episodes = data.episodes.map(episode => {
+//       return {
+//         id: episode.id,
+//         title: req.body.title,
+//         episode: episode.name,
+//         release_date: episode.air_date,
+//         poster_path: episode.still_path,
+//         media_type: 'episode',
+//         parent_season: req.body.id,
+//         parent_show: req.body.parent_show,
+//         number: episode.episode_number
+//       }
+//     })
+//     return knex('shows').insert(episodes);
+//   })
+//   .then(() => knex('shows').select('*'))
+//   .then(shows => {
+//     res.status(202).json(shows);
+//   })
+//   .catch(err => {
+//     console.error('searchSeasonsError', err);
+//     res.status(500).json(err);
+//   });
+// });
 
 
 function runServer() {

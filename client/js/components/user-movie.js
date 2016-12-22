@@ -12,7 +12,8 @@ export class UserMovie extends React.Component {
   }
 
   onClick() {
-    this.props.dispatch(actions.deleteMovie(this.props.id));
+    let path = `/${this.props.list}/shows/${this.props.id}`;
+    this.props.dispatch(actions.deleteMovie(path));
   }
 
   addSeasons() {
@@ -32,11 +33,11 @@ export class UserMovie extends React.Component {
       img = "";
     }
     if (this.props.media_type === 'tv') {
-      add = (<button onClick={this.addSeasons}>Seasons</button>);
+      // add = (<button onClick={this.addSeasons}>Seasons</button>);
 
     } 
     if (this.props.media_type === 'season') {
-      add = (<button onClick={this.addEpisodes}>Episodes</button>);
+      // add = (<button onClick={this.addEpisodes}>Episodes</button>);
       title = `${this.props.title}: Season ${this.props.number}`;
     } 
     
@@ -54,5 +55,8 @@ export class UserMovie extends React.Component {
   }
 }
 
+const mapStateToProps = (state, props) => ({
+  list: state.list
+});
 
-export default connect()(UserMovie);
+export default connect(mapStateToProps)(UserMovie);
