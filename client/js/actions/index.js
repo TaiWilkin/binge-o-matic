@@ -432,7 +432,7 @@ export const markWatchedError = (error) => ({
 
 export const markWatched = (path, body) => (dispatch) => {
   dispatch(markWatchedRequest())
-  console.log(body);
+
   fetch(listsUrl + path, 
         {method: 'put',           
           headers: {  

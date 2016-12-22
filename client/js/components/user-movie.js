@@ -57,6 +57,7 @@ export class UserMovie extends React.Component {
     return (
     <li className={this.props.media_type} id={this.props.id}>
       <h4>{check}{title}</h4>
+
       {img}
       <p>{this.props.release_date}</p>
       <button onClick={this.onClick}>
