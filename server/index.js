@@ -139,10 +139,16 @@ app.post('/lists/:name', function({ params: { name } }, res) {
 app.delete('/lists/:listId/shows/:movieId', function({ params }, res) {
 
   knex('public.list_items').where({'show_id': params.movieId, 'list_id': params.listId}).del()
-  // .then(() => knex('shows').where({'parent_show': params.movieId}).select('id'))
-  // .then((ids) => knex('public.list_items').where({'list_id': params.listId}).whereIn('show_id', ids).del())
-  // .then(() => knex('shows').where({'parent_season': params.movieId}).select('id'))
-  // .then((ids) => knex('public.list_items').where({'list_id': params.listId}).whereIn('show_id', ids).del())
+  .then(() => knex('shows').where({'parent_show': params.movieId}).select('id'))
+  .then((ids) => {
+    return ids.map(id => id.id);
+  })
+  .then((ids) => knex('public.list_items').where({'list_id': params.listId}).whereIn('show_id', ids).del())
+  .then(() => knex('shows').where({'parent_season': params.movieId}).select('id'))
+  .then((ids) => {
+    return ids.map(id => id.id);
+  })
+  .then((ids) => knex('public.list_items').where({'list_id': params.listId}).whereIn('show_id', ids).del())
   .then(() => knex('shows').select('*').join('list_items', 'shows.id', '=', 'list_items.show_id').where('list_items.list_id', params.listId))
   .then(shows => {
     res.status(200).json(shows);
