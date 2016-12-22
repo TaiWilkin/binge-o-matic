@@ -9,6 +9,7 @@ export class UserMovie extends React.Component {
     this.onClick = this.onClick.bind(this);
     this.addSeasons = this.addSeasons.bind(this);
     this.addEpisodes = this.addEpisodes.bind(this);
+    this.onCheck = this.onCheck.bind(this);
   }
 
   onClick() {
@@ -23,6 +24,11 @@ export class UserMovie extends React.Component {
 
   addEpisodes() {
     this.props.dispatch(actions.getEpisodes(this.props));
+  }
+
+  onCheck() {
+    let path = `/${this.props.list}/${this.props.id}`;
+    this.props.dispatch(actions.markWatched(path, {"watched": !this.props.watched}))
   }
 
   render() {
@@ -43,7 +49,7 @@ export class UserMovie extends React.Component {
     
     return (
     <li className={this.props.media_type} id={this.props.id}>
-      <h4>{title}</h4>
+      <h4><input type="checkbox" onClick={this.onCheck}/>{title}</h4>
       {img}
       <p>{this.props.release_date}</p>
       <button onClick={this.onClick}>
@@ -56,7 +62,8 @@ export class UserMovie extends React.Component {
 }
 
 const mapStateToProps = (state, props) => ({
-  list: state.list
+  list: state.list,
+  userMovies: state.userMovies
 });
 
 export default connect(mapStateToProps)(UserMovie);
