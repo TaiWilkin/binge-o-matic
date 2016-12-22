@@ -142,7 +142,7 @@ app.put('/lists/:list_id/:show_id', ({ body, params: { list_id, show_id } }, res
   .where({list_id, show_id})
   .update(body)
   .then(() =>
-    res.status(400).json({
+    res.status(200).json({
       ...body,
       id: parseInt(show_id)
     })
