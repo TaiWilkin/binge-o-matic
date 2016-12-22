@@ -1,6 +1,6 @@
 
 
-const userUrl = "http://localhost:8080/movies";
+const userUrl = "http://localhost:8080/shows";
 const seasonsUrl = "http://localhost:8080/seasons";
 const episodesUrl = "http://localhost:8080/episodes";
 const listsUrl = "http://localhost:8080/lists";
@@ -101,10 +101,10 @@ export const deleteMovieError = (error) => ({
   error
 });
 
-export const deleteMovie = (id) => (dispatch) => {
+export const deleteMovie = (path) => (dispatch) => {
   dispatch(deleteMovieRequest())
 
-  fetch(userUrl + '/' + id, {method: 'delete'})
+  fetch(listsUrl + path, {method: 'delete'})
   .then(res => {
     console.log('deleteMovieRequest');
     if (!res.ok) {

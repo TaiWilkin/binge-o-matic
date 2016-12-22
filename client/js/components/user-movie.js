@@ -12,7 +12,8 @@ export class UserMovie extends React.Component {
   }
 
   onClick() {
-    this.props.dispatch(actions.deleteMovie(this.props.id));
+    let path = `/${this.props.list}/shows/${this.props.id}`;
+    this.props.dispatch(actions.deleteMovie(path));
   }
 
   addSeasons() {
@@ -54,5 +55,8 @@ export class UserMovie extends React.Component {
   }
 }
 
+const mapStateToProps = (state, props) => ({
+  list: state.list
+});
 
-export default connect()(UserMovie);
+export default connect(mapStateToProps)(UserMovie);

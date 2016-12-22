@@ -107,18 +107,17 @@ app.post('/lists/:name', function({ params: { name } }, res) {
 
 // ---- DELETE ----
 
-app.delete('/shows/:movieId', function({ params }, res) {
+app.delete('/lists/:listId/shows/:movieId', function({ params }, res) {
 
-  knex('shows').where('id', params.movieId).del()
-  .then(() => knex('shows').where('parent_show', params.movieId).del())
-  .then(() => knex('shows').where('parent_season', params.movieId).del())
-  .then(() => knex('shows').select('*'))
-
+  knex('public.list_items').where({'show_id': params.movieId, 'list_id': params.listId}).del()
+  .then(() => knex('shows').where({'parent_show': params.movieId}).select('id'))
+  .then((ids) => knex('public.list_items').where({'list_id': params.listId}).whereIn('show_id', ids).del())
+  .then(() => knex('shows').where({'parent_season': params.movieId}).select('id'))
+  .then((ids) => knex('public.list_items').where({'list_id': params.listId}).whereIn('show_id', ids).del())
+  .then(() => knex('shows').select('*').join('list_items', 'shows.id', '=', 'list_items.show_id').where('list_items.list_id', params.listId))
   .then(shows => {
-    console.log('deleted id', params.movieId);
-    res.status(202).json(shows);
+    res.status(200).json(shows);
   })
-
   .catch(error => {
     console.error(error);
     res.status(404).json({error: error.detail});
@@ -163,8 +162,8 @@ app.post('/seasons/:listid/:show_id', function({ params }, res) {
   })
   .then(res => res.json())
   .then(data => {
-    const seasons = data.seasons.map(season => {
-      return {
+    let seasons = data.seasons.map(season => {
+      const seasonObject = {
         title: data.name,
         id: season.id,
         release_date: season.air_date,
@@ -173,12 +172,17 @@ app.post('/seasons/:listid/:show_id', function({ params }, res) {
         parent_show: data.id,
         number: season.season_number
       }
-    })
-    return knex('shows').insert(seasons);
+      return knex('shows').insert(seasons).whereNotExists(knex('shows').where('id', season.id));
+    });
+    const list = data.seasons.map(season => {
+      return knex('shows').insert({show_id: season.id, list_id: params.listid}).whereNotExists(knex('shows').where({show_id: season.id, list_id: params.listid}))
+    });
+    let seasons_list = seasons.push(...list);
+    return Promise.all(seasons_list)
   })
-  .then(() => knex('shows').select('*'))
+  .then(() => knex('shows').select('*').join('list_items', 'shows.id', '=', 'list_items.show_id').where('list_items.list_id', params.listid))
   .then(shows => {
-    res.status(202).json(shows);
+    res.status(200).json(shows);
   })
   .catch(err => {
     console.error('searchSeasonsError', err);
