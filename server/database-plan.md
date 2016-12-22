@@ -1,36 +1,41 @@
-# Multi-List Structure
+# Database Structure
 
 ## Tables
-### `shows` (was `movies`)
-movieId | Title | url
----|---|---
-123 | Star Wars | http://images.com/123456.jpg
-124 | Empire Strikes Back | http://images.com/123457.jpg
+#### `shows`
+ id  | title | path, etc.
+:---:|:------|:----------:
+123 | _Star Wars_ | `/123456.jpg`
+124 | _Empire Strikes Back_ | `/123457.jpg`
 
-### `list_items` (join table)
-listID | movieId
--------| ------
-List1  | 12356
-List1  | 123465
-List2  | 14563465
+#### `list_items`
+listID | movieId | watched (TODO)
+:-----:| :-----: | :---:
+1  | 123 | true
+1  | 124 | true
+2  | 123 | false
 
-### `lists`
+#### `lists`
 ListID | ListName
 -----|:-----:
-0001 | Cartoons
-0002 | Sci-Fi
+1 | Cartoons
+2 | Sci-Fi
 
-### `users` (much later...)
+## TODO
+
+#### `users`
 UserID | ListID
 -----| ------
 User1 | List1
 User2 | List1
 User1 | List2
 
+- based on shared list functionality
+- would also need concept of list ownership
+  - add column in `lists` table with user owner ID
+
 ---
 
 ## Endpoints:
-
 
 - [x] app.get('/lists')
   - returns a list of names and their ids
@@ -42,29 +47,37 @@ User1 | List2
   - creates a new list
   - response: `{ listId: 12345, name: "Star Wars Collection" }`
 
-- [ ] app.post('lists/:listId/show')
+- [x] app.post('lists/:listId/show')
   - body: movie / season / episode
   - add to movies table only if not already in it
   - in all cases, add movie.id / listId to ListContent table
 
-- [ ] app.post('lists/:listname')
-  - create new list return new id
+- [x] app.post('lists/:listname')
+  - create new list
+  - res: {id, name}
 
-- [ ] app.post('episodes/:listId/:showId/:seasonId')
+- [x] app.post('episodes/:listId/:showId/:seasonId')
 
-- [ ] app.delete('/lists/:listId')
+- [x] app.delete('/lists/:listId')
   - deletes the whole list
+  - first delete matching `list_content` rows
+  - then delete list from `lists`
 
-- [ ] app.delete('lists/:listId/:id')
+- [x] app.delete('lists/:listId/:id')
   - deletes item off of list and its children off the list
   - (get the ids of all items that need to be deleted,
   - THEN delete from listTable)
 
-- [ ] app.put('/lists/:listId') //, body: {name: listname}
+- [x] app.put('/lists/:listId')
+  - res: {name: listname}
   - change list name, return {listid: id, name: listname}
 
-- [ ] app.put('/lists/:listId') //, body: {watched: true/false}
+## Future Endpoints
+- [ ] app.put('/lists/:listId')
+  - body: {watched: true/false}
   - change whether show is marked as watched
+- [ ] cleanup table column names for consistency
+  - [ ] `list_id` instead of `id` in `lists` table
 
 ![binge-watcher]
 (http://3i2lq13pvwgh2ffbbxk9da411le.wpengine.netdna-cdn.com/wp-content/uploads/2015/11/tv.jpg)

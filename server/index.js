@@ -130,26 +130,55 @@ app.put('/lists/:id', ({ body: { name }, params: { id } }, res) => {
   .then(listInfo =>
     res.status(200).json(listInfo)
   )
-  .catch(console.error);
+  .catch(err => {
+    console.error(err);
+    res.status(404).json(err);
+  });
+});
+
+// TODO: update Watched status on list item
+app.put('/lists/:id/:watched', ({ params: { id, watched }}, req) => {
+
+
+  res.status(400).json({ message: "TODO", id, watched });
 });
 
 
 // ---- DELETE ----
 
+// Deleting a show / season / episodes off of a list
 app.delete('/lists/:listId/shows/:movieId', function({ params }, res) {
 
-  knex('public.list_items').where({'show_id': params.movieId, 'list_id': params.listId}).del()
-  .then(() => knex('shows').where({'parent_show': params.movieId}).select('id'))
+  knex('public.list_items')
+  .where({'show_id': params.movieId, 'list_id': params.listId})
+  .del()
+  .then(() =>
+    knex('shows')
+    .where({'parent_show': params.movieId})
+    .select('id'))
   .then((ids) => {
     return ids.map(id => id.id);
   })
-  .then((ids) => knex('public.list_items').where({'list_id': params.listId}).whereIn('show_id', ids).del())
-  .then(() => knex('shows').where({'parent_season': params.movieId}).select('id'))
+  .then((ids) =>
+    knex('public.list_items')
+    .where({'list_id': params.listId})
+    .whereIn('show_id', ids).del())
+  .then(() =>
+    knex('shows')
+    .where({'parent_season': params.movieId})
+    .select('id'))
   .then((ids) => {
     return ids.map(id => id.id);
   })
-  .then((ids) => knex('public.list_items').where({'list_id': params.listId}).whereIn('show_id', ids).del())
-  .then(() => knex('shows').select('*').join('list_items', 'shows.id', '=', 'list_items.show_id').where('list_items.list_id', params.listId))
+  .then((ids) =>
+    knex('public.list_items')
+    .where({'list_id': params.listId})
+    .whereIn('show_id', ids).del())
+  .then(() =>
+    knex('shows')
+    .select('*')
+    .join('list_items', 'shows.id', '=', 'list_items.show_id')
+    .where('list_items.list_id', params.listId))
   .then(shows => {
     res.status(200).json(shows);
   })
@@ -157,9 +186,26 @@ app.delete('/lists/:listId/shows/:movieId', function({ params }, res) {
     console.error(error);
     res.status(404).json({error: error.detail});
   });
-
 });
 
+// Delete entire list
+app.delete('/lists/:list_id', ({ params: { list_id }}, res) => {
+  knex('list_items')
+  .where({ list_id })
+  .del()
+  .then(() =>
+    knex('lists')
+    .where({ id: list_id })
+    .del()
+  )
+  .then((count) =>
+    res.status(205).json({ count })
+  )
+  .catch(error => {
+    console.error(error);
+    res.status(404).json({ error });
+  });
+});
 
 // ---- SEARCH API MEDIA----
 app.get('/search/:query', function({ params }, res) {
