@@ -37,7 +37,7 @@ export class UserMovie extends React.Component {
 
     } 
     if (this.props.media_type === 'season') {
-      // add = (<button onClick={this.addEpisodes}>Episodes</button>);
+      add = (<button onClick={this.addEpisodes}>Episodes</button>);
       title = `${this.props.title}: Season ${this.props.number}`;
     } 
     
