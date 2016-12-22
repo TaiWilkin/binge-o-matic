@@ -11,7 +11,7 @@ var knex = require('knex')({
     password: 'hcI5frNj5V4-HbZui9QHgFEyzaq30FDC',
     database: 'gphrldmg'
   },
-  debug: true,
+  // debug: true,
   pool: { min: 0, max: 3 }
 });
 
@@ -29,13 +29,13 @@ app.use(bodyParser.json());
 
 // ---- GET FUNCTION ----
 
-const postShow = (id, list_id) =>
-  knex('shows').count('id').where({ id })
+const postShow = (body, list_id) => {
+  return knex('shows').count('id').where({ id: body.id })
   .then(([{count}]) => {
     if (count > 0) {
       return true;
     }
-    console.log('inserting show id', id);
+    console.log('inserting show id', body.id);
     return knex('shows').insert(body);
   })
   .then(() =>
@@ -44,9 +44,10 @@ const postShow = (id, list_id) =>
       '(list_id, show_id) ' +
       'values (?, ?) ' +
       'ON CONFLICT DO NOTHING',
-      [list_id, id]
+      [list_id, body.id]
     )
   );
+}
   // .catch(({ details }) => {
   //   return new Error(details);
   // });
@@ -193,13 +194,12 @@ app.post('/seasons/:listid/:show_id', function({ params: { listid, show_id } }, 
         parent_show: data.id,
         number: season.season_number
       }
-      return postShow(seasonObject.id, listid);
+      return postShow(seasonObject, listid);
     });
-    console.log("SEASONS:", seasons);
     return Promise.all(seasons)
   })
   .then(() => knex('shows').select('*').join('list_items', 'shows.id', '=', 'list_items.show_id')
-              .where('list_items.list_id', 1))
+              .where('list_items.list_id', listid))
   .then(shows => {
     res.status(200).json(shows);
   })
@@ -211,44 +211,45 @@ app.post('/seasons/:listid/:show_id', function({ params: { listid, show_id } }, 
 
 // // ---- SEARCH API EPISODES ----
 
-// app.post('/episodes/:listid/:show_id/:show_season', function(req, res) {
-//   let searchUrl = `https://api.themoviedb.org/3/tv/${req.params.show_id}/season/${req.params.show_season}?api_key=0469b2e223fa411387635db85c0f4be7&language=en-US`;
-//   fetch(searchUrl)
-//   .then(res => {
-//     if (!res.ok) {
-//       const error = new Error(res.statusText);
-//       error.response = res;
-//       throw error;
-//     }
-//     return res;
-//   })
-//   .then(res => res.json())
-//   .then(data => {
-//     const episodes = data.episodes.map(episode => {
-//       return {
-//         id: episode.id,
-//         title: req.body.title,
-//         episode: episode.name,
-//         release_date: episode.air_date,
-//         poster_path: episode.still_path,
-//         media_type: 'episode',
-//         parent_season: req.body.id,
-//         parent_show: req.body.parent_show,
-//         number: episode.episode_number
-//       }
-//     })
-//     return knex('shows').insert(episodes);
-//   })
-//   .then(() => knex('shows').select('*'))
-//   .then(shows => {
-//     res.status(202).json(shows);
-//   })
-//   .catch(err => {
-//     console.error('searchSeasonsError', err);
-//     res.status(500).json(err);
-//   });
-// });
-
+app.post('/episodes/:listid/:show_id/:show_season', function({ body, params: { listid, show_id, show_season } }, res) {
+  let searchUrl = `https://api.themoviedb.org/3/tv/${show_id}/season/${show_season}?api_key=0469b2e223fa411387635db85c0f4be7&language=en-US`;
+  fetch(searchUrl)
+  .then(response => {
+    if (!response.ok) {
+      const error = new Error(response.statusText);
+      error.response = res;
+      throw error;
+    }
+    return response;
+  })
+  .then(response => response.json())
+  .then(data => {
+    let episodes = data.episodes.map(episode => {
+      const episodeObject = {
+        id: episode.id,
+        title: body.title,
+        episode: episode.name,
+        release_date: episode.air_date,
+        poster_path: episode.still_path,
+        media_type: 'episode',
+        parent_season: body.id,
+        parent_show: body.parent_show,
+        number: episode.episode_number
+      }
+      return postShow(episodeObject, listid);
+    });
+    return Promise.all(episodes)
+  })
+  .then(() => knex('shows').select('*').join('list_items', 'shows.id', '=', 'list_items.show_id')
+              .where('list_items.list_id', listid))
+  .then(shows => {
+    res.status(200).json(shows);
+  })
+  .catch(err => {
+    console.error('searchEpisodesError', err);
+    res.status(500).json(err);
+  });
+});
 
 function runServer() {
   return new Promise((resolve, reject) => {
