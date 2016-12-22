@@ -5,7 +5,8 @@ const initialState = {
   searchMovies: [],
   loading: false,
   error: null,
-  lists: []
+  lists: [],
+  list: 1     // may not always be a valid listId... but need something for now
 };
 
 const sortMovies = (movies) => {
@@ -55,7 +56,7 @@ const moviesReducer = (state=initialState, action) => {
         error: action.error
       }
       );
-  } 
+  }
   else if (action.type === actions.SEARCH_MOVIES_REQUEST) {
     return Object.assign({}, state, {loading: true});
   }
@@ -89,7 +90,7 @@ const moviesReducer = (state=initialState, action) => {
         error: action.error
       }
       );
-  } 
+  }
   else if (action.type === actions.DELETE_MOVIE_REQUEST) {
     return Object.assign({}, state, {loading: true});
   }
@@ -114,7 +115,7 @@ const moviesReducer = (state=initialState, action) => {
         error: action.error
       }
       );
-  } 
+  }
   else if (action.type === actions.ADD_MOVIE_REQUEST) {
     return Object.assign({}, state, {loading: true});
   }
@@ -139,7 +140,7 @@ const moviesReducer = (state=initialState, action) => {
         error: action.error
       }
       );
-  } 
+  }
   else if (action.type === actions.GET_SEASONS_REQUEST) {
     return Object.assign({}, state, {loading: true});
   }
@@ -154,7 +155,7 @@ const moviesReducer = (state=initialState, action) => {
         userMovies: movies,
       }
       );
-  } 
+  }
   else if (action.type === actions.GET_SEASONS_ERROR) {
     return Object.assign(
       {},
@@ -242,7 +243,7 @@ const moviesReducer = (state=initialState, action) => {
         error: action.error
       }
       );
-  } 
+  }
   return state;
 }
 

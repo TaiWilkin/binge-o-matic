@@ -35,17 +35,17 @@ User1 | List2
 - [x] app.get('/lists')
   - returns a list of names and their ids
 
-- [ ] app.get('/lists/:listId')
-  - returns a list of movies (our regular get)
+- [x] app.get('/lists/:listId')
+  - returns a list of movies on specified list
 
-- [ ] app.post('/lists' // body: {name: listname}    TODO
+- [x] app.post('/lists/:name')
   - creates a new list
-  - returns body: `{ listId: 12345, name: "Star Wars Collection" }`
+  - response: `{ listId: 12345, name: "Star Wars Collection" }`
 
-- [ ] app.post('lists/:listId/movie') //, body: movie object  TODO
-  - our regular posts (edit all post commands to this)
+- [ ] app.post('lists/:listId/show')
+  - body: movie / season / episode 
   - add to movies table only if not already in it
-  - regardless of prior step, add movie.id to ListContent table
+  - in all cases, add movie.id / listId to ListContent table
 
 - [ ] app.post('lists/:listname')
   - create new list return new id
@@ -66,4 +66,5 @@ User1 | List2
 - [ ] app.put('/lists/:listId') //, body: {watched: true/false}
   - change whether show is marked as watched
 
+![binge-watcher]
 (http://3i2lq13pvwgh2ffbbxk9da411le.wpengine.netdna-cdn.com/wp-content/uploads/2015/11/tv.jpg)

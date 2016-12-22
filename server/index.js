@@ -28,15 +28,6 @@ app.use(bodyParser.json());
 
 // ---- GET ----
 
-// DEPRECATED
-// app.get('/movies', function(req, res) {
-//   knex('movies').select('*')
-//   .then(movies => {
-//     res.status(200).json(movies);
-//   })
-//   .catch(error=> res.sendStatus(422));
-// });
-
 // List of lists
 app.get('/lists', function(req, res) {
   knex('lists').select('*')
@@ -48,9 +39,9 @@ app.get('/lists', function(req, res) {
 
 // Movies on a list
 app.get('/lists/:listId', function({ params: { listId } }, res) {
-  knex('movies')
+  knex('shows')
     .select('*')
-    .join('list_items', 'movies.id', '=', 'list_items.show_id')
+    .join('list_items', 'shows.id', '=', 'list_items.show_id')
     .where('list_items.list_id', listId)
   .then(shows => {
     res.status(200).json(shows);
@@ -60,34 +51,46 @@ app.get('/lists/:listId', function({ params: { listId } }, res) {
 
 // ---- POST ----
 
-// DEPRECATED
-// app.post('/movies', function({ body }, res) {
-//   knex('movies').insert(body)
-//   .then(() => knex('movies').select('*'))
-//   .then(movies => {
-//     res.status(202).json(movies);
-//   })
-//   .catch(error => {
-//     console.error(error);
-//     res.status(409).json({error: error.detail});
-//   });
-// });
+app.post('/lists/:list_id/show', function({ body, params: { list_id } }, res) {
 
-app.post('/lists/:listId/show', function({ body, params: { listId } }, res) {
-  console.log(body.id);
-  console.log(listId);
+  // knex.raw(
+  //   'INSERT INTO shows ' +
+  //   '(list_id, show_id) ' +
+  //   'values (?, ?) ' +
+  //   'ON CONFLICT DO NOTHING',
+  //   [parseInt(list_id), parseInt(body.id)]
+  // )
 
-  knex('movies').select('*').where({id: body.id})
-  .then(console.log())
-  // knex('movies').insert(body)
-  // .then(() => knex('movies').select('*'))
-  // .then(movies => {
-  .then(() =>  res.status(202).json(movies) );
-  // })
-  // .catch(error => {
-  //   console.error(error);
-  //   res.status(409).json({error: error.detail});
-  // });
+  knex('shows').count('id').where({id: body.id})
+  .then(([{count}]) => {
+    if (count > 0) {
+      return true;
+    }
+    console.log('inserting show id', body.id);
+    return knex('shows').insert(body);
+  })
+  .then(() =>
+    // http://stackoverflow.com/questions/4069718/postgres-insert-if-does-not-exist-already
+    knex.raw(
+      'INSERT INTO list_items ' +
+      '(list_id, show_id) ' +
+      'values (?, ?) ' +
+      'ON CONFLICT DO NOTHING',
+      [list_id, body.id]
+    )
+  )
+  .then(() =>
+    knex('shows')
+    .select('*')
+    .join('list_items', 'shows.id', '=', 'list_items.show_id')
+    .where('list_items.list_id', list_id)
+  )
+  .then(shows => {
+    res.status(200).json(shows)
+  })
+  .catch(({ details }) => {
+    res.status(422).json({ details })
+  });
 });
 
 // https://ponyfoo.com/articles/es6-destructuring-in-depth
@@ -104,16 +107,16 @@ app.post('/lists/:name', function({ params: { name } }, res) {
 
 // ---- DELETE ----
 
-app.delete('/movies/:movieId', function({ params }, res) {
+app.delete('/shows/:movieId', function({ params }, res) {
 
-  knex('movies').where('id', params.movieId).del()
-  .then(() => knex('movies').where('parent_show', params.movieId).del())
-  .then(() => knex('movies').where('parent_season', params.movieId).del())
-  .then(() => knex('movies').select('*'))
+  knex('shows').where('id', params.movieId).del()
+  .then(() => knex('shows').where('parent_show', params.movieId).del())
+  .then(() => knex('shows').where('parent_season', params.movieId).del())
+  .then(() => knex('shows').select('*'))
 
-  .then(movies => {
+  .then(shows => {
     console.log('deleted id', params.movieId);
-    res.status(202).json(movies);
+    res.status(202).json(shows);
   })
 
   .catch(error => {
@@ -171,11 +174,11 @@ app.post('/seasons/:listid/:show_id', function({ params }, res) {
         number: season.season_number
       }
     })
-    return knex('movies').insert(seasons);
+    return knex('shows').insert(seasons);
   })
-  .then(() => knex('movies').select('*'))
-  .then(movies => {
-    res.status(202).json(movies);
+  .then(() => knex('shows').select('*'))
+  .then(shows => {
+    res.status(202).json(shows);
   })
   .catch(err => {
     console.error('searchSeasonsError', err);
@@ -211,11 +214,11 @@ app.post('/episodes/:listid/:show_id/:show_season', function(req, res) {
         number: episode.episode_number
       }
     })
-    return knex('movies').insert(episodes);
+    return knex('shows').insert(episodes);
   })
-  .then(() => knex('movies').select('*'))
-  .then(movies => {
-    res.status(202).json(movies);
+  .then(() => knex('shows').select('*'))
+  .then(shows => {
+    res.status(202).json(shows);
   })
   .catch(err => {
     console.error('searchSeasonsError', err);
