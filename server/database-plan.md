@@ -43,7 +43,7 @@ User1 | List2
   - response: `{ listId: 12345, name: "Star Wars Collection" }`
 
 - [ ] app.post('lists/:listId/show')
-  - body: movie / season / episode 
+  - body: movie / season / episode
   - add to movies table only if not already in it
   - in all cases, add movie.id / listId to ListContent table
 
@@ -61,7 +61,7 @@ User1 | List2
   - THEN delete from listTable)
 
 - [ ] app.put('/lists/:listId') //, body: {name: listname}
-  - change list name, return list of Lists?
+  - change list name, return {listid: id, name: listname}
 
 - [ ] app.put('/lists/:listId') //, body: {watched: true/false}
   - change whether show is marked as watched
