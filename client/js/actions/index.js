@@ -330,3 +330,47 @@ export const addList = (list) => (dispatch) => {
     addListError(err);
   })
 }
+
+export const EDIT_LIST_REQUEST = 'EDIT_LIST_REQUEST';
+export const editListRequest = () => ({
+  type: EDIT_LIST_REQUEST
+});
+
+export const EDIT_LIST_SUCCESS = 'EDIT_LIST_SUCCESS';
+export const editListSuccess = (list) => ({
+  type: EDIT_LIST_SUCCESS,
+  list
+});
+
+export const EDIT_LIST_ERROR = 'EDIT_LIST_ERROR';
+export const editListError = (error) => ({
+  type: EDIT_LIST_ERROR,
+  error
+});
+
+export const editList = (path, name) => (dispatch) => {
+  dispatch(editListRequest())
+  let body = {"name": name}
+  fetch(listsUrl + path, 
+              {method: 'put',           
+          headers: {  
+            "Content-type": "application/json; charset=utf-8"  
+          },  
+          body: JSON.stringify(body)
+        })
+  .then(res => {
+    console.log('editListRequest');
+    if (!res.ok) {
+      const error = new Error(res.statusText);
+      error.response = res;
+      throw error;
+    }
+    return res;
+  })
+  .then(res => res.json())
+  .then(list => dispatch(editListSuccess(list)))
+  .catch(err => {
+    console.error('editListError', err);
+    editListError(err);
+  })
+}
