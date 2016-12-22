@@ -1,3 +1,5 @@
+-- TODO: update to current table structure
+
 CREATE TABLE IF NOT EXISTS "public"."movies" (
     "id" serial NOT NULL,
     "title" text,
