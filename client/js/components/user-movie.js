@@ -28,16 +28,21 @@ export class UserMovie extends React.Component {
 
   onCheck() {
     let path = `/${this.props.list}/${this.props.id}`;
-    let watched = !this.props.watched.toString();
-    this.props.dispatch(actions.markWatched(path, {"watched": watched}))
+    let watched;
+    if (this.props.watched == true) {
+      watched = false;
+    } else {
+      watched = true;
+    }
+    console.log(watched);
+    this.props.dispatch(actions.markWatched(path, {watched: watched}))
   }
 
   render() {
-    let check = "";
-    if (this.props.watched) {
-      check = (<input type="checkbox" onChange={this.onCheck} checked/>)
-    } else {
-      check = (<input type="checkbox" onChange={this.onCheck}/>)
+    let check = (<p className="check">&#x2610;</p>)
+    console.log(typeof this.props.watched)
+    if (this.props.watched == true) {
+      check = (<p className="check">&#x2611;</p>)
     }
     let add = "";
     let title = this.props.title;
@@ -56,7 +61,7 @@ export class UserMovie extends React.Component {
     
     return (
     <li className={this.props.media_type} id={this.props.id}>
-      <h4>{check}{title}</h4>
+      <h4 onClick={this.onCheck}>{check}{title}</h4>
 
       {img}
       <p>{this.props.release_date}</p>

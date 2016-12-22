@@ -322,14 +322,16 @@ const moviesReducer = (state=initialState, action) => {
     return Object.assign({}, state, {loading: true});
   }
   else if (action.type === actions.MARK_WATCHED_SUCCESS) {
+    console.log(action)
     let index = -1
     let editShow = {};
     state.userMovies.forEach((show, i) => {
-      if (action.id === show.id) {
+      if (action.item.id === show.id) {
         index = i;
         editShow = show;
       }
     });
+    editShow.watched = action.item.watched;
     let before = state.userMovies.slice(0, index);
     let after = state.userMovies.slice(index + 1);
     let updateMovies = [...before, editShow, ...after]
