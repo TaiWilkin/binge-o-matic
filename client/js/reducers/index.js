@@ -318,6 +318,41 @@ const moviesReducer = (state=initialState, action) => {
     }
     );
   }
+  else if (action.type === actions.MARK_WATCHED_REQUEST) {
+    return Object.assign({}, state, {loading: true});
+  }
+  else if (action.type === actions.MARK_WATCHED_SUCCESS) {
+    let index = -1
+    let editShow = {};
+    state.userMovies.forEach((show, i) => {
+      if (action.id === show.id) {
+        index = i;
+        editShow = show;
+      }
+    });
+    let before = state.userMovies.slice(0, index);
+    let after = state.userMovies.slice(index + 1);
+    let updateMovies = [...before, editShow, ...after]
+    return Object.assign(
+      {},
+      state,
+      {
+        loading: false,
+        error: null,
+        userMovies: updateMovies
+      }
+      );
+  }
+  else if (action.type === actions.MARK_WATCHED_ERROR) {
+    return Object.assign(
+      {},
+      state,
+      {
+        loading: false,
+        error: action.error
+      }
+      );
+  }
   return state;
 }
 
