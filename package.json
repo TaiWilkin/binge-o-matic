@@ -1,7 +1,7 @@
 {
   "name": "Binge-o-Matic",
   "version": "0.9.0",
-  "description": "A watchlist management app for the binge-watcher: watch every episode in the right order.",
+  "description": "A watchlist management app for the binge-watcher: manage spin-offs and series and watch them in chronological release order.",
   "main": "index.js",
   "main:server": "server/index.js",
   "main:client": "client/js/index.js",

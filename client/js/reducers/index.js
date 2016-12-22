@@ -6,7 +6,8 @@ const initialState = {
   loading: false,
   error: null,
   lists: [],
-  list: 1     // may not always be a valid listId... but need something for now
+  list: 1,
+  listName: "Your List"
 };
 
 const sortMovies = (movies) => {
@@ -191,7 +192,17 @@ const moviesReducer = (state=initialState, action) => {
     );
   }
   else if (action.type === actions.SET_LIST) {
-    return Object.assign({}, state, {list: action.id});
+    let listIndex = -1;
+    state.lists.forEach((list, i) => {
+      if (parseInt(list.id) === parseInt(action.id)) {
+        listIndex = i;
+      }
+    });
+    let newList = {
+      list: action.id,
+      listName: state.lists[listIndex].name
+    }
+    return Object.assign({}, state, newList);
   }
   else if (action.type === actions.GET_LISTS_REQUEST) {
     return Object.assign({}, state, {loading: true});

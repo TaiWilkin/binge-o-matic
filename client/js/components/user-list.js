@@ -26,7 +26,7 @@ class UserList extends Component {
 
       return (
         <div className="userList">
-          <h2>Your List</h2>
+          <h2>{this.props.listName}</h2>
           <ul>
             {movies}
           </ul>
@@ -36,7 +36,8 @@ class UserList extends Component {
   }
 
   const mapStateToProps = (state, props) => ({
-    userMovies: state.userMovies
+    userMovies: state.userMovies,
+    listName: state.listName
   });
 
   export default connect(mapStateToProps)(UserList);
