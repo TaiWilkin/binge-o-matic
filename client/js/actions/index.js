@@ -374,3 +374,42 @@ export const editList = (path, name) => (dispatch) => {
     editListError(err);
   })
 }
+
+export const DELETE_LIST_REQUEST = 'DELETE_LIST_REQUEST';
+export const deleteListRequest = () => ({
+  type: DELETE_LIST_REQUEST
+});
+
+export const DELETE_LIST_SUCCESS = 'DELETE_LIST_SUCCESS';
+export const deleteListSuccess = (lists) => ({
+  type: DELETE_LIST_SUCCESS,
+  lists
+});
+
+export const DELETE_LIST_ERROR = 'DELETE_LIST_ERROR';
+export const deleteListError = (error) => ({
+  type: DELETE_LIST_ERROR,
+  error
+});
+
+export const deleteList = (path) => (dispatch) => {
+  dispatch(deleteListRequest())
+  let body = {"name": name}
+  fetch(listsUrl + path, 
+              {method: 'delete'})
+  .then(res => {
+    console.log('deleteListRequest');
+    if (!res.ok) {
+      const error = new Error(res.statusText);
+      error.response = res;
+      throw error;
+    }
+    return res;
+  })
+  .then(res => res.json())
+  .then(list => dispatch(deleteListSuccess(list)))
+  .catch(err => {
+    console.error('deleteListError', err);
+    deleteListError(err);
+  })
+}
