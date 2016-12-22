@@ -14,6 +14,7 @@ class UserList extends Component {
     this.onSubmit = this.onSubmit.bind(this);
     this.onClick = this.onClick.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.onDelete = this.onDelete.bind(this);
   }
 
   onClick() {
@@ -30,6 +31,11 @@ class UserList extends Component {
     let path = `/${this.props.list}`
     this.props.dispatch(actions.editList(path, this.state.text));
     this.setState({edit: false})
+  }
+
+  onDelete() {
+    let path = `/${this.props.list}`
+    this.props.dispatch(actions.deleteList(path))
   }
 
   render() {
@@ -55,7 +61,11 @@ class UserList extends Component {
 
     return (
       <div className="userList">
-        <div><h2>{this.props.listName}</h2><button onClick={this.onClick}>Edit List Name</button></div>
+        <div>
+          <h2>{this.props.listName}</h2>
+          <button onClick={this.onClick}>Edit List Name</button>
+          <button onClick={this.onDelete}>Delete List</button>
+        </div>
         {editor}
         <ul>
           {movies}

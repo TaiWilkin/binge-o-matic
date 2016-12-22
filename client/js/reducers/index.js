@@ -7,7 +7,7 @@ const initialState = {
   error: null,
   lists: [],
   list: 1,
-  listName: "Your List"
+  listName: "Select or Create a List"
 };
 
 const sortMovies = (movies) => {
@@ -291,6 +291,32 @@ const moviesReducer = (state=initialState, action) => {
         error: action.error
       }
       );
+  }
+   else if (action.type === actions.DELETE_LIST_REQUEST) {
+    return Object.assign({}, state, {loading: true});
+  }
+  else if (action.type === actions.DELETE_LIST_SUCCESS) {
+   return Object.assign(
+    {},
+    state,
+    {
+      loading: false,
+      error: null,
+      lists: action.lists,
+      listName: "Select or Create a List",
+      list: 0
+    }
+    );
+ }
+ else if (action.type === actions.DELETE_LIST_ERROR) {
+  return Object.assign(
+    {},
+    state,
+    {
+      loading: false,
+      error: action.error
+    }
+    );
   }
   return state;
 }
