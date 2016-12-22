@@ -29,30 +29,27 @@ app.use(bodyParser.json());
 
 // ---- GET FUNCTION ----
 
-const postShow = (body, list_id) => {
-    knex('shows').count('id').where({id: body.id})
+const postShow = (id, list_id) =>
+  knex('shows').count('id').where({ id })
   .then(([{count}]) => {
     if (count > 0) {
       return true;
     }
-    console.log('inserting show id', body.id);
+    console.log('inserting show id', id);
     return knex('shows').insert(body);
   })
   .then(() =>
-    // http://stackoverflow.com/questions/4069718/postgres-insert-if-does-not-exist-already
     knex.raw(
       'INSERT INTO list_items ' +
       '(list_id, show_id) ' +
       'values (?, ?) ' +
       'ON CONFLICT DO NOTHING',
-      [list_id, body.id]
+      [list_id, id]
     )
-  )
-  .catch(({ details }) => {
-    return new Error(details);
-  });
-}
-
+  );
+  // .catch(({ details }) => {
+  //   return new Error(details);
+  // });
 
 
 // ---- GET ----
@@ -82,14 +79,6 @@ app.get('/lists/:listId', function({ params: { listId } }, res) {
 
 app.post('/lists/:list_id/show', function({ body, params: { list_id } }, res) {
 
-  // knex.raw(
-  //   'INSERT INTO shows ' +
-  //   '(list_id, show_id) ' +
-  //   'values (?, ?) ' +
-  //   'ON CONFLICT DO NOTHING',
-  //   [parseInt(list_id), parseInt(body.id)]
-  // )
-
   knex('shows').count('id').where({id: body.id})
   .then(([{count}]) => {
     if (count > 0) {
@@ -99,7 +88,6 @@ app.post('/lists/:list_id/show', function({ body, params: { list_id } }, res) {
     return knex('shows').insert(body);
   })
   .then(() =>
-    // http://stackoverflow.com/questions/4069718/postgres-insert-if-does-not-exist-already
     knex.raw(
       'INSERT INTO list_items ' +
       '(list_id, show_id) ' +
@@ -122,7 +110,6 @@ app.post('/lists/:list_id/show', function({ body, params: { list_id } }, res) {
   });
 });
 
-// https://ponyfoo.com/articles/es6-destructuring-in-depth
 app.post('/lists/:name', function({ params: { name } }, res) {
   knex('lists').insert({ name }).returning('id')
   .then(([id]) => {
@@ -177,18 +164,18 @@ app.get('/search/:query', function({ params }, res) {
 
 
 // // ---- SEARCH API SEASONS ----
-app.post('/seasons/:listid/:show_id', function({ params }, res) {
-  let searchUrl = `https://api.themoviedb.org/3/tv/${params.show_id}?api_key=0469b2e223fa411387635db85c0f4be7&language=en-US`;
+app.post('/seasons/:listid/:show_id', function({ params: { listid, show_id } }, res) {
+  let searchUrl = `https://api.themoviedb.org/3/tv/${show_id}?api_key=0469b2e223fa411387635db85c0f4be7&language=en-US`;
   fetch(searchUrl)
-  .then(res => {
-    if (!res.ok) {
-      const error = new Error(res.statusText);
+  .then(response => {
+    if (!response.ok) {
+      const error = new Error(response.statusText);
       error.response = res;
       throw error;
     }
-    return res;
+    return response;
   })
-  .then(res => res.json())
+  .then(response => response.json())
   .then(data => {
     let seasons = data.seasons.map(season => {
       const seasonObject = {
@@ -200,7 +187,7 @@ app.post('/seasons/:listid/:show_id', function({ params }, res) {
         parent_show: data.id,
         number: season.season_number
       }
-      return postShow(seasonObject, params.listid);
+      return postShow(seasonObject.id, listid);
     });
     console.log("SEASONS:", seasons);
     return Promise.all(seasons)
