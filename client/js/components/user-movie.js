@@ -33,11 +33,11 @@ export class UserMovie extends React.Component {
       img = "";
     }
     if (this.props.media_type === 'tv') {
-      add = (<button onClick={this.addSeasons}>Seasons</button>);
+      // add = (<button onClick={this.addSeasons}>Seasons</button>);
 
     } 
     if (this.props.media_type === 'season') {
-      add = (<button onClick={this.addEpisodes}>Episodes</button>);
+      // add = (<button onClick={this.addEpisodes}>Episodes</button>);
       title = `${this.props.title}: Season ${this.props.number}`;
     } 
     
