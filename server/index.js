@@ -48,9 +48,6 @@ const postShow = (body, list_id) => {
     )
   );
 }
-  // .catch(({ details }) => {
-  //   return new Error(details);
-  // });
 
 
 // ---- GET ----
@@ -121,6 +118,21 @@ app.post('/lists/:name', function({ params: { name } }, res) {
     res.status(409).json({error: error.detail});
   });
 });
+
+// ---- PUT ----
+
+// Rename List
+app.put('/lists/:id', ({ body: { name }, params: { id } }, res) => {
+  knex('lists')
+  .where({ id })
+  .update({ name })
+  .returning(['id', 'name'])
+  .then(listInfo =>
+    res.status(200).json(listInfo)
+  )
+  .catch(console.error);
+});
+
 
 // ---- DELETE ----
 
