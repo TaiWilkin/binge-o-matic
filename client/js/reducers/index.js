@@ -255,6 +255,43 @@ const moviesReducer = (state=initialState, action) => {
       }
       );
   }
+    else if (action.type === actions.EDIT_LIST_REQUEST) {
+    return Object.assign({}, state, {loading: true});
+  }
+  else if (action.type === actions.EDIT_LIST_SUCCESS) {
+    let newList = action.list[0];
+    let index = -1
+    state.lists.forEach((list, i) => {
+      if (newList.id === list.id) {
+        index = i;
+      }
+    })
+    let before = state.lists.slice(0, index);
+    let after = state.lists.slice(index + 1);
+    let updateLists = [...before, newList, ...after]
+    console.log(updateLists);
+    return Object.assign(
+      {},
+      state,
+      {
+        loading: false,
+        error: null,
+        list: newList.id,
+        listName: newList.name,
+        lists: updateLists
+      }
+      );
+  }
+  else if (action.type === actions.EDIT_LIST_ERROR) {
+    return Object.assign(
+      {},
+      state,
+      {
+        loading: false,
+        error: action.error
+      }
+      );
+  }
   return state;
 }
 
