@@ -12,7 +12,7 @@ var knex = require('knex')({
     database: 'gphrldmg'
   },
   debug: true,
-  pool: { min: 0, max: 4 }
+  pool: { min: 0, max: 3 }
 });
 
 const HOST = process.env.HOST;
@@ -25,6 +25,35 @@ const app = express();
 app.use(express.static(process.env.CLIENT_PATH));
 
 app.use(bodyParser.json());
+
+
+// ---- GET FUNCTION ----
+
+const postShow = (body, list_id) => {
+    knex('shows').count('id').where({id: body.id})
+  .then(([{count}]) => {
+    if (count > 0) {
+      return true;
+    }
+    console.log('inserting show id', body.id);
+    return knex('shows').insert(body);
+  })
+  .then(() =>
+    // http://stackoverflow.com/questions/4069718/postgres-insert-if-does-not-exist-already
+    knex.raw(
+      'INSERT INTO list_items ' +
+      '(list_id, show_id) ' +
+      'values (?, ?) ' +
+      'ON CONFLICT DO NOTHING',
+      [list_id, body.id]
+    )
+  )
+  .catch(({ details }) => {
+    return new Error(details);
+  });
+}
+
+
 
 // ---- GET ----
 
@@ -148,47 +177,44 @@ app.get('/search/:query', function({ params }, res) {
 
 
 // // ---- SEARCH API SEASONS ----
-// app.post('/seasons/:listid/:show_id', function({ params }, res) {
-//   // let {listid, showid} = params;
-//   let searchUrl = `https://api.themoviedb.org/3/tv/${params.show_id}?api_key=0469b2e223fa411387635db85c0f4be7&language=en-US`;
-//   fetch(searchUrl)
-//   .then(res => {
-//     if (!res.ok) {
-//       const error = new Error(res.statusText);
-//       error.response = res;
-//       throw error;
-//     }
-//     return res;
-//   })
-//   .then(res => res.json())
-//   .then(data => {
-//     let seasons = data.seasons.map(season => {
-//       const seasonObject = {
-//         title: data.name,
-//         id: season.id,
-//         release_date: season.air_date,
-//         poster_path: season.poster_path,
-//         media_type: 'season',
-//         parent_show: data.id,
-//         number: season.season_number
-//       }
-//       return knex('shows').insert(seasons).whereNotExists(knex('shows').where('id', season.id));
-//     });
-//     const list = data.seasons.map(season => {
-//       return knex('shows').insert({show_id: season.id, list_id: params.listid}).whereNotExists(knex('shows').where({show_id: season.id, list_id: params.listid}))
-//     });
-//     let seasons_list = seasons.push(...list);
-//     return Promise.all(seasons_list)
-//   })
-//   .then(() => knex('shows').select('*').join('list_items', 'shows.id', '=', 'list_items.show_id').where('list_items.list_id', params.listid))
-//   .then(shows => {
-//     res.status(200).json(shows);
-//   })
-//   .catch(err => {
-//     console.error('searchSeasonsError', err);
-//     res.status(500).json(err);
-//   });
-// });
+app.post('/seasons/:listid/:show_id', function({ params }, res) {
+  let searchUrl = `https://api.themoviedb.org/3/tv/${params.show_id}?api_key=0469b2e223fa411387635db85c0f4be7&language=en-US`;
+  fetch(searchUrl)
+  .then(res => {
+    if (!res.ok) {
+      const error = new Error(res.statusText);
+      error.response = res;
+      throw error;
+    }
+    return res;
+  })
+  .then(res => res.json())
+  .then(data => {
+    let seasons = data.seasons.map(season => {
+      const seasonObject = {
+        title: data.name,
+        id: season.id,
+        release_date: season.air_date,
+        poster_path: season.poster_path,
+        media_type: 'season',
+        parent_show: data.id,
+        number: season.season_number
+      }
+      return postShow(seasonObject, params.listid);
+    });
+    console.log("SEASONS:", seasons);
+    return Promise.all(seasons)
+  })
+  .then(() => knex('shows').select('*').join('list_items', 'shows.id', '=', 'list_items.show_id')
+              .where('list_items.list_id', 1))
+  .then(shows => {
+    res.status(200).json(shows);
+  })
+  .catch(err => {
+    console.error('searchSeasonsError', err);
+    res.status(500).json(err);
+  });
+});
 
 // // ---- SEARCH API EPISODES ----
 
