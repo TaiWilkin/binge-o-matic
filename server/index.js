@@ -137,10 +137,17 @@ app.put('/lists/:id', ({ body: { name }, params: { id } }, res) => {
 });
 
 // TODO: update Watched status on list item
-app.put('/lists/:id/:watched', ({ params: { id, watched }}, req) => {
-
-
-  res.status(400).json({ message: "TODO", id, watched });
+app.put('/lists/:list_id/:show_id', ({ body, params: { list_id, show_id } }, res) => {
+  knex('list_items')
+  .where({list_id, show_id})
+  .update(body)
+  .then(() =>
+    res.status(400).json(body)
+  )
+  .catch(err => {
+    console.error(err);
+    res.status(404).json(err);
+  });
 });
 
 
@@ -232,7 +239,7 @@ app.get('/search/:query', function({ params }, res) {
 });
 
 
-// // ---- SEARCH API SEASONS ----
+// ---- SEARCH API SEASONS ----
 app.post('/seasons/:listid/:show_id', function({ params: { listid, show_id } }, res) {
   let searchUrl = `https://api.themoviedb.org/3/tv/${show_id}?api_key=0469b2e223fa411387635db85c0f4be7&language=en-US`;
   fetch(searchUrl)
@@ -260,8 +267,12 @@ app.post('/seasons/:listid/:show_id', function({ params: { listid, show_id } }, 
     });
     return Promise.all(seasons)
   })
-  .then(() => knex('shows').select('*').join('list_items', 'shows.id', '=', 'list_items.show_id')
-              .where('list_items.list_id', listid))
+  .then(() =>
+    knex('shows')
+    .select('*')
+    .join('list_items', 'shows.id', '=', 'list_items.show_id')
+    .where('list_items.list_id', listid)
+  )
   .then(shows => {
     res.status(200).json(shows);
   })
@@ -271,7 +282,7 @@ app.post('/seasons/:listid/:show_id', function({ params: { listid, show_id } }, 
   });
 });
 
-// // ---- SEARCH API EPISODES ----
+// ---- SEARCH API EPISODES ----
 
 app.post('/episodes/:listid/:show_id/:show_season', function({ body, params: { listid, show_id, show_season } }, res) {
   let searchUrl = `https://api.themoviedb.org/3/tv/${show_id}/season/${show_season}?api_key=0469b2e223fa411387635db85c0f4be7&language=en-US`;
@@ -302,8 +313,12 @@ app.post('/episodes/:listid/:show_id/:show_season', function({ body, params: { l
     });
     return Promise.all(episodes)
   })
-  .then(() => knex('shows').select('*').join('list_items', 'shows.id', '=', 'list_items.show_id')
-              .where('list_items.list_id', listid))
+  .then(() =>
+    knex('shows')
+    .select('*')
+    .join('list_items', 'shows.id', '=', 'list_items.show_id')
+    .where('list_items.list_id', listid)
+  )
   .then(shows => {
     res.status(200).json(shows);
   })
@@ -312,6 +327,8 @@ app.post('/episodes/:listid/:show_id/:show_season', function({ body, params: { l
     res.status(500).json(err);
   });
 });
+
+// ---- SERVER ----
 
 function runServer() {
   return new Promise((resolve, reject) => {
