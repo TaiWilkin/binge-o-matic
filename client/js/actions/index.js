@@ -394,7 +394,6 @@ export const deleteListError = (error) => ({
 
 export const deleteList = (path) => (dispatch) => {
   dispatch(deleteListRequest())
-  let body = {"name": name}
   fetch(listsUrl + path, 
               {method: 'delete'})
   .then(res => {
@@ -411,5 +410,48 @@ export const deleteList = (path) => (dispatch) => {
   .catch(err => {
     console.error('deleteListError', err);
     deleteListError(err);
+  })
+}
+
+export const MARK_WATCHED_REQUEST = 'MARK_WATCHED_REQUEST';
+export const markWatchedRequest = () => ({
+  type: MARK_WATCHED_REQUEST
+});
+
+export const MARK_WATCHED_SUCCESS = 'MARK_WATCHED_SUCCESS';
+export const markWatchedSuccess = (item) => ({
+  type: MARK_WATCHED_SUCCESS,
+  item
+});
+
+export const MARK_WATCHED_ERROR = 'MARK_WATCHED_ERROR';
+export const markWatchedError = (error) => ({
+  type: MARK_WATCHED_ERROR,
+  error
+});
+
+export const markWatched = (path, body) => (dispatch) => {
+  dispatch(markWatchedRequest())
+  fetch(listsUrl + path, 
+        {method: 'put',           
+          headers: {  
+            "Content-type": "application/json; charset=utf-8"  
+          },  
+          body: JSON.stringify(body)
+      })
+  .then(res => {
+    console.log('markWatchedRequest');
+    if (!res.ok) {
+      const error = new Error(res.statusText);
+      error.response = res;
+      throw error;
+    }
+    return res;
+  })
+  .then(res => res.json())
+  .then(list => dispatch(markWatchedSuccess(list)))
+  .catch(err => {
+    console.error('markWatchedError', err);
+    markWatchedError(err);
   })
 }
