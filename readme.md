@@ -8,15 +8,21 @@ A watchlist management app for the binge-watcher: maintain a platform-neutral wa
 
 ## Screenshots
 
+### Full List
+
+![full page](/client/assets/full-page.png)
+
 ### Main Page
 
-![bright-eye](/client/assets/bright-eye.png)
-
-### Full List
+![main page](/client/assets/main.png)
 
 ### List Items Close-Up
 
+![user list](/client/assets/user-list.png)
+
 ### List Header Close-Up
+
+![user list header](/client/assets/user-list-top.png)
 
 ## Tech Stack
 DB: cloud-hosted PostgreSQL instance
