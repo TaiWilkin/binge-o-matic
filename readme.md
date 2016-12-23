@@ -1,3 +1,37 @@
+# Binge-o-matic
+
+Link: https://afternoon-ravine-77077.herokuapp.com/
+
+## Description
+
+A watchlist management app for the binge-watcher: maintain a platform-neutral watch-list of shows, manage spin-offs and series, and organize viewing in chronological release order.
+
+## Screenshots
+
+### Main Page
+
+(./client/assets/bright-eye.png)
+
+### Full List
+
+### List Items Close-Up
+
+### List Header Close-Up
+
+## Tech Stack
+DB: cloud-hosted PostgreSQL instance
+Server: Node, Express, Knex
+Client: React, Redux, Thunk
+
+## Component Locations
+
+
+Your README should include: a description of your app, a link to a deployed version, screenshots and your tech stack. It should also briefly describe where each of the components of the project live in your codebase, and if your app is meant to be re-used by other developers, should include instructions on how to get the app up and running.
+
+
+
+
+
 # Database Structure
 
 ## Tables
