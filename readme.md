@@ -8,7 +8,7 @@
 124 | _Empire Strikes Back_ | `/123457.jpg`
 
 #### `list_items`
-listID | movieId | watched (TODO)
+listID | movieId | watched
 :-----:| :-----: | :---:
 1  | 123 | true
 1  | 124 | true
@@ -72,10 +72,11 @@ User1 | List2
   - res: {name: listname}
   - change list name, return {listid: id, name: listname}
 
-## Future Endpoints
-- [ ] app.put('/lists/:listId')
+- [x] app.put('/lists/:listId')
   - body: {watched: true/false}
   - change whether show is marked as watched
+
+## Future Endpoints
 - [ ] cleanup table column names for consistency
   - [ ] `list_id` instead of `id` in `lists` table
 
