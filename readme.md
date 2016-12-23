@@ -1,4 +1,4 @@
-# Binge-o-matic
+![Binge-o-matic](/client/assets/binge-o-matic.png)
 
 Link: https://afternoon-ravine-77077.herokuapp.com/
 
