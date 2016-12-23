@@ -1,4 +1,4 @@
-# Binge-o-matic
+![Binge-o-matic](/client/assets/binge-o-matic.png)
 
 Link: https://afternoon-ravine-77077.herokuapp.com/
 
@@ -57,19 +57,6 @@ ListID | ListName
 1 | Cartoons
 2 | Sci-Fi
 
-## TODO
-
-#### `users`
-UserID | ListID
------| ------
-User1 | List1
-User2 | List1
-User1 | List2
-
-- based on shared list functionality
-- would also need concept of list ownership
-  - add column in `lists` table with user owner ID
-
 ---
 
 ## Endpoints:
@@ -112,10 +99,6 @@ User1 | List2
 - [x] app.put('/lists/:listId')
   - body: {watched: true/false}
   - change whether show is marked as watched
-
-## Future Endpoints
-- [ ] cleanup table column names for consistency
-  - [ ] `list_id` instead of `id` in `lists` table
 
 ![binge-watcher]
 (http://3i2lq13pvwgh2ffbbxk9da411le.wpengine.netdna-cdn.com/wp-content/uploads/2015/11/tv.jpg)
