@@ -25,9 +25,12 @@ A watchlist management app for the binge-watcher: maintain a platform-neutral wa
 ![user list header](/client/assets/user-list-top.png)
 
 ## Tech Stack
-DB: cloud-hosted PostgreSQL instance
-Server: Node, Express, Knex
-Client: React, Redux, Thunk
+
+- DB: cloud-hosted PostgreSQL instance
+
+- Server: Node, Express, Knex
+
+- Client: React, Redux, Thunk
 
 ## Component Locations
 
