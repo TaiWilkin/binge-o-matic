@@ -75,6 +75,7 @@ User1 | List2
 - [x] app.put('/lists/:listId')
   - body: {watched: true/false}
   - change whether show is marked as watched
+
 ## Future Endpoints
 - [ ] cleanup table column names for consistency
   - [ ] `list_id` instead of `id` in `lists` table
