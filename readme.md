@@ -57,19 +57,6 @@ ListID | ListName
 1 | Cartoons
 2 | Sci-Fi
 
-## TODO
-
-#### `users`
-UserID | ListID
------| ------
-User1 | List1
-User2 | List1
-User1 | List2
-
-- based on shared list functionality
-- would also need concept of list ownership
-  - add column in `lists` table with user owner ID
-
 ---
 
 ## Endpoints:
