@@ -1,6 +1,7 @@
 * {
 	box-sizing: border-box;
 	font-family: 'Raleway', sans-serif;
+	border-radius: 10px;
 }
 
 body {
@@ -25,10 +26,11 @@ img {
 }
 
 .userList {
-	width: 70%;
+	width: 65%;
 	float: right;
 	background-color: #80ced6;
 	li {background-color: #fefbd8;}
+	margin-left: 5%;
 }
 
 .tmdbLogo, h1 {
@@ -51,8 +53,8 @@ li {
 	img {display: inline-block;
 		position: relative;
 		left: 0px;
+		margin-right: 10px;
 	}
-	border-radius: 10px;
 	border: 2px solid black;
 	margin: auto;
 	padding: 5px;
@@ -60,24 +62,6 @@ li {
 }
 .episode {
 	width: 90%;
-}
-
-button {
-  background: #a8dcff;
-  background-image: linear-gradient(to bottom, #a8dcff, #135985);
-  border-radius: 28px;
-  text-shadow: 2px 1px 3px #000000;
-  font-family: 'Raleway', sans-serif;
-  color: #ffffff;
-  font-size: 20px;
-  padding: 10px 20px 10px 20px;
-  text-decoration: none;
-}
-
-button:hover {
-  background: #3cb0fd;
-  background-image: linear-gradient(to bottom, #3cb0fd, #000000);
-  text-decoration: none;
 }
 
 .search {
@@ -93,18 +77,17 @@ button:hover {
 }
 
 
-.listselectors, .listbar {
+.listbar {
 	width: 270px;
 }
 
-.search, .getList, .listmaker {
+.listselectors {
+	width: 380px;
+}
+
+.search, .getList, .listmaker, .editor {
 	background-color: #f6f6f6;
 	background-image: linear-gradient(top, #f6f6f6, #eae8e8);
-	border-color: #dedede #bababa #aaa #bababa;
-	border-style: solid;
-	border-width: 1px;
-	border-radius: 10px;
-	box-shadow: 0 3px 3px rgba(255,255,255,.1), 0 3px 0 #bbb, 0 4px 0 #aaa, 0 5px 5px #444;
 	margin: 25px auto;
 	overflow: hidden;
 	padding: 8px;
@@ -118,19 +101,17 @@ button:hover {
 .searchbar, .listselectors, .listbar {
 	border: 1px solid #CCC;
 	box-shadow: 0 1px 1px #ddd inset, 0 1px 0 #FFF;
-	border-radius: 3px;
-  	color: #999;
+  	color: #000000;
 	float: left;
 	font-size: 1em;
 	height: 40px;
 	padding: 10px;
 }
 
-.submit {
+button {
 	background-color: #0483a0;
 	background-image: linear-gradient(top, #31b2c3, #0483a0);
 	border: 1px solid #00748f;
-	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3) inset, 0 1px 0 #FFF;
 	color: #fafafa;
 	height: 42px;
 	float: right;
@@ -138,12 +119,35 @@ button:hover {
 	padding: 0;
 	text-shadow: 0 1px 0 rgba(0, 0 ,0, .3);
 	width: 100px;
-	border-radius: 5px;
 }
 
-p, li>button {
+.userList button {
+	margin-top: 20px;
+	margin-right: 5px;
+}
+
+p, h2 {
 	display: inline-block;
-	margin: 10px;
+}
+
+
+.searchList, .userList, h1, .tmdbLogo, .search, .getList, .listmaker, .editor {
+/*	border-color: #dedede #bababa #aaa #bababa;
+	border-style: solid;
+	border-width: 1px;
+	box-shadow: 0 3px 3px rgba(255,255,255,.1), 0 3px 0 #bbb, 0 4px 0 #aaa, 0 5px 5px #444;*/
+	margin-bottom: 10px;
+}
+
+.searchList button {
+	float: none;
+}
+
+.eye {
+	width: 40px;
+	height: 40px;
+	position: relative;
+	top: 10px;
 }
 
 .footer {
