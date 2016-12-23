@@ -1,9 +1,9 @@
 
 
-const userUrl = "http://localhost:8080/shows";
-const seasonsUrl = "http://localhost:8080/seasons";
-const episodesUrl = "http://localhost:8080/episodes";
-const listsUrl = "http://localhost:8080/lists";
+const userUrl = "/shows";
+const seasonsUrl = "/seasons";
+const episodesUrl = "/episodes";
+const listsUrl = "/lists";
 
 export const FETCH_MOVIES_REQUEST = 'FETCH_MOVIES_REQUEST';
 export const fetchMoviesRequest = () => ({
