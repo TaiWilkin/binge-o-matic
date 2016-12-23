@@ -149,3 +149,10 @@ p, h2 {
 .footer {
 	margin-top: 150px;
 }
+
+
+@media only screen and (max-width: 500px) {
+    .searchList, .userList, h1, .tmdbLogo, .search, .getList, .listmaker, .editor {
+    	width: 100%;
+    }
+}
