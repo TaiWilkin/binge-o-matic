@@ -242,7 +242,8 @@ const moviesReducer = (state=initialState, action) => {
         error: null,
         list: action.list.id,
         lists: lists,
-        listName: action.list.name
+        listName: action.list.name,
+        userMovies: []
       }
       );
   }
@@ -305,7 +306,8 @@ const moviesReducer = (state=initialState, action) => {
       error: null,
       lists: action.lists,
       listName: "Select or Create a List",
-      list: 0
+      list: 0,
+      userMovies: []
     }
     );
  }
