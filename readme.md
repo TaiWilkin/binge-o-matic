@@ -32,12 +32,6 @@ Client: React, Redux, Thunk
 ## Component Locations
 
 
-Your README should include: a description of your app, a link to a deployed version, screenshots and your tech stack. It should also briefly describe where each of the components of the project live in your codebase, and if your app is meant to be re-used by other developers, should include instructions on how to get the app up and running.
-
-
-
-
-
 # Database Structure
 
 ## Tables
