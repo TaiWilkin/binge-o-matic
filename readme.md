@@ -113,9 +113,5 @@ User1 | List2
   - body: {watched: true/false}
   - change whether show is marked as watched
 
-## Future Endpoints
-- [ ] cleanup table column names for consistency
-  - [ ] `list_id` instead of `id` in `lists` table
-
 ![binge-watcher]
 (http://3i2lq13pvwgh2ffbbxk9da411le.wpengine.netdna-cdn.com/wp-content/uploads/2015/11/tv.jpg)
