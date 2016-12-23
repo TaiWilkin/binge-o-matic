@@ -64,7 +64,7 @@ export const searchMovies = (query) => {
   return (dispatch) => {
   dispatch(searchMoviesRequest())
 
-  let searchUrl = `http://localhost:8080/search/${query}`
+  let searchUrl = `/search/${query}`
   fetch(searchUrl)
   .then(res => {
     console.log('searchMoviesRequest');
