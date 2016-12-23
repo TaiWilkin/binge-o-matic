@@ -5,6 +5,9 @@
   "main": "index.js",
   "main:server": "server/index.js",
   "main:client": "client/js/index.js",
+  "engines": {
+    "node": "6.9.2"
+  }
   "scripts": {
     "start": "[ \"$NODE_ENV\" = \"production\" ] && npm run serve:server:production || npm run serve:server:dev",
     "dev": "run-p watch serve:server:dev",
