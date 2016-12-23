@@ -10,7 +10,7 @@ A watchlist management app for the binge-watcher: maintain a platform-neutral wa
 
 ### Main Page
 
-(./client/assets/bright-eye.png)
+![bright-eye](/client/assets/bright-eye.png)
 
 ### Full List
 
