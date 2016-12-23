@@ -56,15 +56,24 @@ class UserList extends Component {
 
    let editor = "";
    if (this.state.edit) {
-      editor = (<form onSubmit={this.onSubmit}><input onChange={this.onChange} value={this.state.text} type="text" /><button type="submit"> Save Name </button></form>)
-   }
+      editor = (
+        <form className="editor" onSubmit={this.onSubmit}>
+          <label>
+            Edit List Name:
+            <input className="listbar" type="text" onChange={this.onChange} value={this.state.text} />
+          </label>
+            <button className="submit" type="button" onClick={this.onSubmit}>
+              Save Name
+            </button>
+        </form>
+      )}
 
     return (
       <div className="userList">
-        <div>
+        <div className="edits">
           <h2>{this.props.listName}</h2>
-          <button onClick={this.onClick}>Edit List Name</button>
-          <button onClick={this.onDelete}>Delete List</button>
+          <button className="submit" onClick={this.onClick}>Edit List Name</button>
+          <button className="submit" onClick={this.onDelete}>Delete List</button>
         </div>
         {editor}
         <ul>

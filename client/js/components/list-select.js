@@ -17,7 +17,11 @@ class ListSelect extends React.Component {
   }
 
   handleChange(event) {
-    this.setState({id: event.target.value});
+    const id = event.target.value;
+    this.setState({id: id});
+    return Promise.resolve(this.props.dispatch(actions.setList(id)))
+    .then(() => this.props.dispatch(actions.fetchMovies(id)))
+    .catch(error => console.log(error));
   }
 
   handleSubmit(event) {
@@ -35,10 +39,10 @@ class ListSelect extends React.Component {
         <label>
           Choose a List to View:
           <select className="listselectors" value={this.state.id} onChange={this.handleChange}>
+            <option key="default" disabled value> -- Select a List -- </option>
             {options}
           </select>
         </label>
-        <button className="submit" type="submit">Get List</button>
       </form>
     );
   }

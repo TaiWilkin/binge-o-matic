@@ -241,7 +241,8 @@ const moviesReducer = (state=initialState, action) => {
         loading: false,
         error: null,
         list: action.list.id,
-        lists: lists
+        lists: lists,
+        listName: action.list.name
       }
       );
   }
