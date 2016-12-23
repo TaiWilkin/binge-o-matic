@@ -1,4 +1,4 @@
-
+import 'isomorphic-fetch';
 
 const userUrl = "/shows";
 const seasonsUrl = "/seasons";
