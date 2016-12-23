@@ -8,7 +8,7 @@
 124 | _Empire Strikes Back_ | `/123457.jpg`
 
 #### `list_items`
-listID | movieId | watched (TODO)
+listID | movieId | watched
 :-----:| :-----: | :---:
 1  | 123 | true
 1  | 124 | true
