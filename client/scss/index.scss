@@ -154,6 +154,6 @@ p, h2 {
 @media only screen and (max-width: 800px) {
     .searchList, .userList, h1, .tmdbLogo, .search, .getList, .listmaker, .editor {
     	width: 100%;
-    	margin: 1%;
+    	margin: 1% auto;
     }
 }
