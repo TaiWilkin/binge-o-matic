@@ -6,17 +6,38 @@ import * as actions from '../actions';
 export class Episode extends React.Component {
   constructor(props) {
     super(props);
+    this.onCheck = this.onCheck.bind(this);
+  }
+
+    onCheck() {
+    let path = `/${this.props.list}/${this.props.id}`;
+    let watched;
+    if (this.props.watched == true) {
+      watched = false;
+    } else {
+      watched = true;
+    }
+    console.log(watched);
+    this.props.dispatch(actions.markWatched(path, {watched: watched}))
   }
 
   render() {
-    
+        let check = (<p className="check">&#x2610;</p>)
+    console.log(typeof this.props.watched)
+    if (this.props.watched == true) {
+      check = (<p className="check">&#x2611;</p>)
+    }
     return (
     <li className="episode" id={this.props.id}>
-      <p>{this.props.title} Episode {this.props.number}: {this.props.episode} ({this.props.release_date})</p>
+      <p onClick={this.onCheck}>{check}{this.props.title} Episode {this.props.number}: {this.props.episode} ({this.props.release_date})</p>
     </li>
   );
   }
 }
 
+const mapStateToProps = (state, props) => ({
+  list: state.list,
+  userMovies: state.userMovies
+});
 
-export default connect()(Episode);
+export default connect(mapStateToProps)(Episode);
