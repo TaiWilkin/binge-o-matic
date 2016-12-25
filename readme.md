@@ -1,6 +1,6 @@
 ![Binge-o-matic](/client/assets/binge-o-matic.png)
 
-Link: https://afternoon-ravine-77077.herokuapp.com/
+Link: https://bingeomatic.herokuapp.com/
 
 ## Description
 
