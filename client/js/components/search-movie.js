@@ -10,6 +10,9 @@ export class SearchMovie extends React.Component {
   }
 
   onClick() {
+    if (this.props.list === 1) {
+      return alert("Please select a list before adding items.");
+    }
     console.log("adding", this.props);
     let movie = {
       "id": this.props.id,
