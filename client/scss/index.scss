@@ -14,7 +14,8 @@ body {
 	float: left;
 	background-color: #fefbd8;
 	li {background-color: #80ced6;
-	margin-right: 50px;}
+	margin-right: 50px;};
+	p {padding: 10px}
 }
 
 .check {
@@ -60,16 +61,18 @@ li {
 	padding: 5px;
 	margin-bottom: 5px;
 }
+
 .episode {
 	width: 90%;
 }
 
 .search {
-	width: 450px;
+	width: 90%;
+	margin: 0 auto;
 }
 
 .searchbar {
-	width: 320px;
+	width: 90%;
 }
 
 .getList, .listmaker {
