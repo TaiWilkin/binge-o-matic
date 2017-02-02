@@ -10,15 +10,20 @@ export class SearchMovie extends React.Component {
   }
 
   onClick() {
-    console.log("adding", this.props);
-    let movie = {
-      "id": this.props.id,
-      "title": this.props.title,
-      "release_date": this.props.release_date,
-      "poster_path": this.props.poster_path,
-      "media_type": this.props.media_type 
+    if (this.props.list === 1) {
+      return alert("Please select a list before adding items.");
+    } else {
+      let movie = {
+        "id": this.props.id,
+        "title": this.props.title,
+        "release_date": this.props.release_date,
+        "poster_path": this.props.poster_path,
+        "media_type": this.props.media_type 
+      }
+      this.props.dispatch(actions.addMovie(movie, this.props.list));
     }
-    this.props.dispatch(actions.addMovie(movie, this.props.list));
+    console.log("adding", this.props);
+    
   }
 
   render() {

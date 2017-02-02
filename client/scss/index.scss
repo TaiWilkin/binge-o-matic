@@ -35,13 +35,16 @@ img {
 }
 
 .tmdbLogo, h1 {
-	font-family: 'Kumar One', cursive;
 	img { width: 92px };
 	width: 100%;
 	clear: both;
 	text-align: center;
 	padding: 10px;
 	background-color: #d5f4e6;
+}
+
+h1 {
+	font-family: 'Kumar One', cursive;
 }
 
 .lists {

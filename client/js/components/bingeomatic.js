@@ -15,10 +15,12 @@ class Bingeomatic extends Component {
   render() {
     return (
       <div className="bingomatic">
-        <h1>Binge-<img className="eye" src="../assets/bright-eye.png" alt="o"/>-matic</h1>
-        <Search />
-        <ListSelect />
-        <NewList />
+        <div className="searches">
+          <h1>Binge-<img className="eye" src="../assets/bright-eye.png" alt="o"/>-matic</h1>
+          <Search />
+          <ListSelect />
+          <NewList />
+        </div>
         <div className="lists">
           <SearchList />
           <UserList />
