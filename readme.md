@@ -1,4 +1,5 @@
 ![Binge-o-matic](/client/assets/binge-o-matic.png)
+[![Build Status](https://travis-ci.org/TheresaWilkin/binge-o-matic.svg?branch=master)](https://travis-ci.org/TheresaWilkin/binge-o-matic)
 
 Link: https://bingeomatic.herokuapp.com/
 
