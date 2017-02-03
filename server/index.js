@@ -8,7 +8,7 @@ dotenv.config();
 
 console.log(process.env.NODE_ENV);
 
-var knex = require('knex')({
+const knex = require('knex')({
   client: 'pg',
   connection: {
     host: process.env.KNEX_HOST,
@@ -36,7 +36,7 @@ app.use(bodyParser.json());
 
 const postShow = (body, list_id) => {
   return knex('shows').count('id').where({ id: body.id })
-  .then(([{count}]) => {
+  .then(([{ count }]) => {
     if (count > 0) {
       return true;
     }
@@ -52,13 +52,13 @@ const postShow = (body, list_id) => {
       [list_id, body.id]
     )
   );
-}
+};
 
 
 // ---- GET ----
 
 // List of lists
-app.get('/lists', function(req, res) {
+app.get('/lists', (req, res) => {
   knex('lists').select('*')
   .then(lists => {
     res.status(200).json(lists);
@@ -67,7 +67,7 @@ app.get('/lists', function(req, res) {
 });
 
 // Movies on a list
-app.get('/lists/:listId', function({ params: { listId } }, res) {
+app.get('/lists/:listId', ({ params: { listId } }, res) => {
   knex('shows')
     .select('*')
     .join('list_items', 'shows.id', '=', 'list_items.show_id')
@@ -80,10 +80,9 @@ app.get('/lists/:listId', function({ params: { listId } }, res) {
 
 // ---- POST ----
 
-app.post('/lists/:list_id/show', function({ body, params: { list_id } }, res) {
-
-  knex('shows').count('id').where({id: body.id})
-  .then(([{count}]) => {
+app.post('/lists/:list_id/show', ({ body, params: { list_id } }, res) => {
+  knex('shows').count('id').where({ id: body.id })
+  .then(([{ count }]) => {
     if (count > 0) {
       return true;
     }
@@ -106,21 +105,21 @@ app.post('/lists/:list_id/show', function({ body, params: { list_id } }, res) {
     .where('list_items.list_id', list_id)
   )
   .then(shows => {
-    res.status(200).json(shows)
+    res.status(200).json(shows);
   })
   .catch(({ details }) => {
-    res.status(422).json({ details })
+    res.status(422).json({ details });
   });
 });
 
-app.post('/lists/:name', function({ params: { name } }, res) {
+app.post('/lists/:name', ({ params: { name } }, res) => {
   knex('lists').insert({ name }).returning('id')
   .then(([id]) => {
     res.status(201).json({ name, id });
   })
   .catch(error => {
     console.error(error);
-    res.status(409).json({error: error.detail});
+    res.status(409).json({ error: error.detail });
   });
 });
 
@@ -144,12 +143,12 @@ app.put('/lists/:id', ({ body: { name }, params: { id } }, res) => {
 // TODO: update Watched status on list item
 app.put('/lists/:list_id/:show_id', ({ body, params: { list_id, show_id } }, res) => {
   knex('list_items')
-  .where({list_id, show_id})
+  .where({ list_id, show_id })
   .update(body)
   .then(() =>
     res.status(200).json({
       ...body,
-      id: parseInt(show_id)
+      id: parseInt(show_id, 10)
     })
   )
   .catch(err => {
@@ -162,32 +161,27 @@ app.put('/lists/:list_id/:show_id', ({ body, params: { list_id, show_id } }, res
 // ---- DELETE ----
 
 // Deleting a show / season / episodes off of a list
-app.delete('/lists/:listId/shows/:movieId', function({ params }, res) {
-
+app.delete('/lists/:listId/shows/:movieId', ({ params }, res) => {
   knex('public.list_items')
-  .where({'show_id': params.movieId, 'list_id': params.listId})
+  .where({ 'show_id': params.movieId, 'list_id': params.listId })
   .del()
   .then(() =>
     knex('shows')
-    .where({'parent_show': params.movieId})
+    .where({ 'parent_show': params.movieId })
     .select('id'))
-  .then((ids) => {
-    return ids.map(id => id.id);
-  })
+  .then((ids) => ids.map(id => id.id))
   .then((ids) =>
     knex('public.list_items')
-    .where({'list_id': params.listId})
+    .where({ 'list_id': params.listId })
     .whereIn('show_id', ids).del())
   .then(() =>
     knex('shows')
-    .where({'parent_season': params.movieId})
+    .where({ 'parent_season': params.movieId })
     .select('id'))
-  .then((ids) => {
-    return ids.map(id => id.id);
-  })
+  .then((ids) => ids.map(id => id.id))
   .then((ids) =>
     knex('public.list_items')
-    .where({'list_id': params.listId})
+    .where({ 'list_id': params.listId })
     .whereIn('show_id', ids).del())
   .then(() =>
     knex('shows')
@@ -199,12 +193,12 @@ app.delete('/lists/:listId/shows/:movieId', function({ params }, res) {
   })
   .catch(error => {
     console.error(error);
-    res.status(404).json({error: error.detail});
+    res.status(404).json({ error: error.detail });
   });
 });
 
 // Delete entire list
-app.delete('/lists/:list_id', ({ params: { list_id }}, res) => {
+app.delete('/lists/:list_id', ({ params: { list_id } }, res) => {
   knex('list_items')
   .where({ list_id })
   .del()
@@ -227,8 +221,8 @@ app.delete('/lists/:list_id', ({ params: { list_id }}, res) => {
 });
 
 // ---- SEARCH API MEDIA----
-app.get('/search/:query', function({ params }, res) {
-  let searchUrl = `https://api.themoviedb.org/3/search/multi?api_key=${process.env.API_KEY}&language=en-US&query=${params.query}&page=1&include_adult=false`;
+app.get('/search/:query', ({ params }, res) => {
+  const searchUrl = `https://api.themoviedb.org/3/search/multi?api_key=${process.env.API_KEY}&language=en-US&query=${params.query}&page=1&include_adult=false`;
   fetch(searchUrl)
   .then(res => {
     if (!res.ok) {
@@ -248,8 +242,8 @@ app.get('/search/:query', function({ params }, res) {
 
 
 // ---- SEARCH API SEASONS ----
-app.post('/seasons/:listid/:show_id', function({ params: { listid, show_id } }, res) {
-  let searchUrl = `https://api.themoviedb.org/3/tv/${show_id}?api_key=${process.env.API_KEY}&language=en-US`;
+app.post('/seasons/:listid/:show_id', ({ params: { listid, show_id } }, res) => {
+  const searchUrl = `https://api.themoviedb.org/3/tv/${show_id}?api_key=${process.env.API_KEY}&language=en-US`;
   fetch(searchUrl)
   .then(response => {
     if (!response.ok) {
@@ -261,7 +255,7 @@ app.post('/seasons/:listid/:show_id', function({ params: { listid, show_id } }, 
   })
   .then(response => response.json())
   .then(data => {
-    let seasons = data.seasons.map(season => {
+    const seasons = data.seasons.map(season => {
       const seasonObject = {
         title: data.name,
         id: season.id,
@@ -270,10 +264,10 @@ app.post('/seasons/:listid/:show_id', function({ params: { listid, show_id } }, 
         media_type: 'season',
         parent_show: data.id,
         number: season.season_number
-      }
+      };
       return postShow(seasonObject, listid);
     });
-    return Promise.all(seasons)
+    return Promise.all(seasons);
   })
   .then(() =>
     knex('shows')
@@ -292,8 +286,9 @@ app.post('/seasons/:listid/:show_id', function({ params: { listid, show_id } }, 
 
 // ---- SEARCH API EPISODES ----
 
-app.post('/episodes/:listid/:show_id/:show_season', function({ body, params: { listid, show_id, show_season } }, res) {
-  let searchUrl = `https://api.themoviedb.org/3/tv/${show_id}/season/${show_season}?api_key=${process.env.API_KEY}&language=en-US`;
+app.post('/episodes/:listid/:show_id/:show_season',
+  ({ body, params: { listid, show_id, show_season } }, res) => {
+  const searchUrl = `https://api.themoviedb.org/3/tv/${show_id}/season/${show_season}?api_key=${process.env.API_KEY}&language=en-US`;
   fetch(searchUrl)
   .then(response => {
     if (!response.ok) {
@@ -305,7 +300,7 @@ app.post('/episodes/:listid/:show_id/:show_season', function({ body, params: { l
   })
   .then(response => response.json())
   .then(data => {
-    let episodes = data.episodes.map(episode => {
+    const episodes = data.episodes.map(episode => {
       const episodeObject = {
         id: episode.id,
         title: body.title,
@@ -316,10 +311,10 @@ app.post('/episodes/:listid/:show_id/:show_season', function({ body, params: { l
         parent_season: body.id,
         parent_show: body.parent_show,
         number: episode.episode_number
-      }
+      };
       return postShow(episodeObject, listid);
     });
-    return Promise.all(episodes)
+    return Promise.all(episodes);
   })
   .then(() =>
     knex('shows')
