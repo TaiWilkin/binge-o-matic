@@ -1,39 +1,39 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
 import * as actions from '../actions';
 
 class ListSelect extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {id: 1};
+    this.state = { id: 1 };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
-  	this.props.dispatch(actions.getLists());
+    this.props.dispatch(actions.getLists());
   }
 
   handleChange(event) {
     const id = event.target.value;
-    this.setState({id: id});
+    this.setState({ id });
     return Promise.resolve(this.props.dispatch(actions.setList(id)))
     .then(() => this.props.dispatch(actions.fetchMovies(id)))
     .catch(error => console.log(error));
   }
 
   handleSubmit(event) {
-  	event.preventDefault();
-    console.log(this.state.id)
+    event.preventDefault();
     return Promise.resolve(this.props.dispatch(actions.setList(this.state.id)))
     .then(() => this.props.dispatch(actions.fetchMovies(this.props.list)))
     .catch(error => console.log(error));
   }
 
   render() {
-  	let options = this.props.lists.map(list => (<option key={list.id} value={list.id}>{list.name}</option>));
+    const options = this.props.lists.map(list =>
+      (<option key={list.id} value={list.id}>{list.name}</option>));
     return (
       <form className="getList" onSubmit={this.handleSubmit}>
         <label>

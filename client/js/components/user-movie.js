@@ -1,5 +1,5 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
 import * as actions from '../actions';
 
@@ -13,12 +13,23 @@ export class UserMovie extends React.Component {
   }
 
   onClick() {
-    let path = `/${this.props.list}/shows/${this.props.id}`;
+    const path = `/${this.props.list}/shows/${this.props.id}`;
     this.props.dispatch(actions.deleteMovie(path));
   }
 
+  onCheck() {
+    const path = `/${this.props.list}/${this.props.id}`;
+    let watched;
+    if (this.props.watched == true) {
+      watched = false;
+    } else {
+      watched = true;
+    }
+    this.props.dispatch(actions.markWatched(path, { watched }));
+  }
+
   addSeasons() {
-    let path = `/${this.props.list}/${this.props.id}`;
+    const path = `/${this.props.list}/${this.props.id}`;
     this.props.dispatch(actions.getSeasons(path));
   }
 
@@ -26,39 +37,25 @@ export class UserMovie extends React.Component {
     this.props.dispatch(actions.getEpisodes(this.props));
   }
 
-  onCheck() {
-    let path = `/${this.props.list}/${this.props.id}`;
-    let watched;
-    if (this.props.watched == true) {
-      watched = false;
-    } else {
-      watched = true;
-    }
-    console.log(watched);
-    this.props.dispatch(actions.markWatched(path, {watched: watched}))
-  }
-
   render() {
-    let check = (<p className="check">&#x2610;</p>)
-    console.log(typeof this.props.watched)
+    let check = (<p className="check">&#x2610;</p>);
     if (this.props.watched == true) {
-      check = (<p className="check">&#x2611;</p>)
+      check = (<p className="check">&#x2611;</p>);
     }
-    let add = "";
+    let add = '';
     let title = this.props.title;
-    let img = (<img src={`https://image.tmdb.org/t/p/w92${this.props.poster_path}`} />);
+    let img = (<img src={`https://image.tmdb.org/t/p/w92${this.props.poster_path}`} alt='poster' />);
     if (!this.props.poster_path) {
-      img = "";
+      img = '';
     }
     if (this.props.media_type === 'tv') {
       add = (<button onClick={this.addSeasons}>Add Seasons</button>);
-
-    } 
+    }
     if (this.props.media_type === 'season') {
       add = (<button onClick={this.addEpisodes}>Add Episodes</button>);
       title = `${this.props.title}: Season ${this.props.number}`;
-    } 
-    
+    }
+
     return (
     <li className={this.props.media_type} id={this.props.id}>
       <h4 onClick={this.onCheck}>{check}{title}</h4>

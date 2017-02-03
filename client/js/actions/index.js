@@ -1,9 +1,8 @@
 import 'isomorphic-fetch';
 
-const userUrl = "/shows";
-const seasonsUrl = "/seasons";
-const episodesUrl = "/episodes";
-const listsUrl = "/lists";
+const seasonsUrl = '/seasons';
+const episodesUrl = '/episodes';
+const listsUrl = '/lists';
 
 export const FETCH_MOVIES_REQUEST = 'FETCH_MOVIES_REQUEST';
 export const fetchMoviesRequest = () => ({
@@ -23,9 +22,9 @@ export const fetchMoviesError = (error) => ({
 });
 
 export const fetchMovies = (listId) => (dispatch) => {
-  dispatch(fetchMoviesRequest())
+  dispatch(fetchMoviesRequest());
 
-  fetch(listsUrl + '/' + listId)
+  fetch(`${listsUrl}/${listId}`)
   .then(res => {
     console.log('fetchMoviesRequest');
     if (!res.ok) {
@@ -40,8 +39,8 @@ export const fetchMovies = (listId) => (dispatch) => {
   .catch(err => {
     console.error('fetchMoviesError', err);
     fetchMoviesError(err);
-  })
-}
+  });
+};
 
 export const SEARCH_MOVIES_REQUEST = 'SEARCH_MOVIES_REQUEST';
 export const searchMoviesRequest = () => ({
@@ -60,11 +59,11 @@ export const searchMoviesError = (error) => ({
   error
 });
 
-export const searchMovies = (query) => {
-  return (dispatch) => {
-  dispatch(searchMoviesRequest())
+export const searchMovies = (query) =>
+  (dispatch) => {
+  dispatch(searchMoviesRequest());
 
-  let searchUrl = `/search/${query}`
+  const searchUrl = `/search/${query}`;
   fetch(searchUrl)
   .then(res => {
     console.log('searchMoviesRequest');
@@ -80,9 +79,8 @@ export const searchMovies = (query) => {
   .catch(err => {
     console.error('searchMoviesError', err);
     searchMoviesError(err);
-  })
-}
-}
+  });
+};
 
 export const DELETE_MOVIE_REQUEST = 'DELETE_MOVIE_REQUEST';
 export const deleteMovieRequest = () => ({
@@ -102,9 +100,9 @@ export const deleteMovieError = (error) => ({
 });
 
 export const deleteMovie = (path) => (dispatch) => {
-  dispatch(deleteMovieRequest())
+  dispatch(deleteMovieRequest());
 
-  fetch(listsUrl + path, {method: 'delete'})
+  fetch(listsUrl + path, { method: 'delete' })
   .then(res => {
     console.log('deleteMovieRequest');
     if (!res.ok) {
@@ -119,8 +117,8 @@ export const deleteMovie = (path) => (dispatch) => {
   .catch(err => {
     console.error('deleteMovieError', err);
     deleteMovieError(err);
-  })
-}
+  });
+};
 
 export const ADD_MOVIE_REQUEST = 'ADD_MOVIE_REQUEST';
 export const addMovieRequest = () => ({
@@ -140,13 +138,13 @@ export const addMovieError = (error) => ({
 });
 
 export const addMovie = (movie, list) => (dispatch) => {
-  dispatch(addMovieRequest())
+  dispatch(addMovieRequest());
 
-  fetch(listsUrl + '/' + list + "/show", {  
-          method: 'post',  
-          headers: {  
-            "Content-type": "application/json; charset=utf-8"  
-          },  
+  fetch(`${listsUrl}/${list}/show`, {
+          method: 'post',
+          headers: {
+            "Content-type": "application/json; charset=utf-8"
+          },
           body: JSON.stringify(movie)
         })
   .then(res => {
@@ -163,8 +161,8 @@ export const addMovie = (movie, list) => (dispatch) => {
   .catch(err => {
     console.error('addMovieError', err);
     addMovieError(err);
-  })
-}
+  });
+};
 
 
 export const GET_SEASONS_REQUEST = 'GET_SEASONS_REQUEST';
@@ -185,9 +183,9 @@ export const getSeasonsError = (error) => ({
 });
 
 export const getSeasons = (path) => (dispatch) => {
-  dispatch(getSeasonsRequest())
+  dispatch(getSeasonsRequest());
 
-  fetch(seasonsUrl + path, {method: 'post'})
+  fetch(seasonsUrl + path, { method: 'post' })
   .then(res => {
     console.log('getSeasonsRequest');
     if (!res.ok) {
@@ -202,8 +200,8 @@ export const getSeasons = (path) => (dispatch) => {
   .catch(err => {
     console.error('getSeasonsError', err);
     getSeasonsError(err);
-  })
-}
+  });
+};
 
 export const GET_EPISODES_REQUEST = 'GET_EPISODES_REQUEST';
 export const getEpisodesRequest = () => ({
@@ -223,13 +221,13 @@ export const getEpisodesError = (error) => ({
 });
 
 export const getEpisodes = (season) => (dispatch) => {
-  dispatch(getEpisodesRequest())
+  dispatch(getEpisodesRequest());
 
-  fetch(episodesUrl + '/' + season.list + '/' + season.parent_show + '/' + season.number, 
-          {method: 'post',           
-          headers: {  
-            "Content-type": "application/json; charset=utf-8"  
-          },  
+  fetch(`${episodesUrl}/${season.list}/${season.parent_show}/${season.number}`,
+          { method: 'post',
+          headers: {
+            "Content-type": "application/json; charset=utf-8"
+          },
           body: JSON.stringify(season)
         })
   .then(res => {
@@ -246,8 +244,8 @@ export const getEpisodes = (season) => (dispatch) => {
   .catch(err => {
     console.error('getEpisodesError', err);
     getEpisodesError(err);
-  })
-}
+  });
+};
 
 export const GET_LISTS_REQUEST = 'GET_LISTS_REQUEST';
 export const getListsRequest = () => ({
@@ -267,7 +265,7 @@ export const getListsError = (error) => ({
 });
 
 export const getLists = () => (dispatch) => {
-  dispatch(getListsRequest())
+  dispatch(getListsRequest());
 
   fetch(listsUrl)
   .then(res => {
@@ -284,8 +282,8 @@ export const getLists = () => (dispatch) => {
   .catch(err => {
     console.error('getListsError', err);
     getListsError(err);
-  })
-}
+  });
+};
 
 export const SET_LIST = 'SET_LIST';
 export const setList = (id) => ({
@@ -311,9 +309,9 @@ export const addListError = (error) => ({
 });
 
 export const addList = (list) => (dispatch) => {
-  dispatch(addListRequest())
+  dispatch(addListRequest());
 
-  fetch(listsUrl + '/' + list.name, {method: 'post'})
+  fetch(`${listsUrl}/${list.name}`, { method: 'post' })
   .then(res => {
     console.log('addListRequest');
     if (!res.ok) {
@@ -328,8 +326,8 @@ export const addList = (list) => (dispatch) => {
   .catch(err => {
     console.error('addListError', err);
     addListError(err);
-  })
-}
+  });
+};
 
 export const EDIT_LIST_REQUEST = 'EDIT_LIST_REQUEST';
 export const editListRequest = () => ({
@@ -349,13 +347,13 @@ export const editListError = (error) => ({
 });
 
 export const editList = (path, name) => (dispatch) => {
-  dispatch(editListRequest())
-  let body = {"name": name}
-  fetch(listsUrl + path, 
-              {method: 'put',           
-          headers: {  
-            "Content-type": "application/json; charset=utf-8"  
-          },  
+  dispatch(editListRequest());
+  const body = { "name": name };
+  fetch(listsUrl + path,
+              { method: 'put',
+          headers: {
+            "Content-type": "application/json; charset=utf-8"
+          },
           body: JSON.stringify(body)
         })
   .then(res => {
@@ -372,8 +370,8 @@ export const editList = (path, name) => (dispatch) => {
   .catch(err => {
     console.error('editListError', err);
     editListError(err);
-  })
-}
+  });
+};
 
 export const DELETE_LIST_REQUEST = 'DELETE_LIST_REQUEST';
 export const deleteListRequest = () => ({
@@ -393,9 +391,9 @@ export const deleteListError = (error) => ({
 });
 
 export const deleteList = (path) => (dispatch) => {
-  dispatch(deleteListRequest())
-  fetch(listsUrl + path, 
-              {method: 'delete'})
+  dispatch(deleteListRequest());
+  fetch(listsUrl + path,
+              { method: 'delete' })
   .then(res => {
     console.log('deleteListRequest');
     if (!res.ok) {
@@ -410,8 +408,8 @@ export const deleteList = (path) => (dispatch) => {
   .catch(err => {
     console.error('deleteListError', err);
     deleteListError(err);
-  })
-}
+  });
+};
 
 export const MARK_WATCHED_REQUEST = 'MARK_WATCHED_REQUEST';
 export const markWatchedRequest = () => ({
@@ -431,13 +429,13 @@ export const markWatchedError = (error) => ({
 });
 
 export const markWatched = (path, body) => (dispatch) => {
-  dispatch(markWatchedRequest())
+  dispatch(markWatchedRequest());
 
-  fetch(listsUrl + path, 
-        {method: 'put',           
-          headers: {  
-            "Content-type": "application/json; charset=utf-8"  
-          },  
+  fetch(listsUrl + path,
+        { method: 'put',
+          headers: {
+            "Content-type": "application/json; charset=utf-8"
+          },
           body: JSON.stringify(body)
       })
   .then(res => {
@@ -454,5 +452,5 @@ export const markWatched = (path, body) => (dispatch) => {
   .catch(err => {
     console.error('markWatchedError', err);
     markWatchedError(err);
-  })
-}
+  });
+};

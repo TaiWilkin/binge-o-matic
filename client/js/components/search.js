@@ -1,5 +1,5 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
 import * as actions from '../actions';
 
@@ -13,8 +13,7 @@ export class Search extends React.Component {
     e.preventDefault();
     const movieName = this.movieNameInput.value;
     this.props.dispatch(actions.searchMovies(movieName));
-    setTimeout(() => this.movieNameInput.value = "", 750);
-    console.log("now searching for", movieName);
+    setTimeout(() => { this.movieNameInput.value = ''; }, 750);
   }
 
   render() {
@@ -22,7 +21,7 @@ export class Search extends React.Component {
       <form className="search" onSubmit={this.searchMovies}>
         <label>
         Search for Movies/Shows:
-        <input className="searchbar" type="text" ref={ref => this.movieNameInput = ref} />
+        <input className="searchbar" type="text" ref={ref => { this.movieNameInput = ref; }} />
         </label>
         <button className="submit" type="button" onClick={this.searchMovies}>
           Search

@@ -1,5 +1,5 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
 import * as actions from '../actions';
 
@@ -10,26 +10,27 @@ export class Episode extends React.Component {
   }
 
     onCheck() {
-    let path = `/${this.props.list}/${this.props.id}`;
+    const path = `/${this.props.list}/${this.props.id}`;
     let watched;
     if (this.props.watched == true) {
       watched = false;
     } else {
       watched = true;
     }
-    console.log(watched);
-    this.props.dispatch(actions.markWatched(path, {watched: watched}))
+    this.props.dispatch(actions.markWatched(path, { watched }));
   }
 
   render() {
-        let check = (<p className="check">&#x2610;</p>)
-    console.log(typeof this.props.watched)
+        let check = (<p className="check">&#x2610;</p>);
     if (this.props.watched == true) {
-      check = (<p className="check">&#x2611;</p>)
+      check = (<p className="check">&#x2611;</p>);
     }
     return (
     <li className="episode" id={this.props.id}>
-      <p onClick={this.onCheck}>{check}{this.props.title} Episode {this.props.number}: {this.props.episode} ({this.props.release_date})</p>
+      <p onClick={this.onCheck}>
+        {check}{this.props.title}
+        Episode {this.props.number}: {this.props.episode} ({this.props.release_date})
+      </p>
     </li>
   );
   }

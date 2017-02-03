@@ -8,11 +8,11 @@ const initialState = {
   error: null,
   lists: [],
   list: 1,
-  listName: "Select or Create a List"
+  listName: 'Select or Create a List'
 };
 
 const sortMovies = (movies) => {
-  movies = movies.sort(function(a,b){
+  const sortedMovies = movies.sort((a, b) => {
     let result = (new Date(a.release_date) - new Date(b.release_date));
     if (result === 0) {
       if (a.media_type === 'tv') {
@@ -30,26 +30,27 @@ const sortMovies = (movies) => {
     }
     return result;
   });
-  return movies;
-}
+  return sortedMovies;
+};
 
-const moviesReducer = (state=initialState, action) => {
-  if (action.type === actions.FETCH_MOVIES_REQUEST) {
-    return Object.assign({}, state, {loading: true});
-  }
-  else if (action.type === actions.FETCH_MOVIES_SUCCESS) {
-    let movies = sortMovies(action.movies);
+const moviesReducer = (state = initialState, action) => {
+  switch (action.type) {
+  case actions.FETCH_MOVIES_REQUEST:
+    return Object.assign({}, state, { loading: true });
+  case actions.FETCH_MOVIES_SUCCESS:
+    {
+    const movies = sortMovies(action.movies);
     return Object.assign(
       {},
       state,
       {
         loading: false,
         error: null,
-        userMovies: action.movies
+        userMovies: movies
       }
       );
-  }
-  else if (action.type === actions.FETCH_MOVIES_ERROR) {
+    }
+  case actions.FETCH_MOVIES_ERROR:
     return Object.assign(
       {},
       state,
@@ -58,11 +59,10 @@ const moviesReducer = (state=initialState, action) => {
         error: action.error
       }
       );
-  }
-  else if (action.type === actions.SEARCH_MOVIES_REQUEST) {
-    return Object.assign({}, state, {loading: true});
-  }
-  else if (action.type === actions.SEARCH_MOVIES_SUCCESS) {
+  case actions.SEARCH_MOVIES_REQUEST:
+    return Object.assign({}, state, { loading: true });
+  case actions.SEARCH_MOVIES_SUCCESS:
+    {
     let movies = action.movies.results.map(movie => {
       return {
         id: movie.id,
@@ -82,8 +82,8 @@ const moviesReducer = (state=initialState, action) => {
         searchMovies: movies,
       }
       );
-  }
-  else if (action.type === actions.SEARCH_MOVIES_ERROR) {
+    }
+  case actions.SEARCH_MOVIES_ERROR:
     return Object.assign(
       {},
       state,
@@ -92,12 +92,11 @@ const moviesReducer = (state=initialState, action) => {
         error: action.error
       }
       );
-  }
-  else if (action.type === actions.DELETE_MOVIE_REQUEST) {
-    return Object.assign({}, state, {loading: true});
-  }
-  else if (action.type === actions.DELETE_MOVIE_SUCCESS) {
-    let movies = sortMovies(action.movies);
+  case actions.DELETE_MOVIE_REQUEST:
+    return Object.assign({}, state, { loading: true });
+  case actions.DELETE_MOVIE_SUCCESS:
+    {
+    const movies = sortMovies(action.movies);
     return Object.assign(
       {},
       state,
@@ -107,8 +106,8 @@ const moviesReducer = (state=initialState, action) => {
         userMovies: movies,
       }
       );
-  }
-  else if (action.type === actions.DELETE_MOVIE_ERROR) {
+    }
+  case actions.DELETE_MOVIE_ERROR:
     return Object.assign(
       {},
       state,
@@ -117,12 +116,11 @@ const moviesReducer = (state=initialState, action) => {
         error: action.error
       }
       );
-  }
-  else if (action.type === actions.ADD_MOVIE_REQUEST) {
-    return Object.assign({}, state, {loading: true});
-  }
-  else if (action.type === actions.ADD_MOVIE_SUCCESS) {
-    let movies = sortMovies(action.movies);
+  case actions.ADD_MOVIE_REQUEST:
+    return Object.assign({}, state, { loading: true });
+  case actions.ADD_MOVIE_SUCCESS:
+    {
+    const movies = sortMovies(action.movies);
     return Object.assign(
       {},
       state,
@@ -132,8 +130,8 @@ const moviesReducer = (state=initialState, action) => {
         userMovies: movies,
       }
       );
-  }
-  else if (action.type === actions.ADD_MOVIE_ERROR) {
+    }
+  case actions.ADD_MOVIE_ERROR:
     return Object.assign(
       {},
       state,
@@ -142,12 +140,11 @@ const moviesReducer = (state=initialState, action) => {
         error: action.error
       }
       );
-  }
-  else if (action.type === actions.GET_SEASONS_REQUEST) {
-    return Object.assign({}, state, {loading: true});
-  }
-  else if (action.type === actions.GET_SEASONS_SUCCESS) {
-    let movies = sortMovies(action.movies);
+  case actions.GET_SEASONS_REQUEST:
+    return Object.assign({}, state, { loading: true });
+  case actions.GET_SEASONS_SUCCESS:
+    {
+    const movies = sortMovies(action.movies);
     return Object.assign(
       {},
       state,
@@ -157,8 +154,8 @@ const moviesReducer = (state=initialState, action) => {
         userMovies: movies,
       }
       );
-  }
-  else if (action.type === actions.GET_SEASONS_ERROR) {
+    }
+  case actions.GET_SEASONS_ERROR:
     return Object.assign(
       {},
       state,
@@ -167,11 +164,11 @@ const moviesReducer = (state=initialState, action) => {
         error: action.error
       }
       );
-  } else if (action.type === actions.GET_EPISODES_REQUEST) {
-    return Object.assign({}, state, {loading: true});
-  }
-  else if (action.type === actions.GET_EPISODES_SUCCESS) {
-   let movies = sortMovies(action.movies);
+  case actions.GET_EPISODES_REQUEST:
+    return Object.assign({}, state, { loading: true });
+  case actions.GET_EPISODES_SUCCESS:
+    {
+   const movies = sortMovies(action.movies);
    return Object.assign(
     {},
     state,
@@ -181,8 +178,8 @@ const moviesReducer = (state=initialState, action) => {
       userMovies: movies,
     }
     );
- }
- else if (action.type === actions.GET_EPISODES_ERROR) {
+  }
+ case actions.GET_EPISODES_ERROR:
   return Object.assign(
     {},
     state,
@@ -191,24 +188,23 @@ const moviesReducer = (state=initialState, action) => {
       error: action.error
     }
     );
-  }
-  else if (action.type === actions.SET_LIST) {
+  case actions.SET_LIST:
+    {
     let listIndex = -1;
     state.lists.forEach((list, i) => {
-      if (parseInt(list.id) === parseInt(action.id)) {
+      if (parseInt(list.id, 10) === parseInt(action.id, 10)) {
         listIndex = i;
       }
     });
-    let newList = {
+    const newList = {
       list: action.id,
       listName: state.lists[listIndex].name
-    }
+    };
     return Object.assign({}, state, newList);
   }
-  else if (action.type === actions.GET_LISTS_REQUEST) {
-    return Object.assign({}, state, {loading: true});
-  }
-  else if (action.type === actions.GET_LISTS_SUCCESS) {
+  case actions.GET_LISTS_REQUEST:
+    return Object.assign({}, state, { loading: true });
+  case actions.GET_LISTS_SUCCESS:
    return Object.assign(
     {},
     state,
@@ -218,8 +214,7 @@ const moviesReducer = (state=initialState, action) => {
       lists: action.lists,
     }
     );
-  }
-  else if (action.type === actions.GET_LISTS_ERROR) {
+  case actions.GET_LISTS_ERROR:
     return Object.assign(
       {},
       state,
@@ -228,11 +223,10 @@ const moviesReducer = (state=initialState, action) => {
         error: action.error
       }
       );
-  }
-  else if (action.type === actions.ADD_LIST_REQUEST) {
-    return Object.assign({}, state, {loading: true});
-  }
-  else if (action.type === actions.ADD_LIST_SUCCESS) {
+  case actions.ADD_LIST_REQUEST:
+    return Object.assign({}, state, { loading: true });
+  case actions.ADD_LIST_SUCCESS:
+    {
     let lists = state.lists.slice();
     lists = [...lists, action.list];
     return Object.assign(
@@ -242,13 +236,13 @@ const moviesReducer = (state=initialState, action) => {
         loading: false,
         error: null,
         list: action.list.id,
-        lists: lists,
+        lists,
         listName: action.list.name,
         userMovies: []
       }
       );
-  }
-  else if (action.type === actions.ADD_LIST_ERROR) {
+    }
+  case actions.ADD_LIST_ERROR:
     return Object.assign(
       {},
       state,
@@ -257,22 +251,20 @@ const moviesReducer = (state=initialState, action) => {
         error: action.error
       }
       );
-  }
-    else if (action.type === actions.EDIT_LIST_REQUEST) {
-    return Object.assign({}, state, {loading: true});
-  }
-  else if (action.type === actions.EDIT_LIST_SUCCESS) {
-    let newList = action.list[0];
-    let index = -1
+  case actions.EDIT_LIST_REQUEST:
+    return Object.assign({}, state, { loading: true });
+  case actions.EDIT_LIST_SUCCESS:
+    {
+    const newList = action.list[0];
+    let index = -1;
     state.lists.forEach((list, i) => {
       if (newList.id === list.id) {
         index = i;
       }
-    })
-    let before = state.lists.slice(0, index);
-    let after = state.lists.slice(index + 1);
-    let updateLists = [...before, newList, ...after]
-    console.log(updateLists);
+    });
+    const before = state.lists.slice(0, index);
+    const after = state.lists.slice(index + 1);
+    const updateLists = [...before, newList, ...after];
     return Object.assign(
       {},
       state,
@@ -284,8 +276,8 @@ const moviesReducer = (state=initialState, action) => {
         lists: updateLists
       }
       );
-  }
-  else if (action.type === actions.EDIT_LIST_ERROR) {
+    }
+  case actions.EDIT_LIST_ERROR:
     return Object.assign(
       {},
       state,
@@ -294,11 +286,9 @@ const moviesReducer = (state=initialState, action) => {
         error: action.error
       }
       );
-  }
-   else if (action.type === actions.DELETE_LIST_REQUEST) {
-    return Object.assign({}, state, {loading: true});
-  }
-  else if (action.type === actions.DELETE_LIST_SUCCESS) {
+  case actions.DELETE_LIST_REQUEST:
+    return Object.assign({}, state, { loading: true });
+  case actions.DELETE_LIST_SUCCESS:
    return Object.assign(
     {},
     state,
@@ -306,13 +296,12 @@ const moviesReducer = (state=initialState, action) => {
       loading: false,
       error: null,
       lists: action.lists,
-      listName: "Select or Create a List",
+      listName: 'Select or Create a List',
       list: 0,
       userMovies: []
     }
     );
- }
- else if (action.type === actions.DELETE_LIST_ERROR) {
+ case actions.DELETE_LIST_ERROR:
   return Object.assign(
     {},
     state,
@@ -321,13 +310,11 @@ const moviesReducer = (state=initialState, action) => {
       error: action.error
     }
     );
-  }
-  else if (action.type === actions.MARK_WATCHED_REQUEST) {
-    return Object.assign({}, state, {loading: true});
-  }
-  else if (action.type === actions.MARK_WATCHED_SUCCESS) {
-    console.log(action)
-    let index = -1
+  case actions.MARK_WATCHED_REQUEST:
+    return Object.assign({}, state, { loading: true });
+  case actions.MARK_WATCHED_SUCCESS:
+    {
+    let index = -1;
     let editShow = {};
     state.userMovies.forEach((show, i) => {
       if (action.item.id === show.id) {
@@ -336,9 +323,9 @@ const moviesReducer = (state=initialState, action) => {
       }
     });
     editShow.watched = action.item.watched;
-    let before = state.userMovies.slice(0, index);
-    let after = state.userMovies.slice(index + 1);
-    let updateMovies = [...before, editShow, ...after]
+    const before = state.userMovies.slice(0, index);
+    const after = state.userMovies.slice(index + 1);
+    const updateMovies = [...before, editShow, ...after];
     return Object.assign(
       {},
       state,
@@ -348,8 +335,8 @@ const moviesReducer = (state=initialState, action) => {
         userMovies: updateMovies
       }
       );
-  }
-  else if (action.type === actions.MARK_WATCHED_ERROR) {
+    }
+  case actions.MARK_WATCHED_ERROR:
     return Object.assign(
       {},
       state,
@@ -358,8 +345,9 @@ const moviesReducer = (state=initialState, action) => {
         error: action.error
       }
       );
+  default:
+    return state;
   }
-  return state;
-}
+};
 
 export default moviesReducer;

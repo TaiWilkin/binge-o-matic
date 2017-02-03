@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import UserMovie from './user-movie';
-import Episode from './episode'
+import Episode from './episode';
 
 class UserList extends Component {
   constructor(props) {
@@ -10,7 +10,7 @@ class UserList extends Component {
     this.state = {
       edit: false,
       text: this.props.listName
-    }
+    };
     this.onSubmit = this.onSubmit.bind(this);
     this.onClick = this.onClick.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -18,55 +18,59 @@ class UserList extends Component {
   }
 
   onClick() {
-    console.log("editing")
-    this.setState({edit: true});
+    this.setState({ edit: true });
   }
 
   onChange(e) {
-    this.setState({text: e.target.value});
+    this.setState({ text: e.target.value });
   }
 
   onSubmit(e) {
     e.preventDefault();
-    let path = `/${this.props.list}`
+    const path = `/${this.props.list}`;
     this.props.dispatch(actions.editList(path, this.state.text));
-    this.setState({edit: false})
+    this.setState({ edit: false });
   }
 
   onDelete() {
-    let path = `/${this.props.list}`
-    this.props.dispatch(actions.deleteList(path))
+    const path = `/${this.props.list}`;
+    this.props.dispatch(actions.deleteList(path));
   }
 
   render() {
-
    const movies = this.props.userMovies
    .map(movie => {
     if (movie.media_type === 'episode') {
       return (<Episode
         key={movie.id}
         {...movie}
-        />);
+      />);
     }
     return (<UserMovie
       key={movie.id}
       {...movie}
-      />);
+    />);
   });
 
-   let editor = "";
+   let editor = '';
    if (this.state.edit) {
       editor = (
         <form className="editor" onSubmit={this.onSubmit}>
           <label>
             Edit List Name:
-            <input className="listbar" type="text" onChange={this.onChange} value={this.state.text} />
+            <input
+              className="listbar"
+              type="text"
+              onChange={this.onChange}
+              value={this.state.text}
+            />
           </label>
             <button className="submit" type="button" onClick={this.onSubmit}>
               Save Name
             </button>
         </form>
-      )}
+      );
+    }
 
     return (
       <div className="userList">
