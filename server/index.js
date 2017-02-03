@@ -1,5 +1,5 @@
 import 'babel-polyfill';
-import 'dotenv';
+import dotenv from 'dotenv';
 import express from 'express';
 import bodyParser from 'body-parser';
 import 'isomorphic-fetch';
