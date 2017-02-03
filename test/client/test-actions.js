@@ -4,22 +4,30 @@ import chai from 'chai';
 const should = chai.should();
 
 describe('actions', () => {
-  it('should create an action to increment count', () => {
-    const counter = '1'
+
+  it('should create fetchMoviesRequest', () => {
     const expectedAction = {
-      type: 'INCREMENT',
-      counter
+      type: actions.FETCH_MOVIES_REQUEST
     }
-    actions.incrementCount(counter).type.should.equal(expectedAction.type);
-        actions.incrementCount(counter).counter.should.equal(expectedAction.counter)
+    actions.fetchMoviesRequest().type.should.equal(expectedAction.type);
   });
-  it('should create an action to decrement count', () => {
-    const counter = '1'
+  it('should create fetchMoviesSuccess', () => {
+    const movies = ["movie"];
     const expectedAction = {
-      type: 'DECREMENT',
-      counter
+      type: actions.FETCH_MOVIES_SUCCESS,
+      movies
     }
-    actions.decrementCount(counter).type.should.equal(expectedAction.type);
-        actions.decrementCount(counter).counter.should.equal(expectedAction.counter)
+    actions.fetchMoviesSuccess(movies).type.should.equal(expectedAction.type);
+    actions.fetchMoviesSuccess(movies).movies.should.equal(expectedAction.movies)
+  });
+  it('should create fetchMoviesError', () => {
+    const error = "error";
+    const expectedAction = {
+      type: actions.FETCH_MOVIES_ERROR,
+      error
+    }
+    actions.fetchMoviesError(error).type.should.equal(expectedAction.type);
+    actions.fetchMoviesError(error).error.should.equal(expectedAction.error)
   });
 });
+
