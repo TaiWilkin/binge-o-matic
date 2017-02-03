@@ -1,15 +1,18 @@
 import 'babel-polyfill';
+import 'dotenv';
 import express from 'express';
 import bodyParser from 'body-parser';
 import 'isomorphic-fetch';
 
+dotenv.config();
+
 var knex = require('knex')({
   client: 'pg',
   connection: {
-    host: 'elmer-02.db.elephantsql.com',
-    user: 'gphrldmg',
-    password: 'hcI5frNj5V4-HbZui9QHgFEyzaq30FDC',
-    database: 'gphrldmg'
+    host: process.env.TEST_KNEX_HOST || process.env.KNEX_HOST,
+    user: process.env.KNEX_USER_DATABASE || process.env.KNEX_USER_DATABASE,
+    password: process.env.KNEX_USER_DATABASE || process.env.KNEX_PASSWORD,
+    database: process.env.KNEX_USER_DATABASE || process.env.KNEX_USER_DATABASE
   },
   // debug: true,
   pool: { min: 0, max: 3 }
@@ -223,7 +226,7 @@ app.delete('/lists/:list_id', ({ params: { list_id }}, res) => {
 
 // ---- SEARCH API MEDIA----
 app.get('/search/:query', function({ params }, res) {
-  let searchUrl = `https://api.themoviedb.org/3/search/multi?api_key=0469b2e223fa411387635db85c0f4be7&language=en-US&query=${params.query}&page=1&include_adult=false`;
+  let searchUrl = `https://api.themoviedb.org/3/search/multi?api_key=${process.env.API_KEY}&language=en-US&query=${params.query}&page=1&include_adult=false`;
   fetch(searchUrl)
   .then(res => {
     if (!res.ok) {
@@ -244,7 +247,7 @@ app.get('/search/:query', function({ params }, res) {
 
 // ---- SEARCH API SEASONS ----
 app.post('/seasons/:listid/:show_id', function({ params: { listid, show_id } }, res) {
-  let searchUrl = `https://api.themoviedb.org/3/tv/${show_id}?api_key=0469b2e223fa411387635db85c0f4be7&language=en-US`;
+  let searchUrl = `https://api.themoviedb.org/3/tv/${show_id}?api_key=${process.env.API_KEY}&language=en-US`;
   fetch(searchUrl)
   .then(response => {
     if (!response.ok) {
@@ -288,7 +291,7 @@ app.post('/seasons/:listid/:show_id', function({ params: { listid, show_id } }, 
 // ---- SEARCH API EPISODES ----
 
 app.post('/episodes/:listid/:show_id/:show_season', function({ body, params: { listid, show_id, show_season } }, res) {
-  let searchUrl = `https://api.themoviedb.org/3/tv/${show_id}/season/${show_season}?api_key=0469b2e223fa411387635db85c0f4be7&language=en-US`;
+  let searchUrl = `https://api.themoviedb.org/3/tv/${show_id}/season/${show_season}?api_key=${process.env.API_KEY}&language=en-US`;
   fetch(searchUrl)
   .then(response => {
     if (!response.ok) {
