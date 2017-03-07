@@ -8,7 +8,8 @@ const initialState = {
   error: null,
   lists: [],
   list: 1,
-  listName: 'Select or Create a List'
+  listName: 'Select or Create a List',
+  filter: 'all'
 };
 
 const sortMovies = (movies) => {
@@ -349,6 +350,8 @@ const moviesReducer = (state = initialState, action) => {
         error: action.error
       }
       );
+  case actions.FILTER_SEARCH:
+    return Object.assign({}, state, { filter: action.filter });
   default:
     return state;
   }

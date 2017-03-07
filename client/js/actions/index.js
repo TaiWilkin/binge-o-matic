@@ -459,3 +459,9 @@ export const markWatched = (path, body) => (dispatch) => {
     markWatchedError(err);
   });
 };
+
+export const FILTER_SEARCH = 'FILTER_SEARCH';
+export const filterSearch = (filter) => ({
+  type: FILTER_SEARCH,
+  filter
+});
