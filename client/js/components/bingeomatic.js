@@ -5,19 +5,35 @@ import SearchList from './search-list';
 import Search from './search';
 import ListSelect from './list-select';
 import NewList from './new-list';
+import Directions from './Directions';
+import * as actions from '../actions';
 
 class Bingeomatic extends Component {
-
   render() {
+    let lists = 'lists';
+    let searchBar = '';
+    let selectors = 'hidden';
+    let guide = <div />;
+    if (this.props.list === 1) {
+      lists = 'lists hidden';
+      searchBar = 'hidden';
+      selectors = '';
+      guide = <Directions />
+    }
     return (
       <div className="bingomatic">
         <div className="searches">
           <h1>Binge-<img className="eye" src="../assets/bright-eye.png" alt="o" />-matic</h1>
-          <Search />
-          <ListSelect />
-          <NewList />
+          <div className={searchBar}>
+              <Search />
+          </div>
+          <div className={selectors}>
+            <ListSelect />
+            <NewList />
+          </div>
+          {guide}
         </div>
-        <div className="lists">
+        <div className={lists}>
           <SearchList />
           <UserList />
         </div>
@@ -31,4 +47,8 @@ class Bingeomatic extends Component {
   }
 }
 
-export default connect()(Bingeomatic);
+const mapStateToProps = ({ list }) => {
+  return { list };
+};
+
+export default connect(mapStateToProps)(Bingeomatic);

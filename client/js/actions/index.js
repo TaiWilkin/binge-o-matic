@@ -291,6 +291,11 @@ export const setList = (id) => ({
   id
 });
 
+export const RESET_LIST = 'RESET_LIST';
+export const resetList = () => ({
+    type: RESET_LIST
+});
+
 export const ADD_LIST_REQUEST = 'ADD_LIST_REQUEST';
 export const addListRequest = () => ({
   type: ADD_LIST_REQUEST

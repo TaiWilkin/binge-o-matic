@@ -49,6 +49,7 @@ h1 {
 
 .lists {
 	padding: 20px;
+	width: 100%
 }
 
 li {
@@ -70,8 +71,7 @@ li {
 }
 
 .search {
-	width: 90%;
-	margin: 0 auto;
+	width: 85%;
 }
 
 .searchbar {
@@ -157,7 +157,7 @@ p, h2 {
 
 
 @media only screen and (max-width: 800px) {
-    .searchList, .userList, h1, .tmdbLogo, .search, .getList, .listmaker, .editor {
+    .searchList, .userList, h1, .tmdbLogo, .search, .getList, .listmaker, .editor, .listButton {
     	width: 100%;
     	margin: 1% auto;
     }
@@ -165,4 +165,32 @@ p, h2 {
 
 .episode>p, li>h4, {
 	cursor: pointer;
+}
+
+.hidden {
+	display: none;
+}
+
+.listButton {
+	width: 14%;
+	height: 50px;
+	margin: 35px 0.5%;
+}
+
+.directions {
+	h3 { display: block };
+	width: 50%;
+	margin: auto;
+	padding: 20px;
+	background-color: #d5f4e6;
+	li {
+		background-color: #80ced6;
+		display: block;
+		font-size: 1em;
+		width: 100%;
+	};
+	p {padding: 10px}
+	font-size: 1.5em;
+	.info { width: 50%; display: inline-block; border-right: 1px solid black; border-radius: 0 };
+	.steps { width: 50%; float: right };
 }

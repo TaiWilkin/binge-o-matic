@@ -21,9 +21,9 @@ export class Episode extends React.Component {
   }
 
   render() {
-        let check = (<p className="check">&#x2610;</p>);
+    let check = (<span className="check">&#x2610;</span>);
     if (this.props.watched == true) {
-      check = (<p className="check">&#x2611;</p>);
+      check = (<span className="check">&#x2611;</span>);
     }
     return (
     <li className="episode" id={this.props.id}>

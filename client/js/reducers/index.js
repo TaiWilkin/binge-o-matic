@@ -196,12 +196,16 @@ const moviesReducer = (state = initialState, action) => {
         listIndex = i;
       }
     });
+    const listName = state.lists[listIndex] ?
+        state.lists[listIndex].name : 'Select or Create a List';
     const newList = {
       list: action.id,
-      listName: state.lists[listIndex].name
+      listName
     };
     return Object.assign({}, state, newList);
   }
+  case actions.RESET_LIST:
+    return Object.assign({}, state, initialState);
   case actions.GET_LISTS_REQUEST:
     return Object.assign({}, state, { loading: true });
   case actions.GET_LISTS_SUCCESS:
