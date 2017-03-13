@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import firebase from 'firebase';
 
 import * as actions from '../actions';
 
@@ -22,6 +23,40 @@ class Nav extends React.Component {
     .catch(error => console.log(error));
   }
 
+  renderLogin() {
+    switch (this.props.loggedIn) {
+      case true:
+        return <li className="right"><a onClick={() => firebase.auth().signOut()}>Logout</a></li>;
+      case false:
+        return <li className="right"><a onClick={() => {this.props.dispatch(actions.setPage('login'));}}>Login/Signup</a></li>;
+      default:
+        return null;
+    }
+  }
+
+  renderMyLists() {
+    switch (this.props.loggedIn) {
+      case true: {
+        const options = this.props.userLists.map(list =>
+          (<a
+            onClick={(e) => { e.preventDefault(); this.handleChange(list.id); }}
+            key={list.id} value={list.id}
+          >{list.name}</a>));
+          return (
+            <li className="dropdown">
+              <a className="dropbtn">My Lists</a>
+              <div className="dropdown-content">
+                {options}
+              </div>
+            </li>);
+      }
+      case false:
+        return null;
+      default:
+        return null;
+    }
+  }
+
   render() {
     const options = this.props.lists.map(list =>
       (<a onClick={(e) => { e.preventDefault(); this.handleChange(list.id); } } key={list.id} value={list.id}>{list.name}</a>));
@@ -34,8 +69,9 @@ class Nav extends React.Component {
                 {options}
               </div>
           </li>
+          {this.renderMyLists()}
           <li><a>New List</a></li>
-          <li className="right"><a>Login</a></li>
+          {this.renderLogin()}
         </ul>
       </nav>
     );
@@ -45,7 +81,9 @@ class Nav extends React.Component {
   const mapStateToProps = (state, props) => ({
     userMovies: state.userMovies,
     list: state.list,
-    lists: state.lists
+    lists: state.lists,
+    loggedIn: state.loggedIn,
+    userLists: state.userLists
   });
 
 export default connect(mapStateToProps)(Nav);

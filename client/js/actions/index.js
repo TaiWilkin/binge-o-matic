@@ -1,4 +1,6 @@
 import 'isomorphic-fetch';
+import firebase from 'firebase';
+import _ from 'lodash';
 
 const seasonsUrl = '/seasons';
 const episodesUrl = '/episodes';
@@ -327,7 +329,12 @@ export const addList = (list) => (dispatch) => {
     return res;
   })
   .then(res => res.json())
-  .then(list => dispatch(addListSuccess(list)))
+  .then(response => {
+    dispatch(addListSuccess(response));
+    const { currentUser } = firebase.auth();
+    firebase.database().ref(`users/${currentUser.uid}/lists/${response.id}`)
+      .set({ name: response.name });
+  })
   .catch(err => {
     console.error('addListError', err);
     addListError(err);
@@ -465,3 +472,38 @@ export const filterSearch = (filter) => ({
   type: FILTER_SEARCH,
   filter
 });
+
+export const SET_PAGE = 'SET_PAGE';
+export const setPage = (page) => ({
+  type: SET_PAGE,
+  page
+});
+
+export const LOGGED_IN = 'LOGGED_IN';
+export const loggedIn = (status) => ({
+    type: LOGGED_IN,
+    status
+});
+
+export const USER_LISTS_FETCH = 'USER_LISTS_FETCH';
+export const USER_LISTS_FETCH_SUCCESS = 'USER_LISTS_FETCH_SUCCESS';
+export const USER_LISTS_FETCH_FAILURE = 'USER_LISTS_FETCH_FAILURE';
+export const fetchUserLists = () => {
+  const { currentUser } = firebase.auth();
+
+  return dispatch => {
+    dispatch({ type: USER_LISTS_FETCH });
+    firebase.database().ref(`users/${currentUser.uid}/lists`)
+      .on('value', snapshot => {
+        let lists = snapshot.val();
+        if (lists) {
+          lists = _.map(lists, (val, id) => ({
+            ...val, id
+          }))
+        } else {
+          lists = [];
+        }
+        dispatch({ type: USER_LISTS_FETCH_SUCCESS, lists });
+      });
+  };
+};
