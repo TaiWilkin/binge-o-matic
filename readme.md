@@ -100,6 +100,3 @@ ListID | ListName
 - [x] app.put('/lists/:listId')
   - body: {watched: true/false}
   - change whether show is marked as watched
-
-![binge-watcher]
-(http://3i2lq13pvwgh2ffbbxk9da411le.wpengine.netdna-cdn.com/wp-content/uploads/2015/11/tv.jpg)
