@@ -26,9 +26,9 @@ class Nav extends React.Component {
   renderLogin() {
     switch (this.props.loggedIn) {
       case true:
-        return <li className="right"><a onClick={() => firebase.auth().signOut()}>Logout</a></li>;
+        return <li className="right"><button onClick={() => firebase.auth().signOut()}>Logout</button></li>;
       case false:
-        return <li className="right"><a onClick={() => {this.props.dispatch(actions.setPage('login'));}}>Login/Signup</a></li>;
+        return <li className="right"><button onClick={() => {this.props.dispatch(actions.setPage('login'));}}>Login/Signup</button></li>;
       default:
         return null;
     }
@@ -38,13 +38,13 @@ class Nav extends React.Component {
     switch (this.props.loggedIn) {
       case true: {
         const options = this.props.userLists.map(list =>
-          (<a
+          (<button
             onClick={(e) => { e.preventDefault(); this.handleChange(list.id); this.props.dispatch(actions.setPage('home')); }}
-            key={list.id} value={list.id}
-          >{list.name}</a>));
+            key={list.id} value={list.id} className="dropdown-btn"
+          >{list.name}</button>));
           return (
             <li className="dropdown">
-              <a className="dropbtn">My Lists</a>
+              <button className="dropbtn">My Lists</button>
               <div className="dropdown-content">
                 {options}
               </div>
@@ -59,18 +59,19 @@ class Nav extends React.Component {
 
   render() {
     const options = this.props.lists.map(list =>
-      (<a onClick={(e) => { e.preventDefault(); this.handleChange(list.id); this.handleChange(list.id); this.props.dispatch(actions.setPage('home')); } } key={list.id} value={list.id}>{list.name}</a>));
+      (<button onClick={(e) => { e.preventDefault(); this.handleChange(list.id); this.handleChange(list.id); this.props.dispatch(actions.setPage('home')); } } key={list.id} value={list.id} className="dropdown-btn">{list.name}</button>));
     return (
       <nav>
         <ul className="nav">
+          <li><button onClick={() => { this.props.dispatch(actions.setPage('about')); }}>About</button></li>
           <li className="dropdown">
-              <a className="dropbtn">Watchlists</a>
+              <button className="dropbtn">Watchlists</button>
               <div className="dropdown-content">
                 {options}
               </div>
           </li>
           {this.renderMyLists()}
-          <li><a onClick={() => { this.props.dispatch(actions.setPage('newList')); }}>New List</a></li>
+          <li><button onClick={() => { this.props.dispatch(actions.setPage('newList')); }}>New List</button></li>
           {this.renderLogin()}
         </ul>
       </nav>

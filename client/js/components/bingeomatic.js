@@ -7,6 +7,7 @@ import Login from './Login';
 import UserList from './UserList';
 import SearchMovies from './SearchMovies';
 import Edit from './Edit';
+import About from './About';
 import * as actions from '../actions';
 
 class Bingeomatic extends Component {
@@ -34,6 +35,8 @@ class Bingeomatic extends Component {
 
   renderMain() {
     switch (this.props.page) {
+      case 'about':
+        return <About />
       case 'home':
         return <UserList />;
       case 'login':
