@@ -28,8 +28,14 @@ export class SearchMovie extends React.Component {
       img = 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Clapboard.svg/1000px-Clapboard.svg.png';
     }
 
+    let onList = '';
+
+    if (this.props.userMovies.find(movie => movie.id === this.props.id)) {
+      onList = 'onList';
+    }
+
     return (
-      <li id={this.props.id}><div>
+      <li id={this.props.id}><div id={onList} >
         <img src={img} alt="poster" />
         <p>{this.props.title} ({this.props.release_date})</p>
         <div className="list-options">
@@ -41,7 +47,8 @@ export class SearchMovie extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  list: state.list
+  list: state.list,
+  userMovies: state.userMovies
 });
 
 export default connect(mapStateToProps)(SearchMovie);

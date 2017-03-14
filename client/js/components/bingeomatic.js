@@ -18,6 +18,7 @@ class Bingeomatic extends Component {
       storageBucket: 'binge-o-matic.appspot.com',
       messagingSenderId: '643020325655'
     });
+    this.props.dispatch(actions.fetchMovies(37));
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         this.props.dispatch(actions.setPage('home'));
