@@ -64,7 +64,7 @@ export class SearchMovies extends React.Component {
     return (
       <main>
           <div>
-            <h2>Adding items to {this.props.listName}</h2>
+            <h2 className="simple-header">Adding items to {this.props.listName}</h2>
             <button className="right" onClick={() => this.props.dispatch(actions.setPage('home'))}>
               Return to list
             </button>

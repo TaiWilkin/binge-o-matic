@@ -53,7 +53,7 @@ class Login extends React.Component {
     return (
       <main>
         <div>
-          <h2>Login</h2>
+          <h2 className="simple-header">Login</h2>
           <button className="right" onClick={() => this.props.dispatch(actions.setPage('home'))}>
             Cancel
           </button>

@@ -48,12 +48,12 @@ class Edit extends React.Component {
     return (
       <main>
         <div>
-          <h2>Editing {this.props.listName}</h2>
+          <h2 className="simple-header">Editing {this.props.listName}</h2>
           <button className="right" onClick={() => this.props.dispatch(actions.setPage('home'))}>
             Return to list
           </button>
         </div>
-          <h3>Change Title</h3>
+          <h3 className="simple-header">Change Title</h3>
         <form className="search" onSubmit={(e) => this.onSubmit(e)}>
           <input
             type="text"
@@ -63,7 +63,7 @@ class Edit extends React.Component {
           />
           <button type="submit">Submit</button>
         </form>
-        <h3>Delete List</h3>
+        <h3 className="simple-header">Delete List</h3>
         <button className="standalone-btn" onClick={this.onDelete.bind(this)}>Delete</button>
       </main>
     );

@@ -29,18 +29,22 @@ export class SearchMovie extends React.Component {
     }
 
     let onList = '';
+    let listOptions = (
+      <div className="list-options">
+        <button onClick={this.onClick}>Add to List</button>
+      </div>
+    );
 
     if (this.props.userMovies.find(movie => movie.id === this.props.id)) {
       onList = 'onList';
+      listOptions = null;
     }
-
+    
     return (
       <li id={this.props.id}><div id={onList} >
         <img src={img} alt="poster" />
         <p>{this.props.title} ({this.props.release_date})</p>
-        <div className="list-options">
-          <button onClick={this.onClick}>Add to List</button>
-        </div>
+        {listOptions}
       </div></li>
   );
   }

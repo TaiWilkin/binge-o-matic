@@ -40,12 +40,12 @@ export class NewList extends React.Component {
     return (
       <main>
         <div>
-          <h2>New List</h2>
+          <h2 className="simple-header">New List</h2>
           <button className="right" onClick={() => this.props.dispatch(actions.setPage('home'))}>
             Cancel
           </button>
         </div>
-        <h3>Choose Title</h3>
+        <h3 className="simple-header">Choose Title</h3>
         <h3 className="error">{this.state.error}</h3>
         <form className="search" onSubmit={e => this.addList(e)}>
           <input
