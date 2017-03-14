@@ -9,21 +9,21 @@ A watchlist management app for the binge-watcher: maintain a platform-neutral wa
 
 ## Screenshots
 
-### Full List
-
-![full page](/client/assets/full-page.png)
-
 ### Main Page
 
-![main page](/client/assets/main.png)
+![main page](/client/assets/demoList.png)
 
-### List Items Close-Up
+### User List
 
-![user list](/client/assets/user-list.png)
+![user list](/client/assets/userList.png)
 
-### List Header Close-Up
+### New List
 
-![user list header](/client/assets/user-list-top.png)
+![new list](/client/assets/newList.png)
+
+### Search to Add Items
+
+![search](/client/assets/addItems.png)
 
 ## Tech Stack
 
