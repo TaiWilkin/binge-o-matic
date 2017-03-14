@@ -12,8 +12,8 @@ describe('reducer', () => {
     initState.searchMovies.length.should.equal(0);
     initState.loading.should.equal(false);
     initState.lists.length.should.equal(0);
-    initState.list.should.equal(1);
-    initState.listName.should.equal('Select or Create a List');
+    initState.list.should.equal(37);
+    initState.listName.should.equal('Marvel Demo');
   });
   it('should handle FETCH_MOVIES_REQUEST', () => {
     const result = reducer([], {
