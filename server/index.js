@@ -40,7 +40,6 @@ const postShow = (body, list_id) => {
     if (count > 0) {
       return true;
     }
-    console.log('inserting show id', body.id);
     return knex('shows').insert(body);
   })
   .then(() =>
@@ -86,7 +85,6 @@ app.post('/lists/:list_id/show', ({ body, params: { list_id } }, res) => {
     if (count > 0) {
       return true;
     }
-    console.log('inserting show id', body.id);
     return knex('shows').insert(body);
   })
   .then(() =>

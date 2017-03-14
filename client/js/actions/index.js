@@ -28,7 +28,6 @@ export const fetchMovies = (listId) => (dispatch) => {
 
   fetch(`${listsUrl}/${listId}`)
   .then(res => {
-    console.log('fetchMoviesRequest');
     if (!res.ok) {
       const error = new Error(res.statusText);
       error.response = res;
@@ -105,7 +104,6 @@ export const deleteMovie = (path) => (dispatch) => {
 
   fetch(listsUrl + path, { method: 'delete' })
   .then(res => {
-    console.log('deleteMovieRequest');
     if (!res.ok) {
       const error = new Error(res.statusText);
       error.response = res;
@@ -149,7 +147,6 @@ export const addMovie = (movie, list) => (dispatch) => {
           body: JSON.stringify(movie)
         })
   .then(res => {
-    console.log('addMovieRequest');
     if (!res.ok) {
       const error = new Error(res.statusText);
       error.response = res;
@@ -188,7 +185,6 @@ export const getSeasons = (path) => (dispatch) => {
 
   fetch(seasonsUrl + path, { method: 'post' })
   .then(res => {
-    console.log('getSeasonsRequest');
     if (!res.ok) {
       const error = new Error(res.statusText);
       error.response = res;
@@ -232,7 +228,6 @@ export const getEpisodes = (season) => (dispatch) => {
           body: JSON.stringify(season)
         })
   .then(res => {
-    console.log('getEpisodesRequest');
     if (!res.ok) {
       const error = new Error(res.statusText);
       error.response = res;
@@ -270,7 +265,6 @@ export const getLists = () => (dispatch) => {
 
   fetch(listsUrl)
   .then(res => {
-    console.log('getListsRequest');
     if (!res.ok) {
       const error = new Error(res.statusText);
       error.response = res;
@@ -319,7 +313,6 @@ export const addList = (list) => (dispatch) => {
 
   fetch(`${listsUrl}/${list.name}`, { method: 'post' })
   .then(res => {
-    console.log('addListRequest');
     if (!res.ok) {
       const error = new Error(res.statusText);
       error.response = res;
@@ -368,7 +361,6 @@ export const editList = (path, name) => (dispatch) => {
           body: JSON.stringify(body)
         })
   .then(res => {
-    console.log('editListRequest');
     if (!res.ok) {
       const error = new Error(res.statusText);
       error.response = res;
@@ -411,7 +403,6 @@ export const deleteList = (path) => (dispatch) => {
   fetch(listsUrl + path,
               { method: 'delete' })
   .then(res => {
-    console.log('deleteListRequest');
     if (!res.ok) {
       const error = new Error(res.statusText);
       error.response = res;
@@ -460,7 +451,6 @@ export const markWatched = (path, body) => (dispatch) => {
           body: JSON.stringify(body)
       })
   .then(res => {
-    console.log('markWatchedRequest');
     if (!res.ok) {
       const error = new Error(res.statusText);
       error.response = res;

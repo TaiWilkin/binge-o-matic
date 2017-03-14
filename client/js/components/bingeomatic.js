@@ -66,8 +66,7 @@ class Bingeomatic extends Component {
   }
 }
 
-const mapStateToProps = ({ userLists, list, page, lists }) => {
-  console.log(lists)
+const mapStateToProps = ({ userLists, list, page }) => {
   return { userLists, list, page };
 };
 
