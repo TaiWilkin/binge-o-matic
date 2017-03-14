@@ -362,7 +362,7 @@ const moviesReducer = (state = initialState, action) => {
   case actions.USER_LISTS_FETCH:
     return Object.assign({}, state, { userLists: [], loading: true });
   case actions.USER_LISTS_FETCH_SUCCESS:
-    return Object.assign({}, state, { userLists: action.lists, loading: false, page: 'search' });
+    return Object.assign({}, state, { userLists: action.lists, loading: false, page: 'home' });
   default:
     return state;
   }

@@ -4,7 +4,7 @@ import * as actions from '../actions';
 import ListMovie from './ListMovie';
 import Episode from './episode';
 
-class SampleList extends Component {
+class PublicList extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -72,4 +72,4 @@ const mapStateToProps = (state, props) => ({
   listName: state.listName
 });
 
-export default connect(mapStateToProps)(SampleList);
+export default connect(mapStateToProps)(PublicList);

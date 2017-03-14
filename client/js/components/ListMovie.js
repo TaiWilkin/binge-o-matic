@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-const UserMovie = (props) => {
+const ListMovie = (props) => {
     let title = props.title;
     let img = (<img src={`https://image.tmdb.org/t/p/w92${props.poster_path}`} alt='poster' />);
     if (!props.poster_path) {
@@ -22,4 +22,4 @@ const UserMovie = (props) => {
   );
 };
 
-export default UserMovie;
+export default ListMovie;

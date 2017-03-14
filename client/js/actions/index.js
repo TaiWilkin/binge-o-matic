@@ -68,7 +68,6 @@ export const searchMovies = (query) =>
   const searchUrl = `/search/${query}`;
   fetch(searchUrl)
   .then(res => {
-    console.log('searchMoviesRequest');
     if (!res.ok) {
       const error = new Error(res.statusText);
       error.response = res;
@@ -378,7 +377,12 @@ export const editList = (path, name) => (dispatch) => {
     return res;
   })
   .then(res => res.json())
-  .then(list => dispatch(editListSuccess(list)))
+  .then(list => {
+    const { currentUser } = firebase.auth();
+    firebase.database().ref(`users/${currentUser.uid}/lists${path}/name`)
+    .set(name);
+    dispatch(editListSuccess(list));
+  })
   .catch(err => {
     console.error('editListError', err);
     editListError(err);
@@ -416,7 +420,12 @@ export const deleteList = (path) => (dispatch) => {
     return res;
   })
   .then(res => res.json())
-  .then(list => dispatch(deleteListSuccess(list)))
+  .then(list => {
+    const { currentUser } = firebase.auth();
+    firebase.database().ref(`users/${currentUser.uid}/lists${path}`)
+    .remove();
+    dispatch(deleteListSuccess(list));
+  })
   .catch(err => {
     console.error('deleteListError', err);
     deleteListError(err);

@@ -95,6 +95,7 @@ ul li.right {float: right;}
 
 .watchlist li {
   margin-top: 5px;
+	overflow: hidden;
 }
 .watchlist li > div {
   background-color: #fefbd8;
@@ -102,10 +103,11 @@ ul li.right {float: right;}
   padding: 10px;
   width: 90%;
   margin: auto;
+	height: 100px;
 }
 
 li img {
-  width: 60px;
+  width: 70px;
   display: inline-block;
   vertical-align: middle;
 }
@@ -113,11 +115,16 @@ li img {
 .watchlist p {
   display: inline-block;
   padding: 0 10px 0 10px;
+	width: 33%;
+}
+
+.list-options {
+	float: right;
 }
 
 button {
   font-family: 'Raleway', Arial;
-  font-size: 15px;
+  font-size: 20px;
   padding: 10px;
   background-color: #80ced6;
   border: none;
@@ -125,30 +132,35 @@ button {
 
 .watchlist button {
   float: right;
-  margin: 10px;
+  margin: 35px 10px 35px 10px;
 }
 
 .filter {
   text-align: center;
 }
 
+.filter button {
+	margin: 10px;
+}
+
 a {
     color: black;
+		font-size: 20px;
 }
 
 form {
   background-color: #d5f4e6;
   padding: 10px;
-  width: 300px;
+  width: 425px;
   margin: 15px auto;
   font-size: 15px;
   text-align: center;
 }
 
 input {
-  font-size: 15px;
+  font-size: 20px;
   font-family: 'Raleway', Arial;
-  width: 200px;
+  width: 300px;
   padding: 10px;
   margin-right: 5px;
   border: none;
@@ -173,6 +185,12 @@ form.login {
   margin: auto;
 }
 
+.edit-btn {
+  margin: 25px 20px 25px 0;
+  display: inline-block;
+  float: right;
+}
+
 .subheader h2 {
   display: inline-block;
   font-size: 30px;
@@ -190,6 +208,7 @@ footer {
   background-color: #d5f4e6;
   font-family: 'Raleway', sans-serif;
 	margin-top: 400px;
+	padding: 10px;
 }
 
 footer img {
@@ -200,10 +219,9 @@ footer img {
 
 .error {
   color: white;
-  background-color: red;
-  width: 34.5%;
-	font-size: 30px;
-  margin: -15px auto;
+  width: 33%;
+	font-size: 25px;
+	margin: auto;
 }
 
 .spinner {
@@ -224,16 +242,23 @@ footer img {
 @media screen and (max-width: 600px){
   form.login {width: 100%;}
 	li.right, li {
-	 float: none;
-	 width: 100%;
-}
-.watchlist button {
-	float: none;
-	display: block;
-	margin: 10px auto;
-}
-.edit-btn {
-	float: none;
-	margin: 10px;
-}
+		float: none;
+		width: 100%;
+	}
+	.watchlist button {
+		float: none;
+		display: block;
+		margin: 10px auto;
+	}
+	.edit-btn {
+		float: none;
+		margin: 10px;
+	}
+	.search {
+		width: 100%;
+	}
+	.search input {
+		width: 80%;
+		margin: 5px auto;
+	}
 }

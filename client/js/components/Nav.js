@@ -39,7 +39,7 @@ class Nav extends React.Component {
       case true: {
         const options = this.props.userLists.map(list =>
           (<a
-            onClick={(e) => { e.preventDefault(); this.handleChange(list.id); }}
+            onClick={(e) => { e.preventDefault(); this.handleChange(list.id); this.props.dispatch(actions.setPage('home')); }}
             key={list.id} value={list.id}
           >{list.name}</a>));
           return (
@@ -59,7 +59,7 @@ class Nav extends React.Component {
 
   render() {
     const options = this.props.lists.map(list =>
-      (<a onClick={(e) => { e.preventDefault(); this.handleChange(list.id); } } key={list.id} value={list.id}>{list.name}</a>));
+      (<a onClick={(e) => { e.preventDefault(); this.handleChange(list.id); this.handleChange(list.id); this.props.dispatch(actions.setPage('home')); } } key={list.id} value={list.id}>{list.name}</a>));
     return (
       <nav>
         <ul className="nav">
@@ -70,7 +70,7 @@ class Nav extends React.Component {
               </div>
           </li>
           {this.renderMyLists()}
-          <li><a>New List</a></li>
+          <li><a onClick={() => { this.props.dispatch(actions.setPage('newList')); }}>New List</a></li>
           {this.renderLogin()}
         </ul>
       </nav>

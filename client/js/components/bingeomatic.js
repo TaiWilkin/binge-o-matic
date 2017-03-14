@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
-import UserList from './user-list';
-import SearchList from './search-list';
-import Search from './search';
-import NewList from './new-list';
-import Directions from './Directions';
+import NewList from './NewList';
 import Nav from './Nav';
-import SampleList from './SampleList';
 import Login from './Login';
+import UserList from './UserList';
+import SearchMovies from './SearchMovies';
+import Edit from './Edit';
 import * as actions from '../actions';
 
 class Bingeomatic extends Component {
@@ -36,13 +34,17 @@ class Bingeomatic extends Component {
   renderMain() {
     switch (this.props.page) {
       case 'home':
-        return <SampleList />;
+        return <UserList />;
       case 'login':
         return <Login />;
       case 'newList':
         return <NewList />;
+      case 'edit':
+        return <Edit />;
+      case 'search':
+        return <SearchMovies />;
       default:
-        return <SampleList />;
+        return <UserList />;
     }
   }
 
@@ -53,18 +55,19 @@ class Bingeomatic extends Component {
           <h1>Binge-<img className="eye" src="../assets/bright-eye.png" alt="o" />-matic</h1>
         </header>
         <Nav />
-        <NewList />
         {this.renderMain()}
         <footer>
            <img src="https://www.themoviedb.org/assets/23e473036b28a59bd5dcfde9c671b1c5/images/v4/logos/312x276-primary-green.png" alt="poster" />This product uses the TMDb API but is not endorsed or certified by TMDb.
+           <p>Icon made by <a href="http://www.freepik.com/">Freepik</a> from <a href="http://www.flaticon.com/">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/">CC 3.0 BY</a></p>
         </footer>
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ list, page }) => {
-  return { list, page };
+const mapStateToProps = ({ userLists, list, page, lists }) => {
+  console.log(lists)
+  return { userLists, list, page };
 };
 
 export default connect(mapStateToProps)(Bingeomatic);

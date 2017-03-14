@@ -54,7 +54,9 @@ class Login extends React.Component {
       <main>
         <div>
           <h2>Login</h2>
-          <button className="right">Cancel</button>
+          <button className="right" onClick={() => this.props.dispatch(actions.setPage('home'))}>
+            Cancel
+          </button>
         </div>
         <h3 className="error">{this.state.error}</h3>
         <form className="login" onSubmit={(e) => this.handleSubmit(e)}>
