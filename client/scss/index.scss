@@ -1,148 +1,3 @@
-* {
-	box-sizing: border-box;
-	font-family: 'Raleway', sans-serif;
-	border-radius: 10px;
-}
-
-body {
-	background-color: #618685;
-	text-align: center;
-}
-
-.searchList {
-	width: 30%;
-	float: left;
-	background-color: #fefbd8;
-	li {background-color: #80ced6;
-	margin-right: 50px;};
-	p {padding: 10px}
-}
-
-.check {
-	font-size: 1.5em;
-}
-
-img {
-	width: 92px;
-}
-
-.userList {
-	width: 65%;
-	float: right;
-	background-color: #80ced6;
-	li {background-color: #fefbd8;}
-	margin-left: 5%;
-}
-
-.tmdbLogo, h1 {
-	img { width: 92px };
-	width: 100%;
-	clear: both;
-	text-align: center;
-	padding: 10px;
-	background-color: #d5f4e6;
-}
-
-h1 {
-	font-family: 'Kumar One', cursive;
-}
-
-.lists {
-	padding: 20px;
-	width: 100%
-}
-
-li {
-	width: 70%;
-	list-style: none;
-	img {display: inline-block;
-		position: relative;
-		left: 0px;
-		margin-right: 10px;
-	}
-	border: 2px solid black;
-	margin: auto;
-	padding: 5px;
-	margin-bottom: 5px;
-}
-
-.episode {
-	width: 90%;
-}
-
-.search {
-	width: 85%;
-}
-
-.searchbar {
-	width: 90%;
-}
-
-.getList, .listmaker {
-	width: 400px;
-}
-
-
-.listbar {
-	width: 270px;
-}
-
-.listselectors {
-	width: 380px;
-}
-
-.search, .getList, .listmaker, .editor {
-	background-color: #f6f6f6;
-	margin: 25px auto;
-	overflow: hidden;
-	padding: 8px;
-	display: inline-block;
-}
-
-.listmaker, .getList {
-	margin-left: 25px;
-}
-
-.searchbar, .listselectors, .listbar {
-	border: 1px solid #CCC;
-	box-shadow: 0 1px 1px #ddd inset, 0 1px 0 #FFF;
-  	color: #000000;
-	float: left;
-	font-size: 1em;
-	height: 40px;
-	padding: 10px;
-}
-
-button {
-	background-color: #0483a0;
-	background-image: linear-gradient(top, #31b2c3, #0483a0);
-	border: 1px solid #00748f;
-	color: #fafafa;
-	height: 42px;
-	float: right;
-	font-size: 15px;
-	padding: 0;
-	text-shadow: 0 1px 0 rgba(0, 0 ,0, .3);
-	width: 100px;
-}
-
-.userList button {
-	margin-top: 20px;
-	margin-right: 5px;
-}
-
-p, h2 {
-	display: inline-block;
-}
-
-
-.searchList, .userList, h1, .tmdbLogo, .search, .getList, .listmaker, .editor {
-	margin-bottom: 10px;
-}
-
-.searchList button {
-	float: none;
-}
 
 .eye {
 	width: 40px;
@@ -151,50 +6,259 @@ p, h2 {
 	top: 10px;
 }
 
-.footer {
-	margin-top: 150px;
+body {
+  margin: 0;
+  background-color: #618685;
 }
 
-
-@media only screen and (max-width: 800px) {
-    .searchList, .userList, h1, .tmdbLogo, .search, .getList, .listmaker, .editor, .listButton {
-    	width: 100%;
-    	margin: 1% auto;
-    }
+h1 {
+  font-family: 'Kumar One', cursive;
+  text-align: center;
+  background-color: #d5f4e6;
+  margin: 0;
+  padding-top: 10px;
 }
 
-.episode>p, li>h4, {
-	cursor: pointer;
+h2 {
+ padding-left: 20px;
+ font-family: 'Raleway', Arial;
+ display: inline-block;
 }
 
-.hidden {
-	display: none;
+button.right {
+  float: right;
+  margin: 20px;
 }
 
-.listButton {
-	width: 14%;
-	height: 50px;
-	margin: 35px 0.5%;
+h3 {
+ text-align: center;
+ font-family: 'Raleway', Arial;
 }
 
-.directions {
-	h3 { display: block };
-	width: 50%;
-	margin: auto;
-	padding: 20px;
-	background-color: #d5f4e6;
-	li {
-		background-color: #80ced6;
-		display: block;
-		font-size: 1em;
-		width: 100%;
-	};
-	p {padding: 10px}
-	font-size: 1.5em;
-	.info { width: 50%; display: inline-block; border-right: 1px solid black; border-radius: 0 };
-	.steps { width: 50%; float: right };
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+ul.nav {
+    background-color: #80ced6;
+    border-top: 3px solid #0483a0;
+}
+
+.nav li {
+    float: left;
+}
+
+li a, .dropbtn {
+    display: block;
+    color: black;
+    font-family: 'Raleway', Arial;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover, .dropdown:hover .dropbtn {
+    background-color: #0483a0;
+}
+
+li.dropdown {
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #d5f4e6;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+ul li.right {float: right;}
+
+.dropdown-content a:hover {background-color: #80ced6}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.watchlist li {
+  margin-top: 5px;
+	overflow: hidden;
+}
+.watchlist li > div {
+  background-color: #fefbd8;
+  font-family: 'Raleway', Arial;
+  padding: 10px;
+  width: 90%;
+  margin: auto;
+	height: 100px;
+}
+
+li img {
+  width: 70px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.watchlist p {
+  display: inline-block;
+  padding: 0 10px 0 10px;
+	width: 33%;
+}
+
+.list-options {
+	float: right;
+}
+
+button {
+  font-family: 'Raleway', Arial;
+  font-size: 20px;
+  padding: 10px;
+  background-color: #80ced6;
+  border: none;
+}
+
+.watchlist button {
+  float: right;
+  margin: 35px 10px 35px 10px;
 }
 
 .filter {
-	button { margin: 2px }
+  text-align: center;
+}
+
+.filter button {
+	margin: 10px;
+}
+
+a {
+    color: black;
+		font-size: 20px;
+}
+
+form {
+  background-color: #d5f4e6;
+  padding: 10px;
+  width: 425px;
+  margin: 15px auto;
+  font-size: 15px;
+  text-align: center;
+}
+
+input {
+  font-size: 20px;
+  font-family: 'Raleway', Arial;
+  width: 300px;
+  padding: 10px;
+  margin-right: 5px;
+  border: none;
+}
+
+label {
+  font-family: 'Raleway', Arial;
+  font-size: 15px;
+  display: block;
+  padding: 10px;
+}
+
+form.login {
+  width: 33%;
+}
+
+.login input {
+  width: 90%;
+}
+.standalone-btn {
+  display: block;
+  margin: auto;
+}
+
+.edit-btn {
+  margin: 25px 20px 25px 0;
+  display: inline-block;
+  float: right;
+}
+
+.subheader h2 {
+  display: inline-block;
+  font-size: 30px;
+  padding-left: 20px;
+}
+
+.subheader {
+  padding-left: 20px;
+  background-color: #d5f4e6;
+  width: 90%;
+  margin: 10px auto;
+}
+
+footer {
+  background-color: #d5f4e6;
+  font-family: 'Raleway', sans-serif;
+	margin-top: 400px;
+	padding: 10px;
+}
+
+footer img {
+  width: 70px;
+  vertical-align: middle;
+  padding: 10px;
+}
+
+.error {
+  color: white;
+  width: 33%;
+	font-size: 25px;
+	margin: auto;
+}
+
+.spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #618685;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+		margin: auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@media screen and (max-width: 600px){
+  form.login {width: 100%;}
+	li.right, li {
+		float: none;
+		width: 100%;
+	}
+	.watchlist button {
+		float: none;
+		display: block;
+		margin: 10px auto;
+	}
+	.edit-btn {
+		float: none;
+		margin: 10px;
+	}
+	.search {
+		width: 100%;
+	}
+	.search input {
+		width: 80%;
+		margin: 5px auto;
+	}
 }

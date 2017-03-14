@@ -1,54 +1,73 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import UserList from './user-list';
-import SearchList from './search-list';
-import Search from './search';
-import ListSelect from './list-select';
-import NewList from './new-list';
-import Directions from './Directions';
+import firebase from 'firebase';
+import NewList from './NewList';
+import Nav from './Nav';
+import Login from './Login';
+import UserList from './UserList';
+import SearchMovies from './SearchMovies';
+import Edit from './Edit';
 import * as actions from '../actions';
 
 class Bingeomatic extends Component {
-  render() {
-    let lists = 'lists';
-    let searchBar = '';
-    let selectors = 'hidden';
-    let guide = <div />;
-    if (this.props.list === 1) {
-      lists = 'lists hidden';
-      searchBar = 'hidden';
-      selectors = '';
-      guide = <Directions />
+  componentWillMount() {
+    firebase.initializeApp({
+      apiKey: 'AIzaSyBJEYOUN6R72itj0DTbb5KsMtjH-7cpr2o',
+      authDomain: 'binge-o-matic.firebaseapp.com',
+      databaseURL: 'https://binge-o-matic.firebaseio.com',
+      storageBucket: 'binge-o-matic.appspot.com',
+      messagingSenderId: '643020325655'
+    });
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.props.dispatch(actions.setPage('home'));
+        this.props.dispatch(actions.loggedIn(true));
+        this.props.dispatch(actions.fetchUserLists());
+      } else {
+        this.props.dispatch(actions.setPage('login'));
+        this.props.dispatch(actions.loggedIn(false));
+        this.props.dispatch({ type: actions.USER_LISTS_FETCH_SUCCESS, lists: [] });
+      }
+    });
+  }
+
+  renderMain() {
+    switch (this.props.page) {
+      case 'home':
+        return <UserList />;
+      case 'login':
+        return <Login />;
+      case 'newList':
+        return <NewList />;
+      case 'edit':
+        return <Edit />;
+      case 'search':
+        return <SearchMovies />;
+      default:
+        return <UserList />;
     }
+  }
+
+  render() {
     return (
       <div className="bingomatic">
-        <div className="searches">
+        <header>
           <h1>Binge-<img className="eye" src="../assets/bright-eye.png" alt="o" />-matic</h1>
-          <div className={searchBar}>
-              <Search />
-          </div>
-          <div className={selectors}>
-            <ListSelect />
-            <NewList />
-          </div>
-          {guide}
-        </div>
-        <div className={lists}>
-          <SearchList />
-          <UserList />
-        </div>
-        <div className="footer">
-          <div className="tmdbLogo"><img src="https://www.themoviedb.org/assets/23e473036b28a59bd5dcfde9c671b1c5/images/v4/logos/312x276-primary-green.png" alt="poster" />This product uses the TMDb API but is not endorsed or certified by TMDb.</div>
-          <p>Searchbars inspired by Zohar Yzgeav on CodePen.</p>
-          <div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank" rel="noopener noreferrer">CC 3.0 BY</a></div>
-        </div>
+        </header>
+        <Nav />
+        {this.renderMain()}
+        <footer>
+           <img src="https://www.themoviedb.org/assets/23e473036b28a59bd5dcfde9c671b1c5/images/v4/logos/312x276-primary-green.png" alt="poster" />This product uses the TMDb API but is not endorsed or certified by TMDb.
+           <p>Icon made by <a href="http://www.freepik.com/">Freepik</a> from <a href="http://www.flaticon.com/">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/">CC 3.0 BY</a></p>
+        </footer>
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ list }) => {
-  return { list };
+const mapStateToProps = ({ userLists, list, page, lists }) => {
+  console.log(lists)
+  return { userLists, list, page };
 };
 
 export default connect(mapStateToProps)(Bingeomatic);

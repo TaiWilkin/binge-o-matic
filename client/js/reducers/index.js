@@ -9,7 +9,10 @@ const initialState = {
   lists: [],
   list: 1,
   listName: 'Select or Create a List',
-  filter: 'all'
+  filter: 'all',
+  page: 'home',
+  loggedIn: null,
+  userLists: []
 };
 
 const sortMovies = (movies) => {
@@ -352,6 +355,14 @@ const moviesReducer = (state = initialState, action) => {
       );
   case actions.FILTER_SEARCH:
     return Object.assign({}, state, { filter: action.filter });
+  case actions.SET_PAGE:
+    return Object.assign({}, state, { page: action.page });
+  case actions.LOGGED_IN:
+    return Object.assign({}, state, { loggedIn: action.status });
+  case actions.USER_LISTS_FETCH:
+    return Object.assign({}, state, { userLists: [], loading: true });
+  case actions.USER_LISTS_FETCH_SUCCESS:
+    return Object.assign({}, state, { userLists: action.lists, loading: false, page: 'home' });
   default:
     return state;
   }

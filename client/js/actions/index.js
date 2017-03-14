@@ -1,4 +1,6 @@
 import 'isomorphic-fetch';
+import firebase from 'firebase';
+import _ from 'lodash';
 
 const seasonsUrl = '/seasons';
 const episodesUrl = '/episodes';
@@ -66,7 +68,6 @@ export const searchMovies = (query) =>
   const searchUrl = `/search/${query}`;
   fetch(searchUrl)
   .then(res => {
-    console.log('searchMoviesRequest');
     if (!res.ok) {
       const error = new Error(res.statusText);
       error.response = res;
@@ -327,7 +328,12 @@ export const addList = (list) => (dispatch) => {
     return res;
   })
   .then(res => res.json())
-  .then(list => dispatch(addListSuccess(list)))
+  .then(response => {
+    dispatch(addListSuccess(response));
+    const { currentUser } = firebase.auth();
+    firebase.database().ref(`users/${currentUser.uid}/lists/${response.id}`)
+      .set({ name: response.name });
+  })
   .catch(err => {
     console.error('addListError', err);
     addListError(err);
@@ -371,7 +377,12 @@ export const editList = (path, name) => (dispatch) => {
     return res;
   })
   .then(res => res.json())
-  .then(list => dispatch(editListSuccess(list)))
+  .then(list => {
+    const { currentUser } = firebase.auth();
+    firebase.database().ref(`users/${currentUser.uid}/lists${path}/name`)
+    .set(name);
+    dispatch(editListSuccess(list));
+  })
   .catch(err => {
     console.error('editListError', err);
     editListError(err);
@@ -409,7 +420,12 @@ export const deleteList = (path) => (dispatch) => {
     return res;
   })
   .then(res => res.json())
-  .then(list => dispatch(deleteListSuccess(list)))
+  .then(list => {
+    const { currentUser } = firebase.auth();
+    firebase.database().ref(`users/${currentUser.uid}/lists${path}`)
+    .remove();
+    dispatch(deleteListSuccess(list));
+  })
   .catch(err => {
     console.error('deleteListError', err);
     deleteListError(err);
@@ -465,3 +481,38 @@ export const filterSearch = (filter) => ({
   type: FILTER_SEARCH,
   filter
 });
+
+export const SET_PAGE = 'SET_PAGE';
+export const setPage = (page) => ({
+  type: SET_PAGE,
+  page
+});
+
+export const LOGGED_IN = 'LOGGED_IN';
+export const loggedIn = (status) => ({
+    type: LOGGED_IN,
+    status
+});
+
+export const USER_LISTS_FETCH = 'USER_LISTS_FETCH';
+export const USER_LISTS_FETCH_SUCCESS = 'USER_LISTS_FETCH_SUCCESS';
+export const USER_LISTS_FETCH_FAILURE = 'USER_LISTS_FETCH_FAILURE';
+export const fetchUserLists = () => {
+  const { currentUser } = firebase.auth();
+
+  return dispatch => {
+    dispatch({ type: USER_LISTS_FETCH });
+    firebase.database().ref(`users/${currentUser.uid}/lists`)
+      .on('value', snapshot => {
+        let lists = snapshot.val();
+        if (lists) {
+          lists = _.map(lists, (val, id) => ({
+            ...val, id
+          }))
+        } else {
+          lists = [];
+        }
+        dispatch({ type: USER_LISTS_FETCH_SUCCESS, lists });
+      });
+  };
+};
