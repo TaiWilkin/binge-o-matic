@@ -37,54 +37,79 @@ export class UserMovie extends React.Component {
     this.props.dispatch(actions.getEpisodes(this.props));
   }
 
-  renderButtons() {
-    switch (this.props.media_type) {
-      case 'movie':
-        return (<div className="list-options">
-          <button onClick={this.onClick}>Delete</button>
-        </div>);
-      case 'tv':
-        return (<div className="list-options">
-          <button onClick={this.onClick}>Delete</button>
-          <button onClick={this.addSeasons}>Show Seasons</button>
-        </div>);
-      case 'season':
-        return (<div className="list-options">
-          <button onClick={this.onClick}>Delete</button>
-          <button onClick={this.addEpisodes}>Show Episodes</button>
-        </div>);
-      case 'episode':
-        return (<div className="list-options">
-          <button onClick={this.onClick}>Delete</button>
-        </div>);
-      default:
-        return (<div className="list-options">
-          <button onClick={this.onClick}>Delete</button>
-        </div>);
+  renderWatched() {
+    if (this.props.watched == true) {
+      return <button className="drop" onClick={this.onCheck}>MARK AS UNWATCHED</button>;
     }
+      return <button className="drop" onClick={this.onCheck}>MARK AS WATCHED</button>;
+  }
+
+  renderButtons() {
+    if (this.props.owner) {
+      switch (this.props.media_type) {
+        case 'movie':
+          return (<div className="card-actions">
+            <button className="options">OPTIONS</button>
+            <button className="drop" onClick={this.onClick}>DELETE</button>
+            {this.renderWatched()}
+          </div>);
+        case 'tv':
+          return (<div className="card-actions">
+            <button className="options">OPTIONS</button>
+            <button className="drop" onClick={this.onClick}>DELETE</button>
+            <button className="drop" onClick={this.addSeasons}>SHOW SEASONS</button>
+            {this.renderWatched()}
+          </div>);
+        case 'season':
+          return (<div className="card-actions">
+            <button className="options">OPTIONS</button>
+            <button className="drop" onClick={this.onClick}>DELETE</button>
+            <button className="drop" onClick={this.addEpisodes}>SHOW EPISODES</button>
+            {this.renderWatched()}
+          </div>);
+        case 'episode':
+          return (<div className="card-actions">
+            <button className="options">OPTIONS</button>
+            <button className="drop" onClick={this.onClick}>DELETE</button>
+            {this.renderWatched()}
+          </div>);
+        default:
+          return (<div className="card-actions">
+            <button className="options">OPTIONS</button>
+            <button className="drop" onClick={this.onClick}>Delete</button>
+            {this.renderWatched()}
+          </div>);
+      }
+    }
+    return <div className="card-actions empty" />;
   }
 
   render() {
-    let title = this.props.title;
-    let img = (<img src={`https://image.tmdb.org/t/p/w92${this.props.poster_path}`} alt='poster' />);
-    if (!this.props.poster_path) {
-      img = '';
-    }
-    if (this.props.media_type === 'season') {
-      title = `${this.props.title}: Season ${this.props.number}`;
-    }
-    if (this.props.media_type === 'episode') {
-      title = `${this.props.title}: Episode ${this.props.number}: ${this.props.episode}`;
-    }
-    if (this.props.media_type === 'season' && this.props.number === 0) {
+    if (this.props.media_type === 'season' && (this.props.number === 0 || !this.props.number)) {
       return null;
     }
+    const title = this.props.title;
+    let img = (<img src={`https://image.tmdb.org/t/p/w92${this.props.poster_path}`} alt='poster' />);
+    let details = '';
+    if (this.props.media_type === 'season' && this.props.number) {
+      details = `Season ${this.props.number}`;
+    }
+    if (this.props.media_type === 'episode') {
+      details = `Episode ${this.props.number}: ${this.props.episode}`;
+      img = (<img src={`https://image.tmdb.org/t/p/w185${this.props.poster_path}`} alt='poster' />);
+    }
+    if (!this.props.poster_path) {
+      img = (<div className="no-image" />);
+    }
     return (
-      <li id={this.props.id}><div>
+      <li id={this.props.id} className={this.props.media_type}>
+        <div className="circle" />
         {img}
-        <p>{title} ({this.props.release_date})</p>
+        <h2>{title}</h2>
+        <p>{details}</p>
+        <p>{this.props.release_date}</p>
         {this.renderButtons()}
-      </div></li>
+      </li>
   );
   }
 }

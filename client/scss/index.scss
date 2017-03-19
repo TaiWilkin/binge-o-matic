@@ -1,3 +1,17 @@
+$dark-primary-color: #0097A7;
+$default-primary-color: #00BCD4;
+$light-primary-color: #B2EBF2;
+$text-primary-color: #FFFFFF;
+$accent-color: #009688;
+$primary-text-color: rgb(97,97,97);
+$secondary-text-color: rgb(150,150,150);
+$divider-color: rgb(225, 225, 225);
+$background: rgb(245, 245, 245);
+
+* {
+	box-sizing: border-box;
+}
+
 .eye {
 	width: 40px;
 	height: 40px;
@@ -7,15 +21,19 @@
 
 body {
   margin: 0;
-  background-color: #374244;
+  background-color: $background;
 }
 
 h1 {
   font-family: 'Kumar One', cursive;
   text-align: center;
-  background-color: #30A5BA;
+  background-color: $default-primary-color;
+	font-weight: 400;
+	font-size: 34px;
+	line-height: 40px;
   margin: 0;
-  padding-top: 10px;
+	height: 64px;
+  padding: 64px 0px;
 }
 
 h2 {
@@ -38,29 +56,41 @@ ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    overflow: hidden;
+}
+
+button {
+  font-family: 'Raleway', sans-serif;
+  font-size: 20px;
+  padding: 10px;
+  background-color: Transparent;
+  border: none;
+	color: white;
+}
+
+button:focus {
+	outline: none;
 }
 
 ul.nav {
-    background-color: #80ced6;
-    border-top: 3px solid #094353;
+    background: $dark-primary-color;
+		overflow: hidden;
 }
 
 .nav li {
     float: left;
 }
 
-.nav li button, .dropbtn {
+.nav li button, .dropbtn, .subheader {
     display: block;
-    color: black;
+    color: rgba(255, 255, 255, 0.7);
     font-family: 'Raleway', sans-serif;
     text-align: left;
-    padding: 14px 16px;
+    padding: 18px 20px;
     text-decoration: none;
 }
 
 .nav li button:hover, .dropdown:hover .dropbtn {
-    color: #0483a0;
+  	color: rgb(255, 255, 255);
 }
 
 li.dropdown {
@@ -70,7 +100,7 @@ li.dropdown {
 .dropdown-content {
     display: none;
     position: absolute;
-    background-color: #30A5BA;
+    background-color: $dark-primary-color;
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
@@ -87,46 +117,115 @@ ul li.right {float: right;}
     display: block;
 }
 
-.watchlist li {
-  margin-top: 5px;
-	overflow: hidden;
-}
-.watchlist li > div {
-  background-color: #aaefed;
-  font-family: 'Raleway', sans-serif;
-  padding: 10px;
-  width: 90%;
-  margin: auto;
-	height: 100px;
+ul.watchlist {
+	margin: 50px auto;
+	color: $primary-text-color;
+	width: 80%;
+	max-width: 720px;
+	padding-left: 20px;
+	border-left: 2px solid $default-primary-color;
 }
 
-li img {
-  width: 70px;
+.watchlist li {
+	width: 100%;
+	box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+	// overflow: hidden;
+	margin-top: 30px;
+	max-width: 650px;
+	margin-left: 20px;
+	background-color: white;
+}
+
+.watchlist li.episode {
+	margin-left: 140px;
+}
+
+.watchlist li.season {
+	margin-left: 70px;
+}
+
+.watchlist::before {
+	content: 'START';
+	margin-left: -45px;
+	background-color: $background;
+	font-size: 15px;
+	color: $secondary-text-color;
+	font-family: 'Raleway', sans-serif;
+	line-height: 20px;
+	padding-bottom: 10px;
+}
+
+.watchlist::after {
+	content: 'END';
+	margin-left: -36px;
+	background-color: $background;
+	font-size: 15px;
+	color: $secondary-text-color;
+	font-family: 'Raleway', sans-serif;
+	line-height: 20px;
+	padding-top: 10px;
+}
+
+.no-image {
+	padding-right: 20px;
+	padding-bottom: 20px;
+	float: left;
+	height: 140px;
+}
+
+.circle {
+	background-color: $background;
+	width: 15px;
+	height: 15px;
+	border-radius: 50%;
+	border: 2px solid $default-primary-color;
+	margin-left: -48.5px;
+	float: left;
+	margin-top: 20px;
+}
+
+.episode .circle {
+	margin-left: -168.5px;
+}
+
+.season .circle {
+	margin-left: -98.5px;
+}
+
+.watchlist li img {
+	padding: 20px;
+	// padding-right: 20px;
+  // padding-bottom: 20px;
+  float: left;
+}
+
+.watchlist button, .subheader button {
+	color: #009688;
+	line-height: 1.8;
+	font-size: 16px;
+	background-color: Transparent;
+	border: none;
+	padding-right: 40px;
+}
+
+.watchlist button:hover, .subheader button:hover, .card button:hover {
+	cursor: pointer;
+	color: darkgreen;
+}
+
+.watchlist h2 {
+  font-family: 'Raleway', sans-serif;
   display: inline-block;
-  vertical-align: middle;
+  line-height: 20px;
+	padding: 0;
 }
 
 .watchlist p {
-  display: inline-block;
-  padding: 0 10px 0 10px;
-	width: 33%;
-}
-
-.list-options {
-	float: right;
-}
-
-button {
-  font-family: 'Raleway', sans-serif;
   font-size: 20px;
-  padding: 10px;
-  background-color: #80ced6;
-  border: none;
-}
-
-.watchlist button {
-  float: right;
-  margin: 35px 10px 35px 10px;
+	color: $secondary-text-color;
+  font-family: 'Raleway', sans-serif;
+  line-height: 20px;
+	margin-top: 0;
 }
 
 .filter {
@@ -142,16 +241,22 @@ a {
 		font-size: 20px;
 }
 
-form {
+.subheader form {
   background-color: #30A5BA;
   padding: 10px;
-  width: 425px;
+  width: 450px;
   margin: 15px auto;
   font-size: 15px;
   text-align: center;
+	button {
+		color: white;
+		background-color: $dark-primary-color;
+		padding-left: 20px;
+		height: 44px;
+	}
 }
 
-input {
+.subheader input {
   font-size: 20px;
   font-family: 'Raleway', sans-serif;
   width: 300px;
@@ -160,11 +265,19 @@ input {
   border: none;
 }
 
-label {
+.subheader label {
   font-family: 'Raleway', sans-serif;
   font-size: 15px;
   display: block;
   padding: 10px;
+	color: $primary-text-color;
+}
+
+.subheader h3 {
+	font-family: 'Raleway', sans-serif;
+	font-size: 20px;
+	display: block;
+	color: $primary-text-color;
 }
 
 form.login {
@@ -174,6 +287,7 @@ form.login {
 .login input {
   width: 90%;
 }
+
 .standalone-btn {
   display: block;
   margin: auto;
@@ -189,20 +303,28 @@ form.login {
   display: inline-block;
   font-size: 30px;
   padding-left: 20px;
+	color: $primary-text-color;
 }
 
 .subheader {
-  padding-left: 20px;
-  background-color: #30A5BA;
+	box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
   width: 90%;
-  margin: 10px auto;
+  margin: 20px auto;
+	background-color: white;
 }
 
 footer {
-  background-color: #30A5BA;
+  background-color: rgb(66,66,66);
   font-family: 'Raleway', sans-serif;
-	margin-top: 400px;
 	padding: 10px;
+	color: rgb(158,158,158);
+}
+
+footer a {
+	color: rgb(224,224,224);
+	text-decoration: none;
+	font-weight: normal;
+	font-size: 16px;
 }
 
 footer img {
@@ -228,45 +350,92 @@ footer img {
 		margin: auto;
 }
 
-#onList {
-	background-color: lightgrey;
+.options {
+	display: hidden;
+}
+
+li.onList {
+	background-color: rgb(230,230,230);
 }
 
 .about {
-	width: 89%;
 	font-family: 'Raleway', sans-serif;
+	width: 90%;
+	max-width: 900px;
 	line-height: 1.8;
-	font-size: 20px;
-	margin: 10px auto;
-	padding: 20px;
-	background-color: #aaefed;
+	background-color: rgb(255,255,255);
+	margin: 64px auto;
+	border-radius: 2px;
+	color: $primary-text-color;
+	font-size: 16px;
+	box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12)
 }
 
-.about p {
-	padding-left: 20px;
+.about h2 {
+	font-size: 34px;
+	padding: 0;
+	margin: 0;
+}
+
+.supporting-text {
+	padding: 40px;
 }
 
 .about span {
 	font-weight: bold;
+	color: $accent-color;
 }
 
 .simple-header {
 	color: #30A5BA;
 }
 
-#create-btn {
-	font-weight: bold;
+#create-btn, .card-actions button {
+	color: $accent-color;
+	line-height: 1.8;
+	font-size: 16px;
 	background-color: Transparent;
-	text-decoration: underline;
 }
 
 #create-btn:hover {
 	cursor: pointer;
 }
 
+.card-actions {
+	border-top: 1px solid rgb(225, 225, 225);
+	padding: 4px 10px;
+  clear: both;
+}
+
+.card-actions button:hover {
+	cursor: pointer;
+}
+
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+.wrapper {
+  min-height: 100%;
+  margin-bottom: -100px;
+}
+
+.footer, .push {
+  height: 150px;
+}
+
+ul.searchlist {
+	border: none;
+	margin-top: 0;
+}
+
+ul.searchlist::before, ul.searchlist::after {
+	content: '';
+}
+
+.empty {
+		border: none;
 }
 
 @media screen and (max-width: 600px){
@@ -291,7 +460,81 @@ footer img {
 		width: 80%;
 		margin: 5px auto;
 	}
-	.watchlist li > div {
-		height: 150px;
+	.wrapper {
+	  min-height: 100%;
+	  margin-bottom: -150px;
+	}
+
+	.footer, .push {
+	  height: 200px;
+	}
+
+	ul.watchlist {
+		border: none;
+		width: 90%;
+		padding-left: 0;
+	}
+
+	.watchlist li {
+		overflow: hidden;
+		margin-left: 0;
+		width: 100%;
+		padding: 10px;
+	}
+
+	.subheader button {
+		display: block;
+	}
+
+	.watchlist li.episode {
+		margin-left: 10%;
+		width: 90%;
+	}
+
+	.watchlist li.season {
+		margin-left: 5%;
+		width: 95%;
+	}
+
+	.watchlist h2 {
+		line-height: 25px;
+	}
+
+	.no-image {
+		display: none;
+	}
+
+	.watchlist::before, .watchlist::after {
+		content: '';
+		padding: 0;
+	}
+
+	.circle {
+		background-color: $background;
+		width: 0;
+		height: 0;
+		border: none;
+	}
+	.card-actions {
+		display: inline-block;
+		width: 100%;
+	}
+
+	.card-actions .drop {
+		display: none;
+	}
+
+	.card-actions:hover {
+		.drop { display: block; }
+		.options { display: none; }
+	}
+	.subheader form {
+		width: 90%;
+		button {
+			margin: auto;
+		}
+	}
+	.standalone-btn {
+		margin: auto;
 	}
 }

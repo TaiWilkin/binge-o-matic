@@ -29,8 +29,10 @@ class Nav extends React.Component {
         return <li className="right"><button onClick={() => firebase.auth().signOut()}>Logout</button></li>;
       case false:
         return <li className="right"><button onClick={() => {this.props.dispatch(actions.setPage('login'));}}>Login/Signup</button></li>;
+      case null:
+        return <li className="right"><button><div className="spinner" /></button></li>;
       default:
-        return null;
+        return <li className="right"><button><div className="spinner" /></button></li>;
     }
   }
 
@@ -52,10 +54,30 @@ class Nav extends React.Component {
       }
       case false:
         return null;
+      case null:
+        return <li><button><div className="spinner" /></button></li>;
       default:
-        return null;
+        return <li><button><div className="spinner" /></button></li>;
     }
   }
+
+  renderLists() {
+    console.log('lists', this.props.lists, 'userLists', this.props.userLists)
+    const options = this.props.lists.map(list =>
+      (<button
+        onClick={(e) => { e.preventDefault(); this.handleChange(list.id); this.props.dispatch(actions.setPage('home')); }}
+        key={list.id} value={list.id} className="dropdown-btn"
+        >{list.name}</button>)
+      );
+    return (
+      <li className="dropdown">
+        <button className="dropbtn">Watch-Order Lists</button>
+        <div className="dropdown-content">
+          {options}
+        </div>
+      </li>);
+    }
+
 
   render() {
     const options = this.props.lists.map(list =>
@@ -64,12 +86,7 @@ class Nav extends React.Component {
       <nav>
         <ul className="nav">
           <li><button onClick={() => { this.props.dispatch(actions.setPage('about')); }}>About</button></li>
-          <li className="dropdown">
-              <button className="dropbtn">Watchlists</button>
-              <div className="dropdown-content">
-                {options}
-              </div>
-          </li>
+          {this.renderLists()}
           {this.renderMyLists()}
           <li><button onClick={() => { this.props.dispatch(actions.setPage('newList')); }}>New List</button></li>
           {this.renderLogin()}

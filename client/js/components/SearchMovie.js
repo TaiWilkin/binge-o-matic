@@ -7,6 +7,7 @@ export class SearchMovie extends React.Component {
   constructor(props) {
     super(props);
     this.onClick = this.onClick.bind(this);
+    this.onDelete = this.onDelete.bind(this);
   }
 
   onClick() {
@@ -18,34 +19,44 @@ export class SearchMovie extends React.Component {
       "media_type": this.props.media_type
     };
     this.props.dispatch(actions.addMovie(movie, this.props.list));
-    this.props.dispatch(actions.setPage('home'));
+  }
+
+  onDelete() {
+    this.props.dispatch(actions.deleteMovie(`/${this.props.list}/shows/${this.props.id}`));
+  }
+
+  renderButtons() {
+    if (!this.props.userMovies.find(movie => movie.id === this.props.id)) {
+      return (<div className="card-actions">
+        <button onClick={this.onClick}>Add to List</button>
+      </div>);
+    }
+    return (<div className="card-actions">
+      <button onClick={this.onDelete}>Remove from List</button>
+    </div>);
+  }
+
+  renderImage() {
+    if (!this.props.poster_path) {
+      return (<div className="no-image" />);
+    }
+    return (<img src={`https://image.tmdb.org/t/p/w92${this.props.poster_path}`} alt='poster' />);
   }
 
   render() {
-    let img = `https://image.tmdb.org/t/p/w92${this.props.poster_path}`;
-
-    if (!this.props.poster_path) {
-      img = 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Clapboard.svg/1000px-Clapboard.svg.png';
-    }
-
     let onList = '';
-    let listOptions = (
-      <div className="list-options">
-        <button onClick={this.onClick}>Add to List</button>
-      </div>
-    );
 
     if (this.props.userMovies.find(movie => movie.id === this.props.id)) {
       onList = 'onList';
-      listOptions = null;
     }
-    
+
     return (
-      <li id={this.props.id}><div id={onList} >
-        <img src={img} alt="poster" />
-        <p>{this.props.title} ({this.props.release_date})</p>
-        {listOptions}
-      </div></li>
+      <li id={this.props.id} className={onList}>
+        {this.renderImage()}
+        <h2>{this.props.title}</h2>
+        <p>{this.props.release_date}</p>
+        {this.renderButtons()}
+      </li>
   );
   }
 }

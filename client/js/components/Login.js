@@ -52,34 +52,34 @@ class Login extends React.Component {
   render() {
     return (
       <main>
-        <div>
-          <h2 className="simple-header">Login</h2>
-          <button className="right" onClick={() => this.props.dispatch(actions.setPage('home'))}>
+        <div className="subheader">
+          <h2>Login</h2>
+          <button className="edit-btn" onClick={() => this.props.dispatch(actions.setPage('home'))}>
             Cancel
           </button>
+          <h3 className="error">{this.state.error}</h3>
+          <form className="login" onSubmit={(e) => this.handleSubmit(e)}>
+            <label>Email
+              <input
+                type="text"
+                placeholder="John_Doe@example.com"
+                value={this.state.email}
+                required
+                onChange={(e) => this.onChange('email', e)}
+              />
+            </label>
+            <label>Password
+              <input
+                type="password"
+                placeholder="password123"
+                value={this.state.password}
+                onChange={(e) => this.onChange('password', e)}
+                required
+              />
+            </label>
+            {this.renderButton()}
+          </form>
         </div>
-        <h3 className="error">{this.state.error}</h3>
-        <form className="login" onSubmit={(e) => this.handleSubmit(e)}>
-          <label>Email
-            <input
-              type="text"
-              placeholder="John_Doe@example.com"
-              value={this.state.email}
-              required
-              onChange={(e) => this.onChange('email', e)}
-            />
-          </label>
-          <label>Password
-            <input
-              type="password"
-              placeholder="password123"
-              value={this.state.password}
-              onChange={(e) => this.onChange('password', e)}
-              required
-            />
-          </label>
-          {this.renderButton()}
-        </form>
       </main>
     );
   }

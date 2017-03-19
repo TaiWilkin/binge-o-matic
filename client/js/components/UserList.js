@@ -1,28 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-import ListMovie from './ListMovie';
 import UserMovie from './UserMovie';
 
 class UserList extends Component {
   renderMovies() {
-    if (this.props.userLists.find(list => list.id === this.props.list)) {
+      if (this.props.loading) {
+        return <div className="spinner" />;
+      }
       return this.props.userMovies.map(movie => {
          return (
            <UserMovie
              key={movie.id}
+             owner={this.props.owner}
              {...movie}
            />);
          });
     }
-    return this.props.userMovies.map(movie => {
-      return (
-        <ListMovie
-          key={movie.id}
-          {...movie}
-        />);
-      });
-  }
 
   renderHeader() {
     if (this.props.owner) {
@@ -32,11 +26,11 @@ class UserList extends Component {
           <button
             className="edit-btn"
             onClick={() => { this.props.dispatch(actions.setPage('edit')); }}
-          >Edit List</button>
+          >EDIT LIST</button>
           <button
             className="edit-btn"
             onClick={() => { this.props.dispatch(actions.setPage('search')); }}
-          >Add Items</button>
+          >ADD ITEMS</button>
         </div>);
     }
     return (
@@ -59,7 +53,7 @@ class UserList extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { userMovies, listName, userLists } = state;
+  const { userMovies, listName, userLists, loading } = state;
   let owner = false;
   if (userLists.find(list => list.id === state.list)) {
     owner = true;
@@ -69,7 +63,8 @@ const mapStateToProps = (state) => {
     list: state.list,
     listName,
     userLists,
-    owner
+    owner,
+    loading
   };
 };
 

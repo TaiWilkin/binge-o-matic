@@ -47,12 +47,11 @@ class Edit extends React.Component {
   render() {
     return (
       <main>
-        <div>
-          <h2 className="simple-header">Editing {this.props.listName}</h2>
+        <div className="subheader">
+          <h2>Editing {this.props.listName}</h2>
           <button className="right" onClick={() => this.props.dispatch(actions.setPage('home'))}>
-            Return to list
+            RETURN TO LIST
           </button>
-        </div>
           <h3 className="simple-header">Change Title</h3>
         <form className="search" onSubmit={(e) => this.onSubmit(e)}>
           <input
@@ -61,10 +60,11 @@ class Edit extends React.Component {
             value={this.state.text}
             onChange={(e) => this.onChange(e)}
           />
-          <button type="submit">Submit</button>
+          <button type="submit">SUBMIT</button>
         </form>
         <h3 className="simple-header">Delete List</h3>
-        <button className="standalone-btn" onClick={this.onDelete.bind(this)}>Delete</button>
+        <button className="standalone-btn" onClick={this.onDelete.bind(this)}>DELETE</button>
+        </div>
       </main>
     );
   }

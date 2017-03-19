@@ -497,7 +497,7 @@ export const fetchUserLists = () => {
         let lists = snapshot.val();
         if (lists) {
           lists = _.map(lists, (val, id) => ({
-            ...val, id
+            ...val, id: parseInt(id, 10)
           }))
         } else {
           lists = [];

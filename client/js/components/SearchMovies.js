@@ -32,6 +32,9 @@ export class SearchMovies extends React.Component {
   }
 
   renderMovies() {
+    if (this.props.loading) {
+      return <div className="spinner" />;
+    }
     if (this.props.searchMovies.length === 0) {
       return null;
     }
@@ -63,12 +66,11 @@ export class SearchMovies extends React.Component {
   render() {
     return (
       <main>
-          <div>
-            <h2 className="simple-header">Adding items to {this.props.listName}</h2>
-            <button className="right" onClick={() => this.props.dispatch(actions.setPage('home'))}>
-              Return to list
-            </button>
-          </div>
+        <div className="subheader">
+          <h2>Adding items to {this.props.listName}</h2>
+          <button className="edit-btn" onClick={() => this.props.dispatch(actions.setPage('home'))}>
+            RETURN TO LIST
+          </button>
           <form className="search" onSubmit={e => { e.preventDefault(); this.onSubmit(); }}>
             <input
               type="text"
@@ -78,12 +80,13 @@ export class SearchMovies extends React.Component {
             />
             <button type="submit">Search</button>
           </form>
-          <div className="filter">
-            <button onClick={this.selectMovies.bind(this)}>Show Movies</button>
-            <button onClick={this.selectTV.bind(this)}>Show TV</button>
-            <button onClick={this.selectAll.bind(this)}>Show All</button>
+          <div className="card-actions">
+            <button onClick={this.selectMovies.bind(this)}>MOVIES</button>
+            <button onClick={this.selectTV.bind(this)}>TV</button>
+            <button onClick={this.selectAll.bind(this)}>ALL</button>
           </div>
-          <ul className="watchlist">
+          </div>
+          <ul className="watchlist searchlist">
             {this.renderMovies()}
           </ul>
       </main>
@@ -91,11 +94,12 @@ export class SearchMovies extends React.Component {
   }
 }
 
-const mapStateToProps = ({ loggedIn, searchMovies, filter, listName }) => ({
+const mapStateToProps = ({ loggedIn, searchMovies, filter, listName, loading }) => ({
   loggedIn,
   searchMovies,
   filter,
-  listName
+  listName,
+  loading
 });
 
 export default connect(mapStateToProps)(SearchMovies);

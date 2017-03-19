@@ -10,7 +10,7 @@ const initialState = {
   list: 37,
   listName: 'Marvel Demo',
   filter: 'all',
-  page: 'home',
+  page: 'about',
   loggedIn: null,
   userLists: []
 };
@@ -362,7 +362,7 @@ const moviesReducer = (state = initialState, action) => {
   case actions.USER_LISTS_FETCH:
     return Object.assign({}, state, { userLists: [], loading: true });
   case actions.USER_LISTS_FETCH_SUCCESS:
-    return Object.assign({}, state, { userLists: action.lists, loading: false, page: 'home' });
+    return Object.assign({}, state, { userLists: action.lists, loading: false });
   default:
     return state;
   }
