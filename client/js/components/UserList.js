@@ -34,7 +34,7 @@ class UserList extends Component {
         </div>);
     }
     return (
-      <div className="subheader">
+      <div className="header">
        <h2>{this.props.listName}</h2>
      </div>
    );
