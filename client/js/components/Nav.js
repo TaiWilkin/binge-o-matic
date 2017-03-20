@@ -62,7 +62,6 @@ class Nav extends React.Component {
   }
 
   renderLists() {
-    console.log('lists', this.props.lists, 'userLists', this.props.userLists)
     const options = this.props.lists.map(list =>
       (<button
         onClick={(e) => { e.preventDefault(); this.handleChange(list.id); this.props.dispatch(actions.setPage('home')); }}
