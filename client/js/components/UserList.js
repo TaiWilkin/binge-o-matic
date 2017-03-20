@@ -21,7 +21,7 @@ class UserList extends Component {
   renderHeader() {
     if (this.props.owner) {
       return (
-        <div className="subheader">
+        <div className="header">
           <h2>{this.props.listName}</h2>
           <button
             className="edit-btn"

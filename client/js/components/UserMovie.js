@@ -101,8 +101,9 @@ export class UserMovie extends React.Component {
     if (!this.props.poster_path) {
       img = (<div className="no-image" />);
     }
+    const classes = (this.props.watched == true) ? `${this.props.media_type} watched` : this.props.media_type;
     return (
-      <li id={this.props.id} className={this.props.media_type}>
+      <li id={this.props.id} className={classes}>
         <div className="circle" />
         {img}
         <h2>{title}</h2>

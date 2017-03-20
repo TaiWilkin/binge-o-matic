@@ -12,6 +12,13 @@ $background: rgb(245, 245, 245);
 	box-sizing: border-box;
 }
 
+$shadow1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+$shadow2: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+$shadow3: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+$shadow4: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+$shadow5: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+
+
 .eye {
 	width: 40px;
 	height: 40px;
@@ -66,14 +73,31 @@ button {
   border: none;
 	color: white;
 }
+main button, .about .card-actions button {
+	float: right;
+}
+
+.about button, .login button, .standalone-btn {
+	float: none;
+}
+
+.card-actions {
+	overflow: auto;
+	clear: both;
+}
 
 button:focus {
 	outline: none;
 }
 
+.options {
+	display: none;
+}
+
 ul.nav {
     background: $dark-primary-color;
 		overflow: hidden;
+		box-shadow: 0 2px 5px rgba(0,0,0,.26);
 }
 
 .nav li {
@@ -102,7 +126,7 @@ li.dropdown {
     position: absolute;
     background-color: $dark-primary-color;
     min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+		box-shadow: $shadow3;
     z-index: 1;
 }
 
@@ -299,7 +323,7 @@ form.login {
   float: right;
 }
 
-.subheader h2 {
+.subheader h2, .header h2 {
   display: inline-block;
   font-size: 30px;
   padding-left: 20px;
@@ -354,8 +378,14 @@ footer img {
 	display: hidden;
 }
 
-li.onList {
+li.onList, li.watched {
 	background-color: rgb(230,230,230);
+}
+
+.header {
+	width: 90%;
+	border-bottom: 2px solid $divider-color;
+	margin: auto;
 }
 
 .about {
@@ -390,11 +420,15 @@ li.onList {
 	color: #30A5BA;
 }
 
-#create-btn, .card-actions button {
+#create-btn, .card-actions button, .header button {
 	color: $accent-color;
 	line-height: 1.8;
 	font-size: 16px;
 	background-color: Transparent;
+	&:hover {
+		cursor: pointer;
+		color: darkgreen;
+	}
 }
 
 #create-btn:hover {
@@ -482,7 +516,7 @@ ul.searchlist::before, ul.searchlist::after {
 		padding: 10px;
 	}
 
-	.subheader button {
+	.subheader button, .header button {
 		display: block;
 	}
 
