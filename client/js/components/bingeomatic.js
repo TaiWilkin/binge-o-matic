@@ -36,9 +36,13 @@ class Bingeomatic extends Component {
   renderMain() {
     switch (this.props.page) {
       case 'about':
-        return <About />
-      case 'home':
+        return <About />;
+      case 'home': {
+        if (this.props.userMovies.length === 0) {
+          return <SearchMovies />;
+        }
         return <UserList />;
+      }
       case 'login':
         return <Login />;
       case 'newList':
@@ -72,8 +76,8 @@ class Bingeomatic extends Component {
   }
 }
 
-const mapStateToProps = ({ userLists, list, page }) => {
-  return { userLists, list, page };
+const mapStateToProps = ({ userLists, list, page, userMovies }) => {
+  return { userLists, list, page, userMovies };
 };
 
 export default connect(mapStateToProps)(Bingeomatic);

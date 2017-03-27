@@ -32,7 +32,8 @@ export class NewList extends React.Component {
       this.setState({ error: 'List already exists.', name: '' });
     } else {
       this.props.dispatch(actions.addList({ name }));
-      this.setState({ name: '' });
+      this.props.dispatch(actions.getLists());
+      this.props.dispatch(actions.setPage('about'));
     }
   }
 
