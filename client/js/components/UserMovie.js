@@ -31,10 +31,13 @@ export class UserMovie extends React.Component {
   addSeasons() {
     const path = `/${this.props.list}/${this.props.id}`;
     this.props.dispatch(actions.getSeasons(path));
+    this.props.dispatch(actions.markWatched(path, { watched: true }));
   }
 
   addEpisodes() {
     this.props.dispatch(actions.getEpisodes(this.props));
+    const path = `/${this.props.list}/${this.props.id}`;
+    this.props.dispatch(actions.markWatched(path, { watched: true }));
   }
 
   renderWatched() {
@@ -45,43 +48,42 @@ export class UserMovie extends React.Component {
   }
 
   renderButtons() {
-    if (this.props.owner) {
+    const watched = this.renderWatched();
+    const deleteButton = (this.props.owner) ? <button className="drop" onClick={this.onClick}>DELETE</button> : null;
       switch (this.props.media_type) {
         case 'movie':
           return (<div className="card-actions">
             <button className="options">OPTIONS</button>
-            <button className="drop" onClick={this.onClick}>DELETE</button>
-            {this.renderWatched()}
+            {deleteButton}
+            {watched}
           </div>);
         case 'tv':
           return (<div className="card-actions">
             <button className="options">OPTIONS</button>
-            <button className="drop" onClick={this.onClick}>DELETE</button>
+            {deleteButton}
             <button className="drop" onClick={this.addSeasons}>SHOW SEASONS</button>
-            {this.renderWatched()}
+            {watched}
           </div>);
         case 'season':
           return (<div className="card-actions">
             <button className="options">OPTIONS</button>
-            <button className="drop" onClick={this.onClick}>DELETE</button>
+            {deleteButton}
             <button className="drop" onClick={this.addEpisodes}>SHOW EPISODES</button>
-            {this.renderWatched()}
+            {watched}
           </div>);
         case 'episode':
           return (<div className="card-actions">
             <button className="options">OPTIONS</button>
-            <button className="drop" onClick={this.onClick}>DELETE</button>
-            {this.renderWatched()}
+            {deleteButton}
+            {watched}
           </div>);
         default:
           return (<div className="card-actions">
             <button className="options">OPTIONS</button>
-            <button className="drop" onClick={this.onClick}>Delete</button>
-            {this.renderWatched()}
+            {deleteButton}
+            {watched}
           </div>);
       }
-    }
-    return <div className="card-actions empty" />;
   }
 
   render() {

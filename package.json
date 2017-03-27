@@ -94,6 +94,7 @@
     "firebaseui": "^1.0.0",
     "isomorphic-fetch": "^2.2.1",
     "knex": "^0.12.6",
+    "lodash": "^4.17.4",
     "mongoose": "^4.7.3",
     "pg": "^6.1.2",
     "react": "^15.4.1",
