@@ -38,7 +38,6 @@ const sortMovies = (movies) => {
 };
 
 const moviesReducer = (state = initialState, action) => {
-  console.log(action);
   switch (action.type) {
   case actions.FETCH_MOVIES_REQUEST:
     return Object.assign({}, state, { loading: true });

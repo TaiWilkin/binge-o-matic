@@ -34,7 +34,6 @@ class Edit extends React.Component {
   onDelete() {
     const path = `/${this.props.list}`;
     this.props.dispatch(actions.deleteList(path));
-    // this.props.dispatch(actions.getLists());
     this.props.dispatch(actions.setPage('about'));
   }
 
