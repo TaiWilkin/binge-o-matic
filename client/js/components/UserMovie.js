@@ -12,6 +12,10 @@ export class UserMovie extends React.Component {
     this.onCheck = this.onCheck.bind(this);
   }
 
+  componentDidMount() {
+    this.props.dispatch(actions.getHidden(this.props.list));
+  }
+
   onClick() {
     const path = `/${this.props.list}/shows/${this.props.id}`;
     this.props.dispatch(actions.deleteMovie(path));
@@ -26,6 +30,12 @@ export class UserMovie extends React.Component {
       watched = true;
     }
     this.props.dispatch(actions.markWatched(path, { watched }));
+  }
+
+  onHide() {
+    this.onCheck();
+    this.props.dispatch(actions.hideEpisodes(this.props.list, this.props.id));
+    this.props.dispatch(actions.getHidden(this.props.list));
   }
 
   addSeasons() {
@@ -102,6 +112,8 @@ export class UserMovie extends React.Component {
   renderButtons() {
     const watched = this.renderWatched();
     const deleteButton = (this.props.owner) ? <button className="drop" onClick={this.onClick}>DELETE</button> : null;
+    const hideEpisodes = (this.props.owner && this.props.watched) ? <button className="drop" onClick={this.onHide.bind(this)}>HIDE EPISODES</button> : null;
+    const showEpisodes = (this.props.owner && !this.props.watched) ? <button className="drop" onClick={this.addEpisodes}>SHOW EPISODES</button> : null;
       switch (this.props.media_type) {
         case 'movie':
           return (<div className="card-actions">
@@ -120,7 +132,8 @@ export class UserMovie extends React.Component {
           return (<div className="card-actions">
             <button className="options">OPTIONS</button>
             {deleteButton}
-            <button className="drop" onClick={this.addEpisodes}>SHOW EPISODES</button>
+            {showEpisodes}
+            {hideEpisodes}
             {watched}
           </div>);
         case 'episode':
@@ -140,6 +153,9 @@ export class UserMovie extends React.Component {
 
   render() {
     if (this.props.media_type === 'season' && (this.props.number === 0 || !this.props.number)) {
+      return null;
+    }
+    if (this.props.hidden.includes(this.props.parent_season)) {
       return null;
     }
     const title = this.props.title;
@@ -171,7 +187,8 @@ export class UserMovie extends React.Component {
 
 const mapStateToProps = (state) => ({
   list: state.list,
-  userMovies: state.userMovies
+  userMovies: state.userMovies,
+  hidden: state.hidden
 });
 
 export default connect(mapStateToProps)(UserMovie);

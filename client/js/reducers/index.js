@@ -12,7 +12,8 @@ const initialState = {
   filter: 'all',
   page: 'about',
   loggedIn: null,
-  userLists: []
+  userLists: [],
+  hidden: []
 };
 
 const sortMovies = (movies) => {
@@ -364,6 +365,8 @@ const moviesReducer = (state = initialState, action) => {
     return Object.assign({}, state, { userLists: [], loading: true });
   case actions.USER_LISTS_FETCH_SUCCESS:
     return Object.assign({}, state, { userLists: action.lists, loading: false });
+  case actions.GET_HIDDEN_SUCCESS:
+    return Object.assign({}, state, { hidden: action.hidden });
   default:
     return state;
   }

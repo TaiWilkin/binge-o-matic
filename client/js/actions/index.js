@@ -241,6 +241,10 @@ export const getEpisodes = (season) => (dispatch) => {
     console.error('getEpisodesError', err);
     getEpisodesError(err);
   });
+
+  const { currentUser } = firebase.auth();
+  return firebase.database().ref(`users/${currentUser.uid}/lists/${season.list}/hidden/${season.id}`)
+    .remove();
 };
 
 export const GET_LISTS_REQUEST = 'GET_LISTS_REQUEST';
@@ -503,6 +507,46 @@ export const fetchUserLists = () => {
           lists = [];
         }
         dispatch({ type: USER_LISTS_FETCH_SUCCESS, lists });
+      });
+  };
+};
+
+export const HIDE_EPISODES_REQUEST = 'HIDE_EPISODES_REQUEST';
+export const HIDE_EPISODES_SUCCESS = 'HIDE_EPISODES_SUCCESS';
+export const HIDE_EPISODES_ERROR = 'HIDE_EPISODES_ERROR';
+export const hideEpisodes = (list, season) => {
+  const { currentUser } = firebase.auth();
+
+  return dispatch => {
+    dispatch({ type: HIDE_EPISODES_REQUEST });
+    return firebase.database().ref(`users/${currentUser.uid}/lists/${list}/hidden/${season}`)
+      .set({ name: 'hide' })
+      .then((res) => {
+        dispatch({ type: HIDE_EPISODES_SUCCESS });
+      })
+      .catch((error) => {
+        dispatch({ type: HIDE_EPISODES_ERROR, error });
+      });
+  };
+};
+
+export const GET_HIDDEN_REQUEST = 'GET_HIDDEN_REQUEST';
+export const GET_HIDDEN_SUCCESS = 'GET_HIDDEN_SUCCESS';
+export const GET_HIDDEN_ERROR = 'GET_HIDDEN_ERROR';
+export const getHidden = (list) => {
+  const { currentUser } = firebase.auth();
+
+  return dispatch => {
+    dispatch({ type: GET_HIDDEN_REQUEST });
+    return firebase.database().ref(`users/${currentUser.uid}/lists/${list}/hidden/`)
+      .on('value', snapshot => {
+        let seasons = snapshot.val();
+        if (seasons) {
+          seasons = _.map(seasons, (val, id) => (parseInt(id, 10)));
+        } else {
+          seasons = [];
+        }
+        dispatch({ type: GET_HIDDEN_SUCCESS, hidden: seasons });
       });
   };
 };
