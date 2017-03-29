@@ -5,9 +5,6 @@ import UserMovie from './UserMovie';
 
 class UserList extends Component {
   renderMovies() {
-      if (this.props.loading) {
-        return <div className="spinner" />;
-      }
       return this.props.userMovies.map(movie => {
          return (
            <UserMovie

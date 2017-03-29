@@ -35,8 +35,60 @@ export class UserMovie extends React.Component {
   }
 
   addEpisodes() {
-    this.props.dispatch(actions.getEpisodes(this.props));
-    const path = `/${this.props.list}/${this.props.id}`;
+    const {
+      adult,
+      backdrop_path,
+      episode,
+      genre_ids,
+      id,
+      list,
+      list_id,
+      media_type,
+      number,
+      original_language,
+      original_title,
+      overview,
+      owner,
+      parent_season,
+      parent_show,
+      popularity,
+      poster_path,
+      release_date,
+      show_id,
+      title,
+      video,
+      vote_average,
+      vote_count,
+      watched
+    } = this.props;
+    const season = {
+      adult,
+      backdrop_path,
+      episode,
+      genre_ids,
+      id,
+      list,
+      list_id,
+      media_type,
+      number,
+      original_language,
+      original_title,
+      overview,
+      owner,
+      parent_season,
+      parent_show,
+      popularity,
+      poster_path,
+      release_date,
+      show_id,
+      title,
+      video,
+      vote_average,
+      vote_count,
+      watched
+    };
+    this.props.dispatch(actions.getEpisodes(season));
+    const path = `/${list}/${id}`;
     this.props.dispatch(actions.markWatched(path, { watched: true }));
   }
 
