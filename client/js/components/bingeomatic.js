@@ -1,14 +1,35 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
-import NewList from './NewList';
-import Nav from './Nav';
-import Login from './Login';
-import UserList from './UserList';
-import SearchMovies from './SearchMovies';
-import Edit from './Edit';
-import About from './About';
+
 import * as actions from '../actions';
+
+import AsyncComponent from './AsyncComponent';
+
+//setup async imports
+const NewList = AsyncComponent({
+  loader: () => import('./NewList'),
+});
+const Nav = AsyncComponent({
+  loader: () => import('./Nav'),
+});
+const Login = AsyncComponent({
+ loader: () => import('./Login'),
+});
+
+const UserList = AsyncComponent({
+  loader: () => import('./UserList'),
+});
+const SearchMovies = AsyncComponent({
+  loader: () => import('./SearchMovies'),
+});
+const Edit = AsyncComponent({
+  loader: () => import('./Edit'),
+});
+
+const About = AsyncComponent({
+  loader: () => import('./About'),
+});
 
 class Bingeomatic extends Component {
   componentWillMount() {
