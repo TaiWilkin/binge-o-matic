@@ -58,8 +58,9 @@ const postShow = (body, list_id) => {
 
 // List of lists
 app.get('/lists', (req, res) => {
-  knex('lists').select('*')
+  return knex('lists').select('*')
   .then(lists => {
+    console.log('lists', lists)
     res.status(200).json(lists);
   })
   .catch(({ details }) => res.status(422).json({ error: details }));
@@ -67,14 +68,18 @@ app.get('/lists', (req, res) => {
 
 // Movies on a list
 app.get('/lists/:listId', ({ params: { listId } }, res) => {
-  knex('shows')
+  return knex('shows')
     .select('*')
     .join('list_items', 'shows.id', '=', 'list_items.show_id')
     .where('list_items.list_id', listId)
   .then(shows => {
+    console.log('yp', shows)
     res.status(200).json(shows);
   })
-  .catch(({ details }) => res.status(422).json({ error: details }));
+  .catch((response) => {
+    console.log('hi!', response, response.details)
+    res.status(422).json({ error: response.details })
+  });
 });
 
 // ---- POST ----
