@@ -25,10 +25,12 @@ class Bingeomatic extends Component {
         this.props.dispatch(actions.setPage('about'));
         this.props.dispatch(actions.loggedIn(true));
         this.props.dispatch(actions.fetchUserLists());
+        localStorage.setItem('user', JSON.stringify(user));
       } else {
         this.props.dispatch(actions.setPage('about'));
         this.props.dispatch(actions.loggedIn(false));
         this.props.dispatch({ type: actions.USER_LISTS_FETCH_SUCCESS, lists: [] });
+        localStorage.removeItem('user');
       }
     });
   }

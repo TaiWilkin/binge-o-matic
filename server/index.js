@@ -42,15 +42,16 @@ const postShow = (body, list_id) => {
     }
     return knex('shows').insert(body);
   })
-  .then(() =>
-    knex.raw(
-      'INSERT INTO list_items ' +
-      '(list_id, show_id) ' +
-      'values (?, ?) ' +
-      'ON CONFLICT DO NOTHING',
-      [list_id, body.id]
-    )
-  );
+  .then(() => {
+    const listItem = { list_id: list_id, show_id: body.id };
+    return knex('list_items')
+      .insert(listItem)
+      .whereNotExists(knex('list_items').where(listItem));
+  })
+  .catch(error => {
+    console.log('postShowError', error);
+    return error;
+  })
 };
 
 
@@ -60,7 +61,6 @@ const postShow = (body, list_id) => {
 app.get('/lists', (req, res) => {
   return knex('lists').select('*')
   .then(lists => {
-    console.log('lists', lists)
     res.status(200).json(lists);
   })
   .catch(({ details }) => res.status(422).json({ error: details }));
@@ -73,11 +73,9 @@ app.get('/lists/:listId', ({ params: { listId } }, res) => {
     .join('list_items', 'shows.id', '=', 'list_items.show_id')
     .where('list_items.list_id', listId)
   .then(shows => {
-    console.log('yp', shows)
     res.status(200).json(shows);
   })
   .catch((response) => {
-    console.log('hi!', response, response.details)
     res.status(422).json({ error: response.details })
   });
 });
@@ -92,26 +90,24 @@ app.post('/lists/:list_id/show', ({ body, params: { list_id } }, res) => {
     }
     return knex('shows').insert(body);
   })
-  .then(() =>
-    knex.raw(
-      'INSERT INTO list_items ' +
-      '(list_id, show_id) ' +
-      'values (?, ?) ' +
-      'ON CONFLICT DO NOTHING',
-      [list_id, body.id]
-    )
-  )
-  .then(() =>
-    knex('shows')
+  .then(() => {
+    const listItem = { list_id: list_id, show_id: body.id };
+    return knex('list_items')
+      .insert(listItem)
+      .whereNotExists(knex('list_items').where(listItem));
+  })
+  .then(() => {
+    return knex('shows')
     .select('*')
     .join('list_items', 'shows.id', '=', 'list_items.show_id')
     .where('list_items.list_id', list_id)
+  }
   )
   .then(shows => {
     res.status(200).json(shows);
   })
-  .catch(({ details }) => {
-    res.status(422).json({ details });
+  .catch((response) => {
+    res.status(422).json({ details: response.details });
   });
 });
 
@@ -145,6 +141,7 @@ app.put('/lists/:id', ({ body: { name }, params: { id } }, res) => {
 
 // TODO: update Watched status on list item
 app.put('/lists/:list_id/:show_id', ({ body, params: { list_id, show_id } }, res) => {
+
   knex('list_items')
   .where({ list_id, show_id })
   .update(body)

@@ -6,6 +6,20 @@ const seasonsUrl = '/seasons';
 const episodesUrl = '/episodes';
 const listsUrl = '/lists';
 
+const getCurrentUser = () => {
+  const { currentUser } = firebase.auth();
+  let user;
+  if (!currentUser) {
+    user = JSON.parse(localStorage.getItem('user'));
+    if (!user) {
+      return null;
+    }
+  } else {
+    user = currentUser;
+  }
+  return user;
+};
+
 export const FETCH_MOVIES_REQUEST = 'FETCH_MOVIES_REQUEST';
 export const fetchMoviesRequest = () => ({
   type: FETCH_MOVIES_REQUEST
@@ -241,8 +255,7 @@ export const getEpisodes = (season) => (dispatch) => {
     console.error('getEpisodesError', err);
     getEpisodesError(err);
   });
-
-  const { currentUser } = firebase.auth();
+  const currentUser = getCurrentUser();
   return firebase.database().ref(`users/${currentUser.uid}/lists/${season.list}/hidden/${season.id}`)
     .remove();
 };
@@ -266,7 +279,7 @@ export const getListsError = (error) => ({
 
 export const getLists = () => (dispatch) => {
   dispatch(getListsRequest());
-
+  const currentUser = getCurrentUser();
   fetch(listsUrl)
   .then(res => {
     if (!res.ok) {
@@ -327,7 +340,7 @@ export const addList = (list) => (dispatch) => {
   .then(res => res.json())
   .then(response => {
     dispatch(addListSuccess(response));
-    const { currentUser } = firebase.auth();
+    const currentUser = getCurrentUser();
     firebase.database().ref(`users/${currentUser.uid}/lists/${response.id}`)
       .set({ name: response.name });
   })
@@ -374,7 +387,7 @@ export const editList = (path, name) => (dispatch) => {
   })
   .then(res => res.json())
   .then(list => {
-    const { currentUser } = firebase.auth();
+    const currentUser = getCurrentUser();
     firebase.database().ref(`users/${currentUser.uid}/lists${path}/name`)
     .set(name);
     dispatch(editListSuccess(list));
@@ -416,7 +429,7 @@ export const deleteList = (path) => (dispatch) => {
   })
   .then(res => res.json())
   .then(list => {
-    const { currentUser } = firebase.auth();
+    const currentUser = getCurrentUser();
     firebase.database().ref(`users/${currentUser.uid}/lists${path}`)
     .remove();
     dispatch(deleteListSuccess(list));
@@ -492,7 +505,7 @@ export const USER_LISTS_FETCH = 'USER_LISTS_FETCH';
 export const USER_LISTS_FETCH_SUCCESS = 'USER_LISTS_FETCH_SUCCESS';
 export const USER_LISTS_FETCH_FAILURE = 'USER_LISTS_FETCH_FAILURE';
 export const fetchUserLists = () => {
-  const { currentUser } = firebase.auth();
+  const currentUser = getCurrentUser();
 
   return dispatch => {
     dispatch({ type: USER_LISTS_FETCH });
@@ -515,7 +528,7 @@ export const HIDE_EPISODES_REQUEST = 'HIDE_EPISODES_REQUEST';
 export const HIDE_EPISODES_SUCCESS = 'HIDE_EPISODES_SUCCESS';
 export const HIDE_EPISODES_ERROR = 'HIDE_EPISODES_ERROR';
 export const hideEpisodes = (list, season) => {
-  const { currentUser } = firebase.auth();
+  const currentUser = getCurrentUser();
 
   return dispatch => {
     dispatch({ type: HIDE_EPISODES_REQUEST });
@@ -534,7 +547,7 @@ export const GET_HIDDEN_REQUEST = 'GET_HIDDEN_REQUEST';
 export const GET_HIDDEN_SUCCESS = 'GET_HIDDEN_SUCCESS';
 export const GET_HIDDEN_ERROR = 'GET_HIDDEN_ERROR';
 export const getHidden = (list) => {
-  const { currentUser } = firebase.auth();
+  const currentUser = getCurrentUser();
 
   return dispatch => {
     dispatch({ type: GET_HIDDEN_REQUEST });
