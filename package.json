@@ -6,7 +6,8 @@
   "main:server": "server/index.js",
   "main:client": "client/js/index.js",
   "engines": {
-    "node": "6.11.4"
+    "node": "6.11.4",
+    "npm": "3.10.10"
   },
   "scripts": {
     "start": "[ \"$NODE_ENV\" = \"production\" ] && npm run serve:server:production || npm run serve:server:dev",
