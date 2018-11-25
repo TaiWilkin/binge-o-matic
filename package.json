@@ -21,20 +21,11 @@
     "moment": "^2.21.0",
     "mongoose": "^5.0.12",
     "passport": "^0.4.0",
-    "passport-local": "^1.0.0",
-    "apollo-boost": "^0.1.4",
-    "babel-runtime": "^6.26.0",
-    "graphql": "^0.13.2",
-    "graphql-tag": "^2.8.0",
-    "react": "^16.2.0",
-    "react-apollo": "^2.1.1",
-    "react-dom": "^16.2.0",
-    "react-router-dom": "^4.2.2",
-    "react-scripts": "1.1.1"
+    "passport-local": "^1.0.0"
   },
   "scripts": {
-    "server": "concurrently \"npm run s\" \"npm run client\"",
-    "s": "node server.js",
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "node server.js",
     "client": "node start-client.js",
     "dev": "echo \"This command has been deprecated. Use 'npm start'\" && exit 1",
     "lint": "eslint ."
