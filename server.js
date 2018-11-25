@@ -10,6 +10,8 @@ const passportConfig = require('./server/services/auth');
 const MongoStore = require('connect-mongo')(session);
 const schema = require('./server/schema/schema');
 
+// this is nonsense to trigger an update
+
 // Create a new Express application
 const app = express();
 
