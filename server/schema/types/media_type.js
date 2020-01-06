@@ -22,6 +22,7 @@ const MediaType = new GraphQLObjectType({
     media_id: { type: GraphQLString }, // this is the TMDB id
     number: { type: GraphQLInt },
     isWatched: { type: GraphQLBoolean },
+    show_children: { type: GraphQLBoolean },
     parent_show: {
       type: GraphQLID,
       resolve(parentValue) {

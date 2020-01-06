@@ -20,6 +20,7 @@ export default gql`
         parent_show
         parent_season
         episode
+        show_children
       }
       user
     }

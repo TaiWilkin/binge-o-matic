@@ -2,6 +2,7 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { Mutation } from "react-apollo";
 import toggleWatchedMutation from '../mutations/ToggleWatched';
+import hideChildrenMutation from '../mutations/HideChildren';
 import deleteListItemMutation from '../mutations/RemoveFromList';
 import addSeasonsMutation from '../mutations/AddSeasons';
 import addEpisodesMutation from '../mutations/AddEpisodes';
@@ -45,6 +46,9 @@ export class UserMovie extends React.Component {
   }
 
   renderAddSeasons() {
+    if (this.props.show_children) {
+      return this.renderHideChildren('HIDE SEASONS');
+    }
     return (
       <Mutation
         mutation={addSeasonsMutation}
@@ -62,6 +66,9 @@ export class UserMovie extends React.Component {
   }
 
   renderAddEpisodes() {
+    if (this.props.show_children) {
+      return this.renderHideChildren('HIDE EPISODES');
+    }
     return (
       <Mutation
         mutation={addEpisodesMutation}
@@ -73,6 +80,25 @@ export class UserMovie extends React.Component {
               id: this.props.id, season_number: this.props.number, list: this.props.match.params.id, show_id: this.props.parent_show,
             }})
           }}>ADD EPISODES</button>
+        )}
+      </Mutation>
+    );
+  }
+
+  renderHideChildren(text) {
+    return (
+      <Mutation
+        mutation={hideChildrenMutation}
+        refetchQueries={[{ query: listQuery, variables: { id: this.props.match.params.id } }]}
+      >
+        {(hideChildren, { loading, error }) => (
+          <button className="drop" onClick={() => {
+            hideChildren({ variables: {
+              id: this.props.id, list: this.props.match.params.id,
+            }})
+          }}>
+            {text}
+          </button>
         )}
       </Mutation>
     );
@@ -118,6 +144,10 @@ export class UserMovie extends React.Component {
   }
 
   render() {
+    if (this.props.hideChildrenOf.includes(this.props.parent_show) ||
+        this.props.hideChildrenOf.includes(this.props.parent_season)) {
+          return null;
+    }
     if (this.props.media_type === 'season' && (this.props.number === 0 || !this.props.number)) {
       return null;
     }

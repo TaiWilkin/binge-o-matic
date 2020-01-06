@@ -84,6 +84,7 @@ function getMediaList(mediaIds) {
       parent_season: m.parent_season,
       episode: m.episode,
       id: m._id,
+      show_children: mediaIds.find(el => el.item_id.toString() === m._id.toString()).show_children,
     })).sort((a, b) => {
       if (a.release_date < b.release_date) {
         return -1;
@@ -136,6 +137,19 @@ function toggleWatched({ id, isWatched, list }) {
     })
 }
 
+function hideChildren({ id, list }) {
+  return List.findOne({ _id: new ObjectId(list) })
+    .then(l => {
+      const index = l.media.findIndex(el => el.item_id.toString() === id.toString());
+      l.media[index].show_children = false;
+      return List.findOneAndUpdate({ _id: new ObjectId(list) }, l);
+    })
+    .catch(e => {
+      console.log(e)
+      return null;
+    })
+}
+
 function addSeasons({ id, media_id, list }) {
   const searchUrl = `https://api.themoviedb.org/3/tv/${media_id}?api_key=${process.env.API_KEY}&language=en-US`;
   let items = [];
@@ -156,7 +170,7 @@ function addSeasons({ id, media_id, list }) {
         poster_path: season.poster_path,
         media_type: 'season',
         parent_show: id,
-        number: season.season_number
+        number: season.season_number,
       }));
     return Promise.all(seasons.map(season => Media.findOneAndUpdate(
       { media_id: season.media_id },
@@ -172,8 +186,12 @@ function addSeasons({ id, media_id, list }) {
     // and add the new items into the list, referenced by MLab id
     const stringIds = l.media.map(item => item.item_id.toString());
     const newItems = items.filter(item => !stringIds.includes(item._id.toString()))
-      .map(item => ({ item_id: new ObjectId(item._id), isWatched: false }));
+      .map(item => ({ item_id: new ObjectId(item._id), isWatched: false, show_children: false }));
     const mediaList = l.media.concat(newItems);
+
+    const showIndex = mediaList.findIndex(el => el.item_id.toString() === id.toString());
+    mediaList[showIndex].show_children = true;
+
     return List.findOneAndUpdate({ _id: new ObjectId(list ) }, { $set: { media: mediaList } }, { new: true });
   })
   .catch(e => {
@@ -202,7 +220,7 @@ function addEpisodes({ id, season_number, show_id, list }) {
   .then(data => {
     const episodes = data.episodes.map(episode => ({
       media_id: episode.id,
-      title: data.name,
+      title: `${show.title}: ${data.name}`,
       episode: episode.name,
       release_date: episode.air_date,
       poster_path: episode.still_path,
@@ -227,6 +245,10 @@ function addEpisodes({ id, season_number, show_id, list }) {
     const newItems = items.filter(item => !stringIds.includes(item._id.toString()))
       .map(item => ({ item_id: new ObjectId(item._id), isWatched: false }));
     const mediaList = l.media.concat(newItems);
+
+    const seasonIndex = mediaList.findIndex(el => el.item_id.toString() === id.toString());
+    mediaList[seasonIndex].show_children = true;
+
     return List.findOneAndUpdate({ _id: new ObjectId(list ) }, { $set: { media: mediaList } }, { new: true });
   })
   .catch(e => {
@@ -243,4 +265,5 @@ module.exports = {
   toggleWatched,
   addSeasons,
   addEpisodes,
+  hideChildren,
 };

@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Redirect } from 'react-router-dom';
 import QueryHandler from './QueryHandler';
 import listQuery from '../queries/List';
 import UserMovie from './UserMovie';
 
 class UserList extends Component {
   renderMovies(media, isOwner) {
+      const hideChildrenOf = media.filter(movie => !movie.show_children).map(movie => movie.id);
       return media.map(movie => {
          return (
            <UserMovie
              key={movie.id}
              isOwner={isOwner}
              {...movie}
+             hideChildrenOf={hideChildrenOf}
            />);
          });
     }
@@ -46,6 +48,18 @@ class UserList extends Component {
             return <p style={{ color: 'red' }}> Error: List not found!</p>;
           }
           const isOwner = data.user && data.list.user.toString() === data.user.id.toString();
+          if (!data.list.media || !data.list.media.length) {
+            if (!isOwner) {
+              return (
+                <main>
+                  {this.renderHeader(data.list, isOwner)}
+                  <p>No content in list</p>
+                </main>
+              );
+            } else {
+              return <Redirect to={`/lists/${data.list.id}/search`} />
+            }
+          }
           return (
           <main>
             {this.renderHeader(data.list, isOwner)}

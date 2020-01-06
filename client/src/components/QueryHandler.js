@@ -9,7 +9,7 @@ class QueryHandler extends Component {
       <Query {...this.props}>
         {(queryResults) => {
           const { error, loading } = queryResults;
-          if (loading) { return <Loading />; }
+          if (loading && !this.props.useCustomLoader) { return <Loading />; }
           if (error) {
             console.error(error)
             return <Errors error={error} />;

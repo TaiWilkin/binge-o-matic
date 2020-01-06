@@ -50,7 +50,7 @@ export class SearchMovies extends React.Component {
       ));
     } else {
       movies = this.state.media.map(movie => {
-        if (movie.media_type !== this.props.filter) {
+        if (movie.media_type !== this.state.filter) {
           return null;
         }
         return (

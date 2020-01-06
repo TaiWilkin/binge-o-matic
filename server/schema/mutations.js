@@ -91,6 +91,16 @@ const mutation = new GraphQLObjectType({
         return MediaService.toggleWatched(args);
       }
     },
+    hideChildren: {
+      type: MediaType,
+      args: {
+        id: { type: GraphQLID },
+        list: { type: GraphQLID },
+      },
+      resolve(parentValue, args, req) {
+        return MediaService.hideChildren(args);
+      }
+    },
     addEpisodes: {
       type: ListType,
       args: {
