@@ -24,12 +24,12 @@
     "passport-local": "^1.0.0"
   },
   "scripts": {
-    "heroku-prebuild": "npm i",
     "start": "concurrently \"npm run server\" \"npm run client\"",
     "server": "node server.js",
     "client": "node start-client.js",
     "dev": "echo \"This command has been deprecated. Use 'npm start'\" && exit 1",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "heroku-postbuild": "cd client && npm install && npm run build"
   },
   "devDependencies": {
     "concurrently": "3.1.0",
