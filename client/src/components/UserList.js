@@ -1,22 +1,44 @@
-import React, { Component } from 'react';
-import { withRouter, Redirect } from 'react-router-dom';
-import QueryHandler from './QueryHandler';
-import listQuery from '../queries/List';
-import UserMovie from './UserMovie';
+import React, { Component } from "react";
+import { withRouter, Redirect } from "react-router-dom";
+import QueryHandler from "./QueryHandler";
+import listQuery from "../queries/List";
+import UserMovie from "./UserMovie";
+
+const calculateHiddenChildren = (media, hideWatched) => {
+  let parentsWithHiddenChildren = media.filter(movie => !movie.show_children);
+  if (hideWatched) {
+    parentsWithHiddenChildren = parentsWithHiddenChildren.filter(
+      movie => movie.isWatched
+    );
+  }
+  return parentsWithHiddenChildren.map(movie => movie.id);
+};
 
 class UserList extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      hideWatched: true
+    };
+  }
+
   renderMovies(media, isOwner) {
-      const hideChildrenOf = media.filter(movie => !movie.show_children).map(movie => movie.id);
-      return media.map(movie => {
-         return (
-           <UserMovie
-             key={movie.id}
-             isOwner={isOwner}
-             {...movie}
-             hideChildrenOf={hideChildrenOf}
-           />);
-         });
-    }
+    const { hideWatched } = this.state;
+    const filteredMedia = hideWatched
+      ? media.filter(movie => !movie.isWatched)
+      : media;
+    const hideChildrenOf = calculateHiddenChildren(media, hideWatched);
+    return filteredMedia.map(movie => {
+      return (
+        <UserMovie
+          key={movie.id}
+          isOwner={isOwner}
+          {...movie}
+          hideChildrenOf={hideChildrenOf}
+        />
+      );
+    });
+  }
 
   renderHeader(list, isOwner) {
     if (isOwner) {
@@ -25,29 +47,54 @@ class UserList extends Component {
           <h2>{list.name}</h2>
           <button
             className="edit-btn"
-            onClick={() => this.props.history.push(`/lists/${this.props.match.params.id}/edit`)}
-          >EDIT LIST</button>
+            onClick={() =>
+              this.setState({ hideWatched: !this.state.hideWatched })
+            }
+          >
+            {this.state.hideWatched ? "SHOW WATCHED" : "HIDE WATCHED"}
+          </button>
           <button
             className="edit-btn"
-            onClick={() => this.props.history.push(`/lists/${this.props.match.params.id}/search`)}
-          >ADD ITEMS</button>
-        </div>);
+            onClick={() =>
+              this.props.history.push(
+                `/lists/${this.props.match.params.id}/edit`
+              )
+            }
+          >
+            EDIT LIST
+          </button>
+          <button
+            className="edit-btn"
+            onClick={() =>
+              this.props.history.push(
+                `/lists/${this.props.match.params.id}/search`
+              )
+            }
+          >
+            ADD ITEMS
+          </button>
+        </div>
+      );
     }
     return (
       <div className="header">
-       <h2>{list.name}</h2>
-     </div>
-   );
+        <h2>{list.name}</h2>
+      </div>
+    );
   }
 
   render() {
     return (
-      <QueryHandler query={listQuery} variables={{ id: this.props.match.params.id }}>
+      <QueryHandler
+        query={listQuery}
+        variables={{ id: this.props.match.params.id }}
+      >
         {({ data, loading, error, client }) => {
           if (!data.list) {
-            return <p style={{ color: 'red' }}> Error: List not found!</p>;
+            return <p style={{ color: "red" }}> Error: List not found!</p>;
           }
-          const isOwner = data.user && data.list.user.toString() === data.user.id.toString();
+          const isOwner =
+            data.user && data.list.user.toString() === data.user.id.toString();
           if (!data.list.media || !data.list.media.length) {
             if (!isOwner) {
               return (
@@ -57,20 +104,21 @@ class UserList extends Component {
                 </main>
               );
             } else {
-              return <Redirect to={`/lists/${data.list.id}/search`} />
+              return <Redirect to={`/lists/${data.list.id}/search`} />;
             }
           }
           return (
-          <main>
-            {this.renderHeader(data.list, isOwner)}
-            <ul className="watchlist">
-              {this.renderMovies(data.list.media, isOwner)}
-            </ul>
-          </main>
-        )}}
+            <main>
+              {this.renderHeader(data.list, isOwner)}
+              <ul className="watchlist">
+                {this.renderMovies(data.list.media, isOwner)}
+              </ul>
+            </main>
+          );
+        }}
       </QueryHandler>
     );
- }
+  }
 }
 
 export default withRouter(UserList);
