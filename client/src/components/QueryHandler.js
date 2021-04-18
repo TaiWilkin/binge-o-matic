@@ -1,17 +1,19 @@
-import React, { Component } from 'react';
-import { Query } from 'react-apollo';
-import Errors from './Errors';
-import Loading from './Loading';
+import React, { Component } from "react";
+import { Query } from "react-apollo";
+import Errors from "./Errors";
+import Loading from "./Loading";
 
 class QueryHandler extends Component {
   render() {
     return (
       <Query {...this.props}>
-        {(queryResults) => {
+        {queryResults => {
           const { error, loading } = queryResults;
-          if (loading && !this.props.useCustomLoader) { return <Loading />; }
+          if (loading && !this.props.useCustomLoader) {
+            return <Loading />;
+          }
           if (error) {
-            console.error(error)
+            console.error(error);
             return <Errors error={error} />;
           }
           return this.props.children(queryResults);

@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import { BrowserRouter } from 'react-router-dom'
-import Root from './components/Root';
+import React, { Component } from "react";
+import { BrowserRouter } from "react-router-dom";
+import Root from "./components/Root";
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
-import './index.css';
+import "./index.css";
 
 const client = new ApolloClient({});
 
@@ -11,9 +11,9 @@ class App extends Component {
   render() {
     return (
       <ApolloProvider client={client}>
-          <BrowserRouter>
-              <Root />
-          </BrowserRouter>
+        <BrowserRouter>
+          <Root />
+        </BrowserRouter>
       </ApolloProvider>
     );
   }

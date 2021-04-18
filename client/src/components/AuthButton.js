@@ -1,7 +1,7 @@
-import React from 'react';
-import { withRouter } from 'react-router-dom';
+import React from "react";
+import { withRouter } from "react-router-dom";
 import { Mutation } from "react-apollo";
-import mutation from '../mutations/Logout';
+import mutation from "../mutations/Logout";
 
 class AuthButton extends React.Component {
   render() {
@@ -12,20 +12,34 @@ class AuthButton extends React.Component {
           mutation={mutation}
           onCompleted={() => {
             client.resetStore();
-            this.props.history.push('/');
+            this.props.history.push("/");
           }}
         >
           {(logout, { data }) => (
-            <li className="right"><button onClick={logout}>Logout</button></li>
+            <li className="right">
+              <button onClick={logout}>Logout</button>
+            </li>
           )}
         </Mutation>
       );
     }
     if (loading) {
-      return <li className="right"><button><div className="spinner" /></button></li>;
+      return (
+        <li className="right">
+          <button>
+            <div className="spinner" />
+          </button>
+        </li>
+      );
     }
     if (!user) {
-      return <li className="right"><button onClick={() => this.props.history.push('/signin')}>Login</button></li>
+      return (
+        <li className="right">
+          <button onClick={() => this.props.history.push("/signin")}>
+            Login
+          </button>
+        </li>
+      );
     }
   }
 }

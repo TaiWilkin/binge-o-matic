@@ -1,22 +1,22 @@
-require('dotenv').config();
+require("dotenv").config();
 
-const express = require('express');
-const models = require('./server/models');
-const expressGraphQL = require('express-graphql');
-const mongoose = require('mongoose');
-const session = require('express-session');
-const passport = require('passport');
-const passportConfig = require('./server/services/auth');
-const MongoStore = require('connect-mongo')(session);
-const schema = require('./server/schema/schema');
+const express = require("express");
+const models = require("./server/models");
+const expressGraphQL = require("express-graphql");
+const mongoose = require("mongoose");
+const session = require("express-session");
+const passport = require("passport");
+const passportConfig = require("./server/services/auth");
+const MongoStore = require("connect-mongo")(session);
+const schema = require("./server/schema/schema");
 
 // this is nonsense to trigger an update
 
 // Create a new Express application
 const app = express();
 
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static('client/build'));
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
 }
 
 // Replace with your mongoLab URI
@@ -29,23 +29,25 @@ mongoose.Promise = global.Promise;
 // on success or failure
 mongoose.connect(MONGO_URI);
 mongoose.connection
-    .once('open', () => console.log('Connected to MongoLab instance.'))
-    .on('error', error => console.log('Error connecting to MongoLab:', error));
+  .once("open", () => console.log("Connected to MongoLab instance."))
+  .on("error", error => console.log("Error connecting to MongoLab:", error));
 
 // Configures express to use sessions.  This places an encrypted identifier
 // on the users cookie.  When a user makes a request, this middleware examines
 // the cookie and modifies the request object to indicate which user made the request
 // The cookie itself only contains the id of a session; more data about the session
 // is stored inside of MongoDB.
-app.use(session({
-  resave: true,
-  saveUninitialized: true,
-  secret: process.env.SECRET,
-  store: new MongoStore({
-    url: MONGO_URI,
-    autoReconnect: true
+app.use(
+  session({
+    resave: true,
+    saveUninitialized: true,
+    secret: process.env.SECRET,
+    store: new MongoStore({
+      url: MONGO_URI,
+      autoReconnect: true
+    })
   })
-}));
+);
 
 // Passport is wired into express as a middleware. When a request comes in,
 // Passport will examine the request's session (as set by the above config) and
@@ -55,11 +57,14 @@ app.use(passport.session());
 
 // Instruct Express to pass on any request made to the '/graphql' route
 // to the GraphQL instance.
-app.use('/graphql', expressGraphQL({
-  schema,
-  graphiql: true
-}));
+app.use(
+  "/graphql",
+  expressGraphQL({
+    schema,
+    graphiql: true
+  })
+);
 
 app.listen(process.env.PORT || 3001, () => {
-  console.log('Listening');
+  console.log("Listening");
 });

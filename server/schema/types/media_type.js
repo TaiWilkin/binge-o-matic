@@ -1,18 +1,18 @@
-const graphql = require('graphql');
-var GraphQLDate = require('graphql-date')
+const graphql = require("graphql");
+var GraphQLDate = require("graphql-date");
 const {
   GraphQLObjectType,
   GraphQLString,
   GraphQLID,
   GraphQLInt,
-  GraphQLBoolean,
+  GraphQLBoolean
 } = graphql;
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const Media = mongoose.model('media');
+const Media = mongoose.model("media");
 
 const MediaType = new GraphQLObjectType({
-  name: 'MediaType',
+  name: "MediaType",
   fields: () => ({
     id: { type: GraphQLID }, // this is the MLab id
     title: { type: GraphQLString },
@@ -35,7 +35,7 @@ const MediaType = new GraphQLObjectType({
         return parentValue.parent_season || null; // this is the TMDB id
       }
     },
-    episode: { type: GraphQLString },
+    episode: { type: GraphQLString }
   })
 });
 

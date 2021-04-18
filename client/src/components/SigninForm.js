@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import AuthForm from './AuthForm';
-import { withRouter } from 'react-router-dom';
+import React, { Component } from "react";
+import AuthForm from "./AuthForm";
+import { withRouter } from "react-router-dom";
 import { Mutation } from "react-apollo";
-import mutation from '../mutations/Login';
-import query from '../queries/CurrentUser';
+import mutation from "../mutations/Login";
+import query from "../queries/CurrentUser";
 
 class LoginForm extends Component {
   render() {
@@ -11,19 +11,15 @@ class LoginForm extends Component {
       <Mutation
         mutation={mutation}
         refetchQueries={[{ query }]}
-        onCompleted={() => this.props.history.push('/')}
+        onCompleted={() => this.props.history.push("/")}
       >
         {(login, { loading, error }) => (
           <div>
-            <AuthForm
-              title="Sign in"
-              onSubmit={login}
-              error={error}
-            />
+            <AuthForm title="Sign in" onSubmit={login} error={error} />
           </div>
         )}
       </Mutation>
-    )
+    );
   }
 }
 

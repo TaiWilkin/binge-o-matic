@@ -1,4 +1,4 @@
-const graphql = require('graphql');
+const graphql = require("graphql");
 const {
   GraphQLObjectType,
   GraphQLString,
@@ -6,20 +6,20 @@ const {
   GraphQLID,
   GraphQLInputObjectType,
   GraphQLBoolean,
-  GraphQLList,
+  GraphQLList
 } = graphql;
-var GraphQLDate = require('graphql-date')
+var GraphQLDate = require("graphql-date");
 
-const UserType = require('./types/user_type');
-const ListType = require('./types/list_type');
-const MediaType = require('./types/media_type');
+const UserType = require("./types/user_type");
+const ListType = require("./types/list_type");
+const MediaType = require("./types/media_type");
 
-const AuthService = require('../services/auth');
-const ListService = require('../services/list');
-const MediaService = require('../services/media');
+const AuthService = require("../services/auth");
+const ListService = require("../services/list");
+const MediaService = require("../services/media");
 
 const mutation = new GraphQLObjectType({
-  name: 'Mutation',
+  name: "Mutation",
   fields: () => ({
     signup: {
       type: UserType,
@@ -74,7 +74,7 @@ const mutation = new GraphQLObjectType({
       type: ListType,
       args: {
         id: { type: GraphQLID },
-        list: { type: GraphQLID },
+        list: { type: GraphQLID }
       },
       resolve(parentValue, args, req) {
         return MediaService.removeFromList(args, req.user);
@@ -85,7 +85,7 @@ const mutation = new GraphQLObjectType({
       args: {
         id: { type: GraphQLID },
         list: { type: GraphQLID },
-        isWatched: { type: GraphQLBoolean },
+        isWatched: { type: GraphQLBoolean }
       },
       resolve(parentValue, args, req) {
         return MediaService.toggleWatched(args);
@@ -95,7 +95,7 @@ const mutation = new GraphQLObjectType({
       type: MediaType,
       args: {
         id: { type: GraphQLID },
-        list: { type: GraphQLID },
+        list: { type: GraphQLID }
       },
       resolve(parentValue, args, req) {
         return MediaService.hideChildren(args);
@@ -107,7 +107,7 @@ const mutation = new GraphQLObjectType({
         id: { type: GraphQLID },
         list: { type: GraphQLID },
         season_number: { type: GraphQLInt },
-        show_id: { type: GraphQLID },
+        show_id: { type: GraphQLID }
       },
       resolve(parentValue, args, req) {
         return MediaService.addEpisodes(args);
@@ -118,7 +118,7 @@ const mutation = new GraphQLObjectType({
       args: {
         id: { type: GraphQLID },
         media_id: { type: GraphQLID },
-        list: { type: GraphQLID },
+        list: { type: GraphQLID }
       },
       resolve(parentValue, args, req) {
         return MediaService.addSeasons(args);

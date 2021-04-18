@@ -1,3 +1,3 @@
-require('./user');
-require('./list');
-require('./media');
+require("./user");
+require("./list");
+require("./media");

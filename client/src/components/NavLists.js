@@ -1,5 +1,5 @@
-import React from 'react';
-import { withRouter } from 'react-router-dom';
+import React from "react";
+import { withRouter } from "react-router-dom";
 
 const NavLists = ({ lists, history, title }) => {
   if (!lists.length) return null;
@@ -15,11 +15,9 @@ const NavLists = ({ lists, history, title }) => {
   return (
     <li className="dropdown">
       <button className="dropbtn">{title}</button>
-      <div className="dropdown-content">
-        {options}
-      </div>
+      <div className="dropdown-content">{options}</div>
     </li>
   );
-}
+};
 
 export default withRouter(NavLists);

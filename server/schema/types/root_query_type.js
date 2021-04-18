@@ -1,16 +1,16 @@
-const graphql = require('graphql');
+const graphql = require("graphql");
 const { GraphQLObjectType, GraphQLID, GraphQLList, GraphQLString } = graphql;
-var GraphQLDate = require('graphql-date');
+var GraphQLDate = require("graphql-date");
 
-const UserType = require('./user_type');
-const ListType = require('./list_type');
-const MediaType = require('./media_type');
+const UserType = require("./user_type");
+const ListType = require("./list_type");
+const MediaType = require("./media_type");
 
-const ListService = require('../../services/list');
-const MediaService = require('../../services/media');
+const ListService = require("../../services/list");
+const MediaService = require("../../services/media");
 
 const RootQueryType = new GraphQLObjectType({
-  name: 'RootQueryType',
+  name: "RootQueryType",
   fields: () => ({
     user: {
       type: UserType,
@@ -27,7 +27,7 @@ const RootQueryType = new GraphQLObjectType({
     list: {
       type: ListType,
       args: {
-        id: { type: GraphQLID },
+        id: { type: GraphQLID }
       },
       resolve(parentValue, args, req) {
         return ListService.fetchList(args.id);
@@ -36,7 +36,7 @@ const RootQueryType = new GraphQLObjectType({
     media: {
       type: new GraphQLList(MediaType),
       args: {
-        searchQuery: { type: GraphQLString },
+        searchQuery: { type: GraphQLString }
       },
       resolve(parentValue, { searchQuery }, req) {
         return MediaService.searchMedia(searchQuery);

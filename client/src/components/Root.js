@@ -1,15 +1,15 @@
-import React from 'react';
-import { Route, Switch } from 'react-router-dom';
-import AppWrapper from './AppWrapper';
+import React from "react";
+import { Route, Switch } from "react-router-dom";
+import AppWrapper from "./AppWrapper";
 
-import requireAuth from './requireAuth';
-import SigninForm from './SigninForm';
-import SignupForm from './SignupForm';
-import About from './About';
-import NewList from './NewList';
-import SearchMovies from './SearchMovies';
-import UserList from './UserList';
-import Edit from './Edit';
+import requireAuth from "./requireAuth";
+import SigninForm from "./SigninForm";
+import SignupForm from "./SignupForm";
+import About from "./About";
+import NewList from "./NewList";
+import SearchMovies from "./SearchMovies";
+import UserList from "./UserList";
+import Edit from "./Edit";
 
 class Root extends React.Component {
   render() {
@@ -23,7 +23,11 @@ class Root extends React.Component {
           <Route exact path="/newlist" component={requireAuth(NewList)} />
           <Route exact path="/lists/:id/edit" component={requireAuth(Edit)} />
           <Route exact path="/lists/:id" component={UserList} />
-          <Route exact path="/lists/:id/search" component={requireAuth(SearchMovies)} />
+          <Route
+            exact
+            path="/lists/:id/search"
+            component={requireAuth(SearchMovies)}
+          />
         </Switch>
       </AppWrapper>
     );
