@@ -3,6 +3,8 @@ import { withRouter, Redirect } from "react-router-dom";
 import QueryHandler from "./QueryHandler";
 import listQuery from "../queries/List";
 import UserMovie from "./UserMovie";
+import UserListHeader from "./UserListHeader";
+import ListHeader from "./ListHeader";
 
 const calculateHiddenChildren = (media, hideWatched) => {
   let parentsWithHiddenChildren = media.filter(movie => !movie.show_children);
@@ -41,45 +43,18 @@ class UserList extends Component {
   }
 
   renderHeader(list, isOwner) {
-    if (isOwner) {
-      return (
-        <div className="header">
-          <h2>{list.name}</h2>
-          <button
-            className="edit-btn"
-            onClick={() =>
-              this.setState({ hideWatched: !this.state.hideWatched })
-            }
-          >
-            {this.state.hideWatched ? "SHOW WATCHED" : "HIDE WATCHED"}
-          </button>
-          <button
-            className="edit-btn"
-            onClick={() =>
-              this.props.history.push(
-                `/lists/${this.props.match.params.id}/edit`
-              )
-            }
-          >
-            EDIT LIST
-          </button>
-          <button
-            className="edit-btn"
-            onClick={() =>
-              this.props.history.push(
-                `/lists/${this.props.match.params.id}/search`
-              )
-            }
-          >
-            ADD ITEMS
-          </button>
-        </div>
-      );
-    }
-    return (
-      <div className="header">
-        <h2>{list.name}</h2>
-      </div>
+    return isOwner ? (
+      <UserListHeader
+        push={this.props.history.push}
+        onToggleWatched={() =>
+          this.setState({ hideWatched: !this.state.hideWatched })
+        }
+        hideWatched={this.state.hideWatched}
+        id={this.props.match.params.id}
+        name={list.name}
+      />
+    ) : (
+      <ListHeader name={list.name} push={this.props.history.push} />
     );
   }
 
