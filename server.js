@@ -7,10 +7,8 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const passport = require("passport");
 const passportConfig = require("./server/services/auth");
-const MongoStore = require("connect-mongo")(session);
+const MongoStore = require("connect-mongo");
 const schema = require("./server/schema/schema");
-
-// this is nonsense to trigger an update
 
 // Create a new Express application
 const app = express();
@@ -42,8 +40,8 @@ app.use(
     resave: true,
     saveUninitialized: true,
     secret: process.env.SECRET,
-    store: new MongoStore({
-      url: MONGO_URI,
+    store: MongoStore.create({
+      mongoUrl: MONGO_URI,
       autoReconnect: true
     })
   })
