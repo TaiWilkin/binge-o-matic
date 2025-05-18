@@ -1,15 +1,13 @@
-require("dotenv").config();
+import "dotenv/config";
 
-const express = require("express");
-const expressGraphQL = require("express-graphql");
-const mongoose = require("mongoose");
-const session = require("express-session");
-const passport = require("passport");
-const MongoStore = require("connect-mongo");
+import express from "express";
+import expressGraphQL from "express-graphql";
+import mongoose from "mongoose";
+import session from "express-session";
+import passport from "passport";
+import MongoStore from "connect-mongo";
 
-const models = require("./server/models");
-const schema = require("./server/schema/schema");
-const passportConfig = require("./server/services/auth");
+import schema from "./server/schema/schema.js";
 
 // Create a new Express application
 const app = express();
