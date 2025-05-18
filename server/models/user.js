@@ -1,4 +1,4 @@
-const bcrypt = require("bcrypt-nodejs");
+const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
@@ -7,7 +7,7 @@ const Schema = mongoose.Schema;
 // plain text - see the authentication helpers below.
 const UserSchema = new Schema({
   email: String,
-  password: String
+  password: String,
 });
 
 // The user's password is never saved in plain text.  Prior to saving the

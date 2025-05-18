@@ -1,14 +1,15 @@
 require("dotenv").config();
 
 const express = require("express");
-const models = require("./server/models");
 const expressGraphQL = require("express-graphql");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const passport = require("passport");
-const passportConfig = require("./server/services/auth");
 const MongoStore = require("connect-mongo");
+
+const models = require("./server/models");
 const schema = require("./server/schema/schema");
+const passportConfig = require("./server/services/auth");
 
 // Create a new Express application
 const app = express();
@@ -28,7 +29,7 @@ mongoose.Promise = global.Promise;
 mongoose.connect(MONGO_URI);
 mongoose.connection
   .once("open", () => console.log("Connected to MongoLab instance."))
-  .on("error", error => console.log("Error connecting to MongoLab:", error));
+  .on("error", (error) => console.log("Error connecting to MongoLab:", error));
 
 // Configures express to use sessions.  This places an encrypted identifier
 // on the users cookie.  When a user makes a request, this middleware examines
@@ -42,8 +43,8 @@ app.use(
     secret: process.env.SECRET,
     store: MongoStore.create({
       mongoUrl: MONGO_URI,
-      autoReconnect: true
-    })
+      autoReconnect: true,
+    }),
   })
 );
 
@@ -59,7 +60,7 @@ app.use(
   "/graphql",
   expressGraphQL({
     schema,
-    graphiql: true
+    graphiql: true,
   })
 );
 
