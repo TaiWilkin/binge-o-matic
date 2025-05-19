@@ -36,10 +36,7 @@ class Edit extends React.Component {
           return (
             <main>
               <div className="subheader">
-                <h2>
-                  Editing
-                  {data.list.name}
-                </h2>
+                <h2>Editing {data.list.name}</h2>
                 <button
                   className="right"
                   onClick={() =>
