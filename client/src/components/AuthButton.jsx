@@ -33,15 +33,13 @@ class AuthButton extends React.Component {
         </li>
       );
     }
-    if (!user) {
-      return (
-        <li className="right">
-          <button onClick={() => this.props.history.push("/signin")}>
-            Login
-          </button>
-        </li>
-      );
-    }
+    return (
+      <li className="right">
+        <button onClick={() => this.props.history.push("/signin")}>
+          Login
+        </button>
+      </li>
+    );
   }
 }
 

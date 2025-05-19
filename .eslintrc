@@ -24,8 +24,7 @@
         "react/prop-types": "off",
         "react/destructuring-assignment": "off",
         "react/button-has-type": "off",
-        "no-unused-vars": "off",
-        "consistent-return": "off"
+        "no-unused-vars": "off"
     },
     "globals": {
         "window": true,
