@@ -1,12 +1,12 @@
-const mongoose = require("mongoose");
-var ObjectId = require("mongoose").Types.ObjectId;
+import mongoose from "mongoose";
+
+var ObjectId = mongoose.Types.ObjectId;
 const List = mongoose.model("list");
-const User = mongoose.model("user");
 
 function fetchAllLists() {
   return List.find()
     .sort({ name: "desc" })
-    .catch(e => {
+    .catch((e) => {
       console.log(e);
       return null;
     });
@@ -15,14 +15,14 @@ function fetchAllLists() {
 function fetchUserLists(user) {
   return List.find({ user: new ObjectId(user.id) })
     .sort({ name: "desc" })
-    .catch(e => {
+    .catch((e) => {
       console.log(e);
       return null;
     });
 }
 
 function createList(name, user) {
-  return List.find({ name: name }).then(res => {
+  return List.find({ name: name }).then((res) => {
     if (res.length) {
       throw new Error("A list with this name already exists.");
     }
@@ -31,7 +31,7 @@ function createList(name, user) {
 }
 
 function fetchList(id) {
-  return List.findOne({ _id: new ObjectId(id) }).catch(e => {
+  return List.findOne({ _id: new ObjectId(id) }).catch((e) => {
     console.log(e);
     return null;
   });
@@ -39,17 +39,17 @@ function fetchList(id) {
 
 function deleteList({ id }, user) {
   return List.findOne({ _id: new ObjectId(id) })
-    .then(list => {
+    .then((list) => {
       if (list.user.toString() !== user._id.toString()) {
         throw new Error("Unauthorized!");
         console.log(user, list.user);
       }
       return List.deleteOne({ _id: new ObjectId(id) });
     })
-    .then(l => {
+    .then((l) => {
       return null;
     })
-    .catch(e => {
+    .catch((e) => {
       console.error(e);
       return null;
     });
@@ -57,7 +57,7 @@ function deleteList({ id }, user) {
 
 function editList({ id, name }, user) {
   return List.findOne({ _id: new ObjectId(id) })
-    .then(list => {
+    .then((list) => {
       if (list.user.toString() !== user._id.toString()) {
         throw new Error("Unauthorized!");
         console.log(user, list.user);
@@ -67,17 +67,17 @@ function editList({ id, name }, user) {
         { $set: { name: name } }
       );
     })
-    .catch(e => {
+    .catch((e) => {
       console.error(e);
       return null;
     });
 }
 
-module.exports = {
+export default {
   fetchAllLists,
   fetchUserLists,
   createList,
   fetchList,
   deleteList,
-  editList
+  editList,
 };

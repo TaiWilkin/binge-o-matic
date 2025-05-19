@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
-const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
+import mongoose from "mongoose";
+import passport from "passport";
+import { Strategy as LocalStrategy } from "passport-local";
 
 const User = mongoose.model("user");
 
@@ -62,15 +62,15 @@ function signup({ email, password, req }) {
   }
 
   return User.findOne({ email })
-    .then(existingUser => {
+    .then((existingUser) => {
       if (existingUser) {
         throw new Error("Email in use");
       }
       return user.save();
     })
-    .then(user => {
+    .then((user) => {
       return new Promise((resolve, reject) => {
-        req.logIn(user, err => {
+        req.logIn(user, (err) => {
           if (err) {
             reject(err);
           }
@@ -103,4 +103,4 @@ function logout(req) {
   return user;
 }
 
-module.exports = { signup, login, logout };
+export default { signup, login, logout };
