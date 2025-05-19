@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const MediaSchema = new Schema({
@@ -11,7 +11,7 @@ const MediaSchema = new Schema({
   number: { type: Number, default: 1 },
   parent_season: { type: Schema.Types.ObjectId, ref: "media", default: null },
   parent_show: { type: Schema.Types.ObjectId, ref: "media", default: null },
-  episode: { type: String }
+  episode: { type: String },
 });
 
 mongoose.model("media", MediaSchema);

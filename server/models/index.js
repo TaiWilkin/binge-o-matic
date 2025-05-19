@@ -1,3 +1,3 @@
-require("./user");
-require("./list");
-require("./media");
+import "./user.js";
+import "./list.js";
+import "./media.js";
