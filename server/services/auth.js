@@ -28,16 +28,16 @@ passport.deserializeUser((id, done) => {
 // This string is provided back to the GraphQL client.
 passport.use(
   new LocalStrategy({ usernameField: "email" }, (email, password, done) => {
-    User.findOne({ email: email.toLowerCase() }, (err, user) => {
+    return User.findOne({ email: email.toLowerCase() }, (err, user) => {
       if (err) {
         return done(err);
       }
       if (!user) {
         return done(null, false, "Invalid Credentials");
       }
-      user.comparePassword(password, (err, isMatch) => {
-        if (err) {
-          return done(err);
+      return user.comparePassword(password, (e, isMatch) => {
+        if (e) {
+          return done(e);
         }
         if (isMatch) {
           return done(null, user);
@@ -45,7 +45,7 @@ passport.use(
         return done(null, false, "Invalid credentials.");
       });
     });
-  })
+  }),
 );
 
 // Creates a new user account.  We first check to see if a user already exists
@@ -56,7 +56,7 @@ passport.use(
 // because Passport only supports callbacks, while GraphQL only supports promises
 // for async code!  Awkward!
 function signup({ email, password, req }) {
-  const user = new User({ email, password });
+  const newUser = new User({ email, password });
   if (!email || !password) {
     throw new Error("You must provide an email and password.");
   }
@@ -66,18 +66,19 @@ function signup({ email, password, req }) {
       if (existingUser) {
         throw new Error("Email in use");
       }
-      return user.save();
+      return newUser.save();
     })
-    .then((user) => {
-      return new Promise((resolve, reject) => {
-        req.logIn(user, (err) => {
-          if (err) {
-            reject(err);
-          }
-          resolve(user);
-        });
-      });
-    });
+    .then(
+      (user) =>
+        new Promise((resolve, reject) => {
+          req.logIn(user, (err) => {
+            if (err) {
+              reject(err);
+            }
+            resolve(user);
+          });
+        }),
+    );
 }
 
 // Logs in a user.  This will invoke the 'local-strategy' defined above in this
@@ -89,7 +90,7 @@ function login({ email, password, req }) {
   return new Promise((resolve, reject) => {
     passport.authenticate("local", (err, user) => {
       if (!user) {
-        reject("Invalid credentials.");
+        reject(new Error("Invalid credentials."));
       }
 
       req.login(user, () => resolve(user));

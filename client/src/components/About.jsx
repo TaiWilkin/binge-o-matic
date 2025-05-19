@@ -1,7 +1,7 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 
-const About = ({ history }) => {
+function About({ history }) {
   return (
     <main>
       <div className="about">
@@ -51,6 +51,6 @@ const About = ({ history }) => {
       </div>
     </main>
   );
-};
+}
 
 export default withRouter(About);

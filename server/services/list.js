@@ -1,13 +1,15 @@
 import mongoose from "mongoose";
 
-var ObjectId = mongoose.Types.ObjectId;
+import { logError } from "../utilities.js";
+
+const { ObjectId } = mongoose.Types;
 const List = mongoose.model("list");
 
 function fetchAllLists() {
   return List.find()
     .sort({ name: "desc" })
     .catch((e) => {
-      console.error(e);
+      logError(e);
       return null;
     });
 }
@@ -16,23 +18,23 @@ function fetchUserLists(user) {
   return List.find({ user: new ObjectId(user.id) })
     .sort({ name: "desc" })
     .catch((e) => {
-      console.error(e);
+      logError(e);
       return null;
     });
 }
 
 function createList(name, user) {
-  return List.find({ name: name }).then((res) => {
+  return List.find({ name }).then((res) => {
     if (res.length) {
       throw new Error("A list with this name already exists.");
     }
-    return List.create({ user: new ObjectId(user.id), name: name });
+    return List.create({ user: new ObjectId(user.id), name });
   });
 }
 
 function fetchList(id) {
   return List.findOne({ _id: new ObjectId(id) }).catch((e) => {
-    console.error(e);
+    logError(e);
     return null;
   });
 }
@@ -45,11 +47,9 @@ function deleteList({ id }, user) {
       }
       return List.deleteOne({ _id: new ObjectId(id) });
     })
-    .then(() => {
-      return null;
-    })
+    .then(() => null)
     .catch((e) => {
-      console.error(e);
+      logError(e);
       return null;
     });
 }
@@ -62,11 +62,11 @@ function editList({ id, name }, user) {
       }
       return List.findOneAndUpdate(
         { _id: new ObjectId(id) },
-        { $set: { name: name } }
+        { $set: { name } },
       );
     })
     .catch((e) => {
-      console.error(e);
+      logError(e);
       return null;
     });
 }

@@ -1,6 +1,7 @@
 import React from "react";
-import TMDB from "../assets/tmdb.png";
+
 import BrightEye from "../assets/bright-eye.png";
+import TMDB from "../assets/tmdb.png";
 import Nav from "./Nav";
 
 export default class AppWrapper extends React.Component {

@@ -1,16 +1,17 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
 import { Mutation } from "react-apollo";
-import QueryHandler from "./QueryHandler";
+import { withRouter } from "react-router-dom";
+
 import deleteListMutation from "../mutations/DeleteList";
 import editListMutation from "../mutations/EditList";
 import listQuery from "../queries/List";
+import QueryHandler from "./QueryHandler";
 
 class Edit extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      text: ""
+      text: "",
     };
   }
 
@@ -40,7 +41,7 @@ class Edit extends React.Component {
                   className="right"
                   onClick={() =>
                     this.props.history.push(
-                      `/lists/${this.props.match.params.id}`
+                      `/lists/${this.props.match.params.id}`,
                     )
                   }
                 >
@@ -52,31 +53,31 @@ class Edit extends React.Component {
                     type="text"
                     placeholder="Enter new title"
                     value={this.state.text}
-                    onChange={e => this.onChange(e)}
+                    onChange={(e) => this.onChange(e)}
                   />
                   <Mutation
                     mutation={editListMutation}
                     refetchQueries={[
                       {
                         query: listQuery,
-                        variables: { id: this.props.match.params.id }
-                      }
+                        variables: { id: this.props.match.params.id },
+                      },
                     ]}
                     onCompleted={() => {
                       this.props.history.push(
-                        `/lists/${this.props.match.params.id}`
+                        `/lists/${this.props.match.params.id}`,
                       );
                     }}
                   >
                     {(editList, { loading, error }) => (
                       <button
-                        onClick={e => {
+                        onClick={(e) => {
                           e.preventDefault();
                           editList({
                             variables: {
                               id: this.props.match.params.id,
-                              name: this.state.text
-                            }
+                              name: this.state.text,
+                            },
                           });
                         }}
                       >
@@ -98,7 +99,7 @@ class Edit extends React.Component {
                       className="standalone-btn"
                       onClick={() =>
                         deleteList({
-                          variables: { id: this.props.match.params.id }
+                          variables: { id: this.props.match.params.id },
                         })
                       }
                     >

@@ -5,17 +5,16 @@ function Errors({ error, classes }) {
     return (
       <div className="errors">
         {error.graphQLErrors
-          .map(error => error.message)
-          .map(error => (
+          .map((error) => error.message)
+          .map((error) => (
             <p variant="body2" key={error} className="error-small">
               {error}
             </p>
           ))}
       </div>
     );
-  } else {
-    return null;
   }
+  return null;
 }
 
 export default Errors;

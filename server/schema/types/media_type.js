@@ -1,5 +1,6 @@
 import graphql from "graphql";
 import GraphQLDate from "graphql-date";
+
 const {
   GraphQLObjectType,
   GraphQLString,

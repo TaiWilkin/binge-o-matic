@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 
-var ObjectId = mongoose.Types.ObjectId;
+import { logError } from "../utilities.js";
+
+const { ObjectId } = mongoose.Types;
 const List = mongoose.model("list");
 const Media = mongoose.model("media");
 
@@ -15,20 +17,21 @@ function searchMedia(searchQuery) {
       }
       return res.json();
     })
-    .then((res) => {
-      return res.results
+    .then((res) =>
+      res.results
         .map((media) => {
+          const updatedMedia = { ...media };
           if (!media.release_date && !media.first_air_date) return null;
           if (media.media_type === "tv") {
-            media.release_date = new Date(media.first_air_date);
-            media.title = media.name;
+            updatedMedia.release_date = new Date(media.first_air_date);
+            updatedMedia.title = media.name;
           } else {
-            media.release_date = new Date(media.release_date);
+            updatedMedia.release_date = new Date(media.release_date);
           }
-          return media;
+          return updatedMedia;
         })
-        .filter((media) => !!media);
-    })
+        .filter((media) => !!media),
+    )
     .catch((err) => {
       throw new Error(err);
     });
@@ -53,7 +56,7 @@ function addToList(media, user) {
             media_type: media.media_type,
           },
         },
-        { new: true, upsert: true }
+        { new: true, upsert: true },
       );
     })
     .then((m) => {
@@ -65,11 +68,11 @@ function addToList(media, user) {
       return List.findOneAndUpdate(
         { _id: new ObjectId(media.list) },
         { $set: { media: mediaList } },
-        { new: true }
+        { new: true },
       );
     })
     .catch((e) => {
-      console.error(e);
+      logError(e);
       return null;
     });
 }
@@ -85,11 +88,11 @@ function getMediaList(mediaIds) {
   return Media.find({
     _id: { $in: mediaIds.map((el) => new ObjectId(el.item_id)) },
   }) // find all media whose _id equals the item_id (MLab id) of the item
-    .then((ms) => {
-      return ms
+    .then((ms) =>
+      ms
         .map((m) => ({
           isWatched: mediaIds.find(
-            (el) => el.item_id.toString() === m._id.toString()
+            (el) => el.item_id.toString() === m._id.toString(),
           ).isWatched,
           title: m.title,
           media_id: m.media_id,
@@ -102,23 +105,25 @@ function getMediaList(mediaIds) {
           episode: m.episode,
           id: m._id,
           show_children: mediaIds.find(
-            (el) => el.item_id.toString() === m._id.toString()
+            (el) => el.item_id.toString() === m._id.toString(),
           ).show_children,
         }))
         .sort((a, b) => {
           if (a.release_date < b.release_date) {
             return -1;
-          } else if (a.release_date > b.release_date) {
-            return 1;
-          } else if (mediaTypes[a.media_type] < mediaTypes[b.media_type]) {
-            return -1;
-          } else if (mediaTypes[a.media_type] > mediaTypes[b.media_type]) {
-            return 1;
-          } else {
-            return a.title - b.title;
           }
-        });
-    });
+          if (a.release_date > b.release_date) {
+            return 1;
+          }
+          if (mediaTypes[a.media_type] < mediaTypes[b.media_type]) {
+            return -1;
+          }
+          if (mediaTypes[a.media_type] > mediaTypes[b.media_type]) {
+            return 1;
+          }
+          return a.title - b.title;
+        }),
+    );
 }
 
 function removeFromList({ id, list }, user) {
@@ -140,7 +145,7 @@ function removeFromList({ id, list }, user) {
             (m.parent_show &&
               m.parent_show.toString() === item.id.toString()) ||
             (m.parent_season &&
-              m.parent_season.toString() === item.id.toString())
+              m.parent_season.toString() === item.id.toString()),
         )
         .map((el) => el.id.toString())
         .concat([item.id.toString()]);
@@ -149,11 +154,11 @@ function removeFromList({ id, list }, user) {
         {
           $set: {
             media: listData.media.filter(
-              (el) => !childItems.includes(el.item_id.toString())
+              (el) => !childItems.includes(el.item_id.toString()),
             ),
           },
         },
-        { new: true }
+        { new: true },
       );
     });
 }
@@ -161,14 +166,15 @@ function removeFromList({ id, list }, user) {
 function toggleWatched({ id, isWatched, list }) {
   return List.findOne({ _id: new ObjectId(list) })
     .then((l) => {
+      const updatedL = { ...l };
       const index = l.media.findIndex(
-        (el) => el.item_id.toString() === id.toString()
+        (el) => el.item_id.toString() === id.toString(),
       );
-      l.media[index].isWatched = isWatched;
-      return List.findOneAndUpdate({ _id: new ObjectId(list) }, l);
+      updatedL.media[index].isWatched = isWatched;
+      return List.findOneAndUpdate({ _id: new ObjectId(list) }, updatedL);
     })
     .catch((e) => {
-      console.error(e);
+      logError(e);
       return null;
     });
 }
@@ -176,14 +182,15 @@ function toggleWatched({ id, isWatched, list }) {
 function hideChildren({ id, list }) {
   return List.findOne({ _id: new ObjectId(list) })
     .then((l) => {
+      const updatedL = { ...l };
       const index = l.media.findIndex(
-        (el) => el.item_id.toString() === id.toString()
+        (el) => el.item_id.toString() === id.toString(),
       );
-      l.media[index].show_children = false;
-      return List.findOneAndUpdate({ _id: new ObjectId(list) }, l);
+      updatedL.media[index].show_children = false;
+      return List.findOneAndUpdate({ _id: new ObjectId(list) }, updatedL);
     })
     .catch((e) => {
-      console.log(e);
+      logError(e);
       return null;
     });
 }
@@ -215,9 +222,9 @@ function addSeasons({ id, media_id, list }) {
           Media.findOneAndUpdate(
             { media_id: season.media_id },
             { $set: season },
-            { new: true, upsert: true }
-          )
-        )
+            { new: true, upsert: true },
+          ),
+        ),
       );
     })
     .then((ms) => {
@@ -238,18 +245,18 @@ function addSeasons({ id, media_id, list }) {
       const mediaList = l.media.concat(newItems);
 
       const showIndex = mediaList.findIndex(
-        (el) => el.item_id.toString() === id.toString()
+        (el) => el.item_id.toString() === id.toString(),
       );
       mediaList[showIndex].show_children = true;
 
       return List.findOneAndUpdate(
         { _id: new ObjectId(list) },
         { $set: { media: mediaList } },
-        { new: true }
+        { new: true },
       );
     })
     .catch((e) => {
-      console.error(e);
+      logError(e);
       return null;
     });
 }
@@ -288,9 +295,9 @@ function addEpisodes({ id, season_number, show_id, list }) {
           Media.findOneAndUpdate(
             { media_id: episode.media_id },
             { $set: episode },
-            { new: true, upsert: true }
-          )
-        )
+            { new: true, upsert: true },
+          ),
+        ),
       );
     })
     .then((ms) => {
@@ -307,18 +314,18 @@ function addEpisodes({ id, season_number, show_id, list }) {
       const mediaList = l.media.concat(newItems);
 
       const seasonIndex = mediaList.findIndex(
-        (el) => el.item_id.toString() === id.toString()
+        (el) => el.item_id.toString() === id.toString(),
       );
       mediaList[seasonIndex].show_children = true;
 
       return List.findOneAndUpdate(
         { _id: new ObjectId(list) },
         { $set: { media: mediaList } },
-        { new: true }
+        { new: true },
       );
     })
     .catch((e) => {
-      console.error(e);
+      logError(e);
       return null;
     });
 }

@@ -1,15 +1,15 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import AppWrapper from "./AppWrapper";
 
+import About from "./About";
+import AppWrapper from "./AppWrapper";
+import Edit from "./Edit";
+import NewList from "./NewList";
 import requireAuth from "./requireAuth";
+import SearchMovies from "./SearchMovies";
 import SigninForm from "./SigninForm";
 import SignupForm from "./SignupForm";
-import About from "./About";
-import NewList from "./NewList";
-import SearchMovies from "./SearchMovies";
 import UserList from "./UserList";
-import Edit from "./Edit";
 
 class Root extends React.Component {
   render() {

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { withRouter, Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
+
 import Errors from "./Errors";
 
 class AuthForm extends Component {
@@ -56,7 +57,7 @@ class AuthForm extends Component {
                 placeholder="John_Doe@example.com"
                 value={this.state.email}
                 required
-                onChange={e => this.onChange("email", e)}
+                onChange={(e) => this.onChange("email", e)}
               />
             </label>
             <label>
@@ -65,7 +66,7 @@ class AuthForm extends Component {
                 type="password"
                 placeholder="password123"
                 value={this.state.password}
-                onChange={e => this.onChange("password", e)}
+                onChange={(e) => this.onChange("password", e)}
                 required
               />
             </label>

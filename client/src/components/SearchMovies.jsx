@@ -1,8 +1,9 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
-import QueryHandler from "./QueryHandler";
+
 import listQuery from "../queries/List";
 import mediaQuery from "../queries/Media";
+import QueryHandler from "./QueryHandler";
 import SearchMovie from "./SearchMovie";
 
 export class SearchMovies extends React.Component {
@@ -12,7 +13,7 @@ export class SearchMovies extends React.Component {
       searchQuery: "",
       filter: "all",
       media: [],
-      loading: false
+      loading: false,
     };
     this.onSubmit = this.onSubmit.bind(this);
     this.select = this.select.bind(this);
@@ -24,13 +25,13 @@ export class SearchMovies extends React.Component {
     client
       .query({
         query: mediaQuery,
-        variables: { searchQuery: this.state.searchQuery }
+        variables: { searchQuery: this.state.searchQuery },
       })
-      .then(response => {
+      .then((response) => {
         this.setState({
           searchQuery: "",
           loading: false,
-          media: response.data.media
+          media: response.data.media,
         });
       });
   }
@@ -48,11 +49,11 @@ export class SearchMovies extends React.Component {
     }
     let movies;
     if (this.state.filter === "all") {
-      movies = this.state.media.map(movie => (
+      movies = this.state.media.map((movie) => (
         <SearchMovie key={movie.id} {...movie} />
       ));
     } else {
-      movies = this.state.media.map(movie => {
+      movies = this.state.media.map((movie) => {
         if (movie.media_type !== this.state.filter) {
           return null;
         }
@@ -74,7 +75,10 @@ export class SearchMovies extends React.Component {
           return (
             <main>
               <div className="subheader">
-                <h2>Adding items to {data.list.name}</h2>
+                <h2>
+                  Adding items to
+                  {data.list.name}
+                </h2>
                 <button
                   className="edit-btn"
                   onClick={() =>
@@ -88,11 +92,11 @@ export class SearchMovies extends React.Component {
                     type="text"
                     placeholder="Search for shows or movies"
                     value={this.state.searchQuery}
-                    onChange={e => {
+                    onChange={(e) => {
                       this.setState({ searchQuery: e.target.value });
                     }}
                   />
-                  <button onClick={e => this.onSubmit(e, client)}>
+                  <button onClick={(e) => this.onSubmit(e, client)}>
                     Search
                   </button>
                 </form>

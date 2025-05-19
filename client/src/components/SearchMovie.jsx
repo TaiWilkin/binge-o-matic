@@ -1,10 +1,11 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
-import QueryHandler from "./QueryHandler";
 import { Mutation } from "react-apollo";
-import listQuery from "../queries/List";
+import { withRouter } from "react-router-dom";
+
 import addToListMutation from "../mutations/AddToList";
 import removeFromListMutation from "../mutations/RemoveFromList";
+import listQuery from "../queries/List";
+import QueryHandler from "./QueryHandler";
 
 export class SearchMovie extends React.Component {
   renderButtons(onList) {
@@ -14,13 +15,13 @@ export class SearchMovie extends React.Component {
         <Mutation
           mutation={addToListMutation}
           refetchQueries={[
-            { query: listQuery, variables: { id: this.props.match.params.id } }
+            { query: listQuery, variables: { id: this.props.match.params.id } },
           ]}
         >
           {(addToList, { loading, error }) => (
             <div className="card-actions">
               <button
-                onClick={e => {
+                onClick={(e) => {
                   e.preventDefault();
                   addToList({
                     variables: {
@@ -29,8 +30,8 @@ export class SearchMovie extends React.Component {
                       release_date,
                       poster_path,
                       media_type,
-                      list: this.props.match.params.id
-                    }
+                      list: this.props.match.params.id,
+                    },
                   });
                 }}
               >
@@ -45,16 +46,16 @@ export class SearchMovie extends React.Component {
       <Mutation
         mutation={removeFromListMutation}
         refetchQueries={[
-          { query: listQuery, variables: { id: this.props.match.params.id } }
+          { query: listQuery, variables: { id: this.props.match.params.id } },
         ]}
       >
         {(removeFromList, { loading, error }) => (
           <div className="card-actions">
             <button
-              onClick={e => {
+              onClick={(e) => {
                 e.preventDefault();
                 removeFromList({
-                  variables: { id, list: this.props.match.params.id }
+                  variables: { id, list: this.props.match.params.id },
                 });
               }}
             >
@@ -86,7 +87,9 @@ export class SearchMovie extends React.Component {
       >
         {({ data, loading, error, client }) => {
           let onList = "";
-          if (data.list.media.find(movie => movie.media_id === this.props.id)) {
+          if (
+            data.list.media.find((movie) => movie.media_id === this.props.id)
+          ) {
             onList = "onList";
           }
           return (
