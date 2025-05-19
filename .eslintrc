@@ -23,8 +23,7 @@
         "react/prefer-stateless-function": "off",
         "react/prop-types": "off",
         "react/destructuring-assignment": "off",
-        "react/button-has-type": "off",
-        "no-unused-vars": "off"
+        "react/button-has-type": "off"
     },
     "globals": {
         "window": true,

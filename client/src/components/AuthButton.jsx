@@ -16,7 +16,7 @@ class AuthButton extends React.Component {
             this.props.history.push("/");
           }}
         >
-          {(logout, { data }) => (
+          {(logout) => (
             <li className="right">
               <button onClick={logout}>Logout</button>
             </li>

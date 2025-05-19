@@ -18,7 +18,7 @@ class SearchMovie extends React.Component {
             { query: listQuery, variables: { id: this.props.match.params.id } },
           ]}
         >
-          {(addToList, { loading, error }) => (
+          {(addToList) => (
             <div className="card-actions">
               <button
                 onClick={(e) => {
@@ -49,7 +49,7 @@ class SearchMovie extends React.Component {
           { query: listQuery, variables: { id: this.props.match.params.id } },
         ]}
       >
-        {(removeFromList, { loading, error }) => (
+        {(removeFromList) => (
           <div className="card-actions">
             <button
               onClick={(e) => {
@@ -85,7 +85,7 @@ class SearchMovie extends React.Component {
         query={listQuery}
         variables={{ id: this.props.match.params.id }}
       >
-        {({ data, loading, error, client }) => {
+        {({ data }) => {
           let onList = "";
           if (
             data.list.media.find((movie) => movie.media_id === this.props.id)

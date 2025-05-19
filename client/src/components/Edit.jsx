@@ -25,7 +25,7 @@ class Edit extends React.Component {
         query={listQuery}
         variables={{ id: this.props.match.params.id }}
       >
-        {({ data, loading, error, client }) => {
+        {({ data, client }) => {
           if (!data.list) {
             return <p style={{ color: "red" }}> Error: List not found!</p>;
           }

@@ -65,7 +65,7 @@ class UserList extends Component {
         query={listQuery}
         variables={{ id: this.props.match.params.id }}
       >
-        {({ data, loading, error, client }) => {
+        {({ data }) => {
           if (!data.list) {
             return <p style={{ color: "red" }}> Error: List not found!</p>;
           }

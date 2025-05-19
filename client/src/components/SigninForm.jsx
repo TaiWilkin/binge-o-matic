@@ -14,7 +14,7 @@ class LoginForm extends Component {
         refetchQueries={[{ query }]}
         onCompleted={() => this.props.history.push("/")}
       >
-        {(login, { loading, error }) => (
+        {(login, { error }) => (
           <div>
             <AuthForm title="Sign in" onSubmit={login} error={error} />
           </div>

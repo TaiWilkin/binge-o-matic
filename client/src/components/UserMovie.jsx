@@ -19,7 +19,7 @@ class UserMovie extends React.Component {
           { query: listQuery, variables: { id: this.props.match.params.id } },
         ]}
       >
-        {(toggleWatched, { loading, error }) => (
+        {(toggleWatched) => (
           <button
             className="drop"
             onClick={() => {
@@ -48,7 +48,7 @@ class UserMovie extends React.Component {
           { query: listQuery, variables: { id: this.props.match.params.id } },
         ]}
       >
-        {(deleteListItem, { loading, error }) => (
+        {(deleteListItem) => (
           <button
             className="drop"
             onClick={() =>
@@ -78,7 +78,7 @@ class UserMovie extends React.Component {
           { query: listQuery, variables: { id: this.props.match.params.id } },
         ]}
       >
-        {(addSeasons, { loading, error }) => (
+        {(addSeasons) => (
           <button
             className="drop"
             onClick={() => {
@@ -109,7 +109,7 @@ class UserMovie extends React.Component {
           { query: listQuery, variables: { id: this.props.match.params.id } },
         ]}
       >
-        {(addEpisodes, { loading, error }) => (
+        {(addEpisodes) => (
           <button
             className="drop"
             onClick={() => {
@@ -138,7 +138,7 @@ class UserMovie extends React.Component {
           { query: listQuery, variables: { id: this.props.match.params.id } },
         ]}
       >
-        {(hideChildren, { loading, error }) => (
+        {(hideChildren) => (
           <button
             className="drop"
             onClick={() => {

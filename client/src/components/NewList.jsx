@@ -43,7 +43,7 @@ class NewList extends React.Component {
           }
         }}
       >
-        {(createList, { loading, error }) => (
+        {(createList, { error }) => (
           <main>
             <div className="subheader">
               <h2>New List</h2>
