@@ -46,7 +46,9 @@ class UserList extends Component {
       <UserListHeader
         push={this.props.history.push}
         onToggleWatched={() =>
-          this.setState({ hideWatched: !this.state.hideWatched })
+          this.setState((prevState) => ({
+            hideWatched: !prevState.hideWatched,
+          }))
         }
         hideWatched={this.state.hideWatched}
         id={this.props.match.params.id}
