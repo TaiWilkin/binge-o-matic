@@ -14,7 +14,6 @@ class QueryHandler extends Component {
             return <Loading />;
           }
           if (error) {
-            console.error(error);
             return <Errors error={error} />;
           }
           return this.props.children(queryResults);

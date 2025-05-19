@@ -34,7 +34,7 @@ class AuthForm extends Component {
 
   render() {
     const { error, title } = this.props;
-    console.error(error);
+
     return (
       <main>
         <div className="subheader">
