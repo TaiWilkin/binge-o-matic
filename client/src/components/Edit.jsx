@@ -38,6 +38,7 @@ class Edit extends React.Component {
               <div className="subheader">
                 <h2>Editing {data.list.name}</h2>
                 <button
+                  type="button"
                   className="right"
                   onClick={() =>
                     this.props.history.push(
@@ -71,6 +72,7 @@ class Edit extends React.Component {
                   >
                     {(editList) => (
                       <button
+                        type="button"
                         onClick={(e) => {
                           e.preventDefault();
                           editList({
@@ -96,6 +98,7 @@ class Edit extends React.Component {
                 >
                   {(deleteList) => (
                     <button
+                      type="button"
                       className="standalone-btn"
                       onClick={() =>
                         deleteList({

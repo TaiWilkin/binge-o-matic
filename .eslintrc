@@ -22,8 +22,7 @@
         "react/jsx-props-no-spreading": "off",
         "react/prefer-stateless-function": "off",
         "react/prop-types": "off",
-        "react/destructuring-assignment": "off",
-        "react/button-has-type": "off"
+        "react/destructuring-assignment": "off"
     },
     "globals": {
         "window": true,

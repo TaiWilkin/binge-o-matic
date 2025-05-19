@@ -40,6 +40,7 @@ class AuthForm extends Component {
         <div className="subheader">
           <h2>{title}</h2>
           <button
+            type="button"
             className="edit-btn"
             onClick={() => this.props.history.push("/")}
           >

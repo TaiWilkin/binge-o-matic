@@ -14,7 +14,10 @@ class Nav extends React.Component {
           <nav>
             <ul className="nav">
               <li>
-                <button onClick={() => this.props.history.push("/about")}>
+                <button
+                  type="button"
+                  onClick={() => this.props.history.push("/about")}
+                >
                   About
                 </button>
               </li>
@@ -26,7 +29,10 @@ class Nav extends React.Component {
               )}
               {!!data.user && (
                 <li>
-                  <button onClick={() => this.props.history.push("/newlist")}>
+                  <button
+                    type="button"
+                    onClick={() => this.props.history.push("/newlist")}
+                  >
                     New List
                   </button>
                 </li>

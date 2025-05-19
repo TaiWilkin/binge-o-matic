@@ -48,6 +48,7 @@ class NewList extends React.Component {
             <div className="subheader">
               <h2>New List</h2>
               <button
+                type="button"
                 className="edit-btn"
                 onClick={() => this.props.history.push("/")}
               >

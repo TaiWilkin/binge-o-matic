@@ -80,6 +80,7 @@ class SearchMovies extends React.Component {
                   {data.list.name}
                 </h2>
                 <button
+                  type="button"
                   className="edit-btn"
                   onClick={() =>
                     this.props.history.push(`/lists/${data.list.id}`)
@@ -96,14 +97,23 @@ class SearchMovies extends React.Component {
                       this.setState({ searchQuery: e.target.value });
                     }}
                   />
-                  <button onClick={(e) => this.onSubmit(e, client)}>
+                  <button
+                    type="button"
+                    onClick={(e) => this.onSubmit(e, client)}
+                  >
                     Search
                   </button>
                 </form>
                 <div className="card-actions">
-                  <button onClick={() => this.select("movie")}>MOVIES</button>
-                  <button onClick={() => this.select("tv")}>TV</button>
-                  <button onClick={() => this.select("all")}>ALL</button>
+                  <button type="button" onClick={() => this.select("movie")}>
+                    MOVIES
+                  </button>
+                  <button type="button" onClick={() => this.select("tv")}>
+                    TV
+                  </button>
+                  <button type="button" onClick={() => this.select("all")}>
+                    ALL
+                  </button>
                 </div>
               </div>
               <ul className="watchlist searchlist">{this.renderMovies()}</ul>

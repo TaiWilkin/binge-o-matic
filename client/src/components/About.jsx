@@ -37,14 +37,22 @@ function About({ history }) {
 
           <p>
             Go now!{" "}
-            <button id="create-btn" onClick={() => history.push("/newlist")}>
+            <button
+              type="button"
+              id="create-btn"
+              onClick={() => history.push("/newlist")}
+            >
               Create a list.
             </button>
             The future of television beckons you.
           </p>
         </div>
         <div className="card-actions">
-          <button className="" onClick={() => history.push("/newlist")}>
+          <button
+            type="button"
+            className=""
+            onClick={() => history.push("/newlist")}
+          >
             CREATE A LIST
           </button>
         </div>

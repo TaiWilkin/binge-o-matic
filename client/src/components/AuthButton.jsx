@@ -18,7 +18,9 @@ class AuthButton extends React.Component {
         >
           {(logout) => (
             <li className="right">
-              <button onClick={logout}>Logout</button>
+              <button type="button" onClick={logout}>
+                Logout
+              </button>
             </li>
           )}
         </Mutation>
@@ -27,7 +29,7 @@ class AuthButton extends React.Component {
     if (loading) {
       return (
         <li className="right">
-          <button>
+          <button type="button">
             <div className="spinner" />
           </button>
         </li>
@@ -35,7 +37,10 @@ class AuthButton extends React.Component {
     }
     return (
       <li className="right">
-        <button onClick={() => this.props.history.push("/signin")}>
+        <button
+          type="button"
+          onClick={() => this.props.history.push("/signin")}
+        >
           Login
         </button>
       </li>

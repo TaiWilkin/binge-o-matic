@@ -14,7 +14,11 @@ function ListHeader({ name, push }) {
         <h2>{name}</h2>
         <p>This is a user-managed list and may not be complete.</p>
       </div>
-      <button className="edit-btn" onClick={() => push("/newlist")}>
+      <button
+        type="button"
+        className="edit-btn"
+        onClick={() => push("/newlist")}
+      >
         CREATE LIST
       </button>
     </div>

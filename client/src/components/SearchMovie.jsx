@@ -21,6 +21,7 @@ class SearchMovie extends React.Component {
           {(addToList) => (
             <div className="card-actions">
               <button
+                type="button"
                 onClick={(e) => {
                   e.preventDefault();
                   addToList({
@@ -52,6 +53,7 @@ class SearchMovie extends React.Component {
         {(removeFromList) => (
           <div className="card-actions">
             <button
+              type="button"
               onClick={(e) => {
                 e.preventDefault();
                 removeFromList({

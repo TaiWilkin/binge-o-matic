@@ -21,6 +21,7 @@ class UserMovie extends React.Component {
       >
         {(toggleWatched) => (
           <button
+            type="button"
             className="drop"
             onClick={() => {
               toggleWatched({
@@ -50,6 +51,7 @@ class UserMovie extends React.Component {
       >
         {(deleteListItem) => (
           <button
+            type="button"
             className="drop"
             onClick={() =>
               deleteListItem({
@@ -80,6 +82,7 @@ class UserMovie extends React.Component {
       >
         {(addSeasons) => (
           <button
+            type="button"
             className="drop"
             onClick={() => {
               addSeasons({
@@ -111,6 +114,7 @@ class UserMovie extends React.Component {
       >
         {(addEpisodes) => (
           <button
+            type="button"
             className="drop"
             onClick={() => {
               addEpisodes({
@@ -140,6 +144,7 @@ class UserMovie extends React.Component {
       >
         {(hideChildren) => (
           <button
+            type="button"
             className="drop"
             onClick={() => {
               hideChildren({
@@ -164,7 +169,9 @@ class UserMovie extends React.Component {
       case "movie":
         return (
           <div className="card-actions">
-            <button className="options">OPTIONS</button>
+            <button type="button" className="options">
+              OPTIONS
+            </button>
             {deleteButton}
             {watched}
           </div>
@@ -172,7 +179,9 @@ class UserMovie extends React.Component {
       case "tv":
         return (
           <div className="card-actions">
-            <button className="options">OPTIONS</button>
+            <button type="button" className="options">
+              OPTIONS
+            </button>
             {deleteButton}
             {this.renderAddSeasons()}
             {watched}
@@ -181,7 +190,9 @@ class UserMovie extends React.Component {
       case "season":
         return (
           <div className="card-actions">
-            <button className="options">OPTIONS</button>
+            <button type="button" className="options">
+              OPTIONS
+            </button>
             {deleteButton}
             {this.renderAddEpisodes()}
             {watched}
@@ -190,7 +201,9 @@ class UserMovie extends React.Component {
       case "episode":
         return (
           <div className="card-actions">
-            <button className="options">OPTIONS</button>
+            <button type="button" className="options">
+              OPTIONS
+            </button>
             {deleteButton}
             {watched}
           </div>
@@ -198,7 +211,9 @@ class UserMovie extends React.Component {
       default:
         return (
           <div className="card-actions">
-            <button className="options">OPTIONS</button>
+            <button type="button" className="options">
+              OPTIONS
+            </button>
             {deleteButton}
             {watched}
           </div>
