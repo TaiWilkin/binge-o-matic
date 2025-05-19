@@ -26,8 +26,7 @@
         "react/button-has-type": "off",
         "no-unused-vars": "off",
         "consistent-return": "off",
-        "import/no-named-as-default": "off",
-        "jsx-a11y/label-has-associated-control": "off"
+        "import/no-named-as-default": "off"
     },
     "globals": {
         "window": true,

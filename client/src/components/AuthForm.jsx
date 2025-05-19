@@ -50,9 +50,10 @@ class AuthForm extends Component {
             {title === "Sign in" ? "Sign up" : "Sign in"}
           </Link>
           <form className="login">
-            <label>
+            <label htmlFor="email">
               Email
               <input
+                id="email"
                 type="text"
                 placeholder="John_Doe@example.com"
                 value={this.state.email}
@@ -60,9 +61,10 @@ class AuthForm extends Component {
                 onChange={(e) => this.onChange("email", e)}
               />
             </label>
-            <label>
+            <label htmlFor="password">
               Password
               <input
+                id="password"
                 type="password"
                 placeholder="password123"
                 value={this.state.password}
