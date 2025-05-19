@@ -7,6 +7,7 @@ import session from "express-session";
 import passport from "passport";
 import MongoStore from "connect-mongo";
 
+import "./server/models/index.js";
 import schema from "./server/schema/schema.js";
 
 // Create a new Express application
