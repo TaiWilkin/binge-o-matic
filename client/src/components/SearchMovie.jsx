@@ -7,7 +7,7 @@ import removeFromListMutation from "../mutations/RemoveFromList";
 import listQuery from "../queries/List";
 import QueryHandler from "./QueryHandler";
 
-export class SearchMovie extends React.Component {
+class SearchMovie extends React.Component {
   renderButtons(onList) {
     const { id, title, release_date, poster_path, media_type } = this.props;
     if (!onList) {

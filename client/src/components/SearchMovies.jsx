@@ -6,7 +6,7 @@ import mediaQuery from "../queries/Media";
 import QueryHandler from "./QueryHandler";
 import SearchMovie from "./SearchMovie";
 
-export class SearchMovies extends React.Component {
+class SearchMovies extends React.Component {
   constructor(props) {
     super(props);
     this.state = {

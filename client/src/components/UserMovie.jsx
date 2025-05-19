@@ -9,7 +9,7 @@ import deleteListItemMutation from "../mutations/RemoveFromList";
 import toggleWatchedMutation from "../mutations/ToggleWatched";
 import listQuery from "../queries/List";
 
-export class UserMovie extends React.Component {
+class UserMovie extends React.Component {
   renderWatched() {
     if (!this.props.isOwner) return null;
     return (

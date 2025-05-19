@@ -6,7 +6,7 @@ import mutation from "../mutations/CreateList";
 import query from "../queries/Nav";
 import Errors from "./Errors";
 
-export class NewList extends React.Component {
+class NewList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
