@@ -1,4 +1,13 @@
 import graphql from "graphql";
+import GraphQLDate from "graphql-date";
+
+import AuthService from "../services/auth.js";
+import ListService from "../services/list.js";
+import MediaService from "../services/media.js";
+import ListType from "./types/list_type.js";
+import MediaType from "./types/media_type.js";
+import UserType from "./types/user_type.js";
+
 const {
   GraphQLObjectType,
   GraphQLString,
@@ -6,15 +15,6 @@ const {
   GraphQLID,
   GraphQLBoolean,
 } = graphql;
-import GraphQLDate from "graphql-date";
-
-import UserType from "./types/user_type.js";
-import ListType from "./types/list_type.js";
-import MediaType from "./types/media_type.js";
-
-import AuthService from "../services/auth.js";
-import ListService from "../services/list.js";
-import MediaService from "../services/media.js";
 
 const mutation = new GraphQLObjectType({
   name: "Mutation",
@@ -85,7 +85,7 @@ const mutation = new GraphQLObjectType({
         list: { type: GraphQLID },
         isWatched: { type: GraphQLBoolean },
       },
-      resolve(_parentValue, args, req) {
+      resolve(_parentValue, args) {
         return MediaService.toggleWatched(args);
       },
     },
@@ -95,7 +95,7 @@ const mutation = new GraphQLObjectType({
         id: { type: GraphQLID },
         list: { type: GraphQLID },
       },
-      resolve(_parentValue, args, req) {
+      resolve(_parentValue, args) {
         return MediaService.hideChildren(args);
       },
     },

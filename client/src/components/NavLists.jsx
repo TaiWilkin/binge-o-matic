@@ -1,9 +1,9 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 
-const NavLists = ({ lists, history, title }) => {
+function NavLists({ lists, history, title }) {
   if (!lists.length) return null;
-  const options = lists.map(list => (
+  const options = lists.map((list) => (
     <button
       onClick={() => history.push(`/lists/${list.id}`)}
       key={list.id}
@@ -18,6 +18,6 @@ const NavLists = ({ lists, history, title }) => {
       <div className="dropdown-content">{options}</div>
     </li>
   );
-};
+}
 
 export default withRouter(NavLists);

@@ -1,14 +1,15 @@
 import "dotenv/config";
+import "./server/models/index.js";
 
+import MongoStore from "connect-mongo";
 import express from "express";
 import expressGraphQL from "express-graphql";
-import mongoose from "mongoose";
 import session from "express-session";
+import mongoose from "mongoose";
 import passport from "passport";
-import MongoStore from "connect-mongo";
 
-import "./server/models/index.js";
 import schema from "./server/schema/schema.js";
+import { logError, logInfo } from "./server/utilities.js";
 
 // Create a new Express application
 const app = express();
@@ -18,7 +19,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 // Replace with your mongoLab URI
-const MONGO_URI = process.env.MONGO_URI;
+const { MONGO_URI } = process.env;
 
 // Mongoose's built in promise library is deprecated, replace it with ES2015 Promise
 mongoose.Promise = global.Promise;
@@ -27,8 +28,8 @@ mongoose.Promise = global.Promise;
 // on success or failure
 mongoose.connect(MONGO_URI);
 mongoose.connection
-  .once("open", () => console.log("Connected to MongoLab instance."))
-  .on("error", (error) => console.log("Error connecting to MongoLab:", error));
+  .once("open", () => logInfo("Connected to MongoLab instance."))
+  .on("error", (error) => logError("Error connecting to MongoLab:", error));
 
 // Configures express to use sessions.  This places an encrypted identifier
 // on the users cookie.  When a user makes a request, this middleware examines
@@ -44,7 +45,7 @@ app.use(
       mongoUrl: MONGO_URI,
       autoReconnect: true,
     }),
-  })
+  }),
 );
 
 // Passport is wired into express as a middleware. When a request comes in,
@@ -60,9 +61,9 @@ app.use(
   expressGraphQL({
     schema,
     graphiql: true,
-  })
+  }),
 );
 
 app.listen(process.env.PORT || 3001, () => {
-  console.log("Listening");
+  logInfo("Listening");
 });

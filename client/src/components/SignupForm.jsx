@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import AuthForm from "./AuthForm";
-import { withRouter } from "react-router-dom";
 import { Mutation } from "react-apollo";
+import { withRouter } from "react-router-dom";
+
 import mutation from "../mutations/Signup";
 import query from "../queries/CurrentUser";
+import AuthForm from "./AuthForm";
 
 class LoginForm extends Component {
   render() {

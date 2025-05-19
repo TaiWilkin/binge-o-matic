@@ -1,8 +1,9 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
 import { Mutation } from "react-apollo";
-import query from "../queries/Nav";
+import { withRouter } from "react-router-dom";
+
 import mutation from "../mutations/CreateList";
+import query from "../queries/Nav";
 import Errors from "./Errors";
 
 export class NewList extends React.Component {
@@ -10,7 +11,7 @@ export class NewList extends React.Component {
     super(props);
     this.state = {
       name: "",
-      error: ""
+      error: "",
     };
     this.addList = this.addList.bind(this);
   }
@@ -36,7 +37,7 @@ export class NewList extends React.Component {
       <Mutation
         mutation={mutation}
         refetchQueries={[{ query }]}
-        onCompleted={data => {
+        onCompleted={(data) => {
           if (data && data.createList) {
             this.props.history.push(`/lists/${data.createList.id}`);
           }
@@ -60,12 +61,12 @@ export class NewList extends React.Component {
                   placeholder="Star Trek"
                   value={this.state.name}
                   required
-                  onChange={e => this.onChange(e)}
+                  onChange={(e) => this.onChange(e)}
                 />
                 <Errors error={error} />
                 <button
                   type="submit"
-                  onClick={e => this.addList(e, createList)}
+                  onClick={(e) => this.addList(e, createList)}
                 >
                   CREATE
                 </button>

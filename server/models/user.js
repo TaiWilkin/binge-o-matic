@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
-const Schema = mongoose.Schema;
+
+const { Schema } = mongoose;
 
 // Every user has an email and password.  The password is not stored as
 // plain text - see the authentication helpers below.
@@ -19,16 +20,16 @@ UserSchema.pre("save", function save(next) {
   if (!user.isModified("password")) {
     return next();
   }
-  bcrypt.genSalt(10, (err, salt) => {
+  return bcrypt.genSalt(10, (err, salt) => {
     if (err) {
       return next(err);
     }
-    bcrypt.hash(user.password, salt, null, (err, hash) => {
-      if (err) {
-        return next(err);
+    return bcrypt.hash(user.password, salt, null, (e, hash) => {
+      if (e) {
+        return next(e);
       }
       user.password = hash;
-      next();
+      return next();
     });
   });
 });
@@ -40,7 +41,7 @@ UserSchema.pre("save", function save(next) {
 // a one way process - the passwords are never compared in plain text form.
 UserSchema.methods.comparePassword = function comparePassword(
   candidatePassword,
-  cb
+  cb,
 ) {
   bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
     cb(err, isMatch);

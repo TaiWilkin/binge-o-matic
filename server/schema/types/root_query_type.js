@@ -1,12 +1,12 @@
 import graphql from "graphql";
-const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLList } = graphql;
-
-import UserType from "./user_type.js";
-import ListType from "./list_type.js";
-import MediaType from "./media_type.js";
 
 import ListService from "../../services/list.js";
 import MediaService from "../../services/media.js";
+import ListType from "./list_type.js";
+import MediaType from "./media_type.js";
+import UserType from "./user_type.js";
+
+const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLList } = graphql;
 
 const RootQueryType = new GraphQLObjectType({
   name: "RootQueryType",

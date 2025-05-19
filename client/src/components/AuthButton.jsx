@@ -1,12 +1,13 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
 import { Mutation } from "react-apollo";
+import { withRouter } from "react-router-dom";
+
 import mutation from "../mutations/Logout";
 
 class AuthButton extends React.Component {
   render() {
     const { client, user, loading } = this.props;
-    if (!!user) {
+    if (user) {
       return (
         <Mutation
           mutation={mutation}

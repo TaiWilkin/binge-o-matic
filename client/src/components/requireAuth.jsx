@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import { Query } from "react-apollo";
-import { withRouter, Redirect } from "react-router-dom";
+import { Redirect, withRouter } from "react-router-dom";
+
 import currentUserQuery from "../queries/CurrentUser";
 import Errors from "./Errors";
 
-export default WrappedComponent => {
+export default (WrappedComponent) => {
   class RequireAuth extends Component {
     render() {
       return (

@@ -1,45 +1,44 @@
 import React, { Component } from "react";
-import { withRouter, Redirect } from "react-router-dom";
-import QueryHandler from "./QueryHandler";
+import { Redirect, withRouter } from "react-router-dom";
+
 import listQuery from "../queries/List";
-import UserMovie from "./UserMovie";
-import UserListHeader from "./UserListHeader";
 import ListHeader from "./ListHeader";
+import QueryHandler from "./QueryHandler";
+import UserListHeader from "./UserListHeader";
+import UserMovie from "./UserMovie";
 
 const calculateHiddenChildren = (media, hideWatched) => {
-  let parentsWithHiddenChildren = media.filter(movie => !movie.show_children);
+  let parentsWithHiddenChildren = media.filter((movie) => !movie.show_children);
   if (hideWatched) {
     parentsWithHiddenChildren = parentsWithHiddenChildren.filter(
-      movie => movie.isWatched
+      (movie) => movie.isWatched,
     );
   }
-  return parentsWithHiddenChildren.map(movie => movie.id);
+  return parentsWithHiddenChildren.map((movie) => movie.id);
 };
 
 class UserList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      hideWatched: true
+      hideWatched: true,
     };
   }
 
   renderMovies(media, isOwner) {
     const { hideWatched } = this.state;
     const filteredMedia = hideWatched
-      ? media.filter(movie => !movie.isWatched)
+      ? media.filter((movie) => !movie.isWatched)
       : media;
     const hideChildrenOf = calculateHiddenChildren(media, hideWatched);
-    return filteredMedia.map(movie => {
-      return (
-        <UserMovie
-          key={movie.id}
-          isOwner={isOwner}
-          {...movie}
-          hideChildrenOf={hideChildrenOf}
-        />
-      );
-    });
+    return filteredMedia.map((movie) => (
+      <UserMovie
+        key={movie.id}
+        isOwner={isOwner}
+        {...movie}
+        hideChildrenOf={hideChildrenOf}
+      />
+    ));
   }
 
   renderHeader(list, isOwner) {
@@ -78,9 +77,8 @@ class UserList extends Component {
                   <p>No content in list</p>
                 </main>
               );
-            } else {
-              return <Redirect to={`/lists/${data.list.id}/search`} />;
             }
+            return <Redirect to={`/lists/${data.list.id}/search`} />;
           }
           return (
             <main>

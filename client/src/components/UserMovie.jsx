@@ -1,11 +1,12 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
 import { Mutation } from "react-apollo";
-import toggleWatchedMutation from "../mutations/ToggleWatched";
+import { withRouter } from "react-router-dom";
+
+import addEpisodesMutation from "../mutations/AddEpisodes";
+import addSeasonsMutation from "../mutations/AddSeasons";
 import hideChildrenMutation from "../mutations/HideChildren";
 import deleteListItemMutation from "../mutations/RemoveFromList";
-import addSeasonsMutation from "../mutations/AddSeasons";
-import addEpisodesMutation from "../mutations/AddEpisodes";
+import toggleWatchedMutation from "../mutations/ToggleWatched";
 import listQuery from "../queries/List";
 
 export class UserMovie extends React.Component {
@@ -15,7 +16,7 @@ export class UserMovie extends React.Component {
       <Mutation
         mutation={toggleWatchedMutation}
         refetchQueries={[
-          { query: listQuery, variables: { id: this.props.match.params.id } }
+          { query: listQuery, variables: { id: this.props.match.params.id } },
         ]}
       >
         {(toggleWatched, { loading, error }) => (
@@ -26,8 +27,8 @@ export class UserMovie extends React.Component {
                 variables: {
                   id: this.props.id,
                   isWatched: !this.props.isWatched,
-                  list: this.props.match.params.id
-                }
+                  list: this.props.match.params.id,
+                },
               });
             }}
           >
@@ -44,7 +45,7 @@ export class UserMovie extends React.Component {
       <Mutation
         mutation={deleteListItemMutation}
         refetchQueries={[
-          { query: listQuery, variables: { id: this.props.match.params.id } }
+          { query: listQuery, variables: { id: this.props.match.params.id } },
         ]}
       >
         {(deleteListItem, { loading, error }) => (
@@ -54,8 +55,8 @@ export class UserMovie extends React.Component {
               deleteListItem({
                 variables: {
                   id: this.props.media_id,
-                  list: this.props.match.params.id
-                }
+                  list: this.props.match.params.id,
+                },
               })
             }
           >
@@ -74,7 +75,7 @@ export class UserMovie extends React.Component {
       <Mutation
         mutation={addSeasonsMutation}
         refetchQueries={[
-          { query: listQuery, variables: { id: this.props.match.params.id } }
+          { query: listQuery, variables: { id: this.props.match.params.id } },
         ]}
       >
         {(addSeasons, { loading, error }) => (
@@ -85,8 +86,8 @@ export class UserMovie extends React.Component {
                 variables: {
                   id: this.props.id,
                   media_id: this.props.media_id,
-                  list: this.props.match.params.id
-                }
+                  list: this.props.match.params.id,
+                },
               });
             }}
           >
@@ -105,7 +106,7 @@ export class UserMovie extends React.Component {
       <Mutation
         mutation={addEpisodesMutation}
         refetchQueries={[
-          { query: listQuery, variables: { id: this.props.match.params.id } }
+          { query: listQuery, variables: { id: this.props.match.params.id } },
         ]}
       >
         {(addEpisodes, { loading, error }) => (
@@ -117,8 +118,8 @@ export class UserMovie extends React.Component {
                   id: this.props.id,
                   season_number: this.props.number,
                   list: this.props.match.params.id,
-                  show_id: this.props.parent_show
-                }
+                  show_id: this.props.parent_show,
+                },
               });
             }}
           >
@@ -134,7 +135,7 @@ export class UserMovie extends React.Component {
       <Mutation
         mutation={hideChildrenMutation}
         refetchQueries={[
-          { query: listQuery, variables: { id: this.props.match.params.id } }
+          { query: listQuery, variables: { id: this.props.match.params.id } },
         ]}
       >
         {(hideChildren, { loading, error }) => (
@@ -144,8 +145,8 @@ export class UserMovie extends React.Component {
               hideChildren({
                 variables: {
                   id: this.props.id,
-                  list: this.props.match.params.id
-                }
+                  list: this.props.match.params.id,
+                },
               });
             }}
           >
@@ -218,7 +219,7 @@ export class UserMovie extends React.Component {
     ) {
       return null;
     }
-    const title = this.props.title;
+    const { title } = this.props;
     let img = (
       <img
         src={`https://image.tmdb.org/t/p/w92${this.props.poster_path}`}

@@ -1,9 +1,9 @@
 import graphql from "graphql";
-const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLList } = graphql;
-
-import ListType from "./list_type.js";
 
 import ListService from "../../services/list.js";
+import ListType from "./list_type.js";
+
+const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLList } = graphql;
 
 const UserType = new GraphQLObjectType({
   name: "UserType",
