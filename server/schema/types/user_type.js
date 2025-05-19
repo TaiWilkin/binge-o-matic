@@ -1,8 +1,5 @@
 import graphql from "graphql";
 const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLList } = graphql;
-import mongoose from "mongoose";
-
-const User = mongoose.model("user");
 
 import ListType from "./list_type.js";
 
@@ -15,7 +12,7 @@ const UserType = new GraphQLObjectType({
     email: { type: GraphQLString },
     lists: {
       type: new GraphQLList(ListType),
-      resolve(parentValue, args, req) {
+      resolve(_parentValue, _args, req) {
         return ListService.fetchUserLists(req.user);
       },
     },

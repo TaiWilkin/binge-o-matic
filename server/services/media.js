@@ -40,7 +40,6 @@ function addToList(media, user) {
     .then((l) => {
       if (user._id.toString() !== l.user.toString()) {
         throw new Error("Unauthorized");
-        return null;
       }
       list = l;
       return Media.findOneAndUpdate(
@@ -129,7 +128,6 @@ function removeFromList({ id, list }, user) {
     .then((l) => {
       if (user._id.toString() !== l.user.toString()) {
         throw new Error("Unauthorized");
-        return null;
       }
       listData = l;
       return getMediaList(listData.media);
@@ -170,7 +168,7 @@ function toggleWatched({ id, isWatched, list }) {
       return List.findOneAndUpdate({ _id: new ObjectId(list) }, l);
     })
     .catch((e) => {
-      console.log(e);
+      console.error(e);
       return null;
     });
 }

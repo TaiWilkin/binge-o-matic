@@ -13,13 +13,13 @@ const RootQueryType = new GraphQLObjectType({
   fields: () => ({
     user: {
       type: UserType,
-      resolve(parentValue, args, req) {
+      resolve(_parentValue, _args, req) {
         return req.user;
       },
     },
     lists: {
       type: new GraphQLList(ListType),
-      resolve(parentValue, args, req) {
+      resolve() {
         return ListService.fetchAllLists();
       },
     },
@@ -28,7 +28,7 @@ const RootQueryType = new GraphQLObjectType({
       args: {
         id: { type: GraphQLID },
       },
-      resolve(parentValue, args, req) {
+      resolve(_parentValue, args) {
         return ListService.fetchList(args.id);
       },
     },
@@ -37,7 +37,7 @@ const RootQueryType = new GraphQLObjectType({
       args: {
         searchQuery: { type: GraphQLString },
       },
-      resolve(parentValue, { searchQuery }, req) {
+      resolve(_parentValue, { searchQuery }) {
         return MediaService.searchMedia(searchQuery);
       },
     },

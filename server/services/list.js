@@ -7,7 +7,7 @@ function fetchAllLists() {
   return List.find()
     .sort({ name: "desc" })
     .catch((e) => {
-      console.log(e);
+      console.error(e);
       return null;
     });
 }
@@ -16,7 +16,7 @@ function fetchUserLists(user) {
   return List.find({ user: new ObjectId(user.id) })
     .sort({ name: "desc" })
     .catch((e) => {
-      console.log(e);
+      console.error(e);
       return null;
     });
 }
@@ -32,7 +32,7 @@ function createList(name, user) {
 
 function fetchList(id) {
   return List.findOne({ _id: new ObjectId(id) }).catch((e) => {
-    console.log(e);
+    console.error(e);
     return null;
   });
 }
@@ -42,11 +42,10 @@ function deleteList({ id }, user) {
     .then((list) => {
       if (list.user.toString() !== user._id.toString()) {
         throw new Error("Unauthorized!");
-        console.log(user, list.user);
       }
       return List.deleteOne({ _id: new ObjectId(id) });
     })
-    .then((l) => {
+    .then(() => {
       return null;
     })
     .catch((e) => {
@@ -60,7 +59,6 @@ function editList({ id, name }, user) {
     .then((list) => {
       if (list.user.toString() !== user._id.toString()) {
         throw new Error("Unauthorized!");
-        console.log(user, list.user);
       }
       return List.findOneAndUpdate(
         { _id: new ObjectId(id) },

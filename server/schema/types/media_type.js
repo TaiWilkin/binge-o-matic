@@ -7,9 +7,6 @@ const {
   GraphQLInt,
   GraphQLBoolean,
 } = graphql;
-import mongoose from "mongoose";
-
-const Media = mongoose.model("media");
 
 const MediaType = new GraphQLObjectType({
   name: "MediaType",

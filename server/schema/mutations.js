@@ -25,13 +25,13 @@ const mutation = new GraphQLObjectType({
         email: { type: GraphQLString },
         password: { type: GraphQLString },
       },
-      resolve(parentValue, { email, password }, req) {
+      resolve(_parentValue, { email, password }, req) {
         return AuthService.signup({ email, password, req });
       },
     },
     logout: {
       type: UserType,
-      resolve(parentValue, args, req) {
+      resolve(_parentValue, _args, req) {
         return AuthService.logout(req);
       },
     },
@@ -41,7 +41,7 @@ const mutation = new GraphQLObjectType({
         email: { type: GraphQLString },
         password: { type: GraphQLString },
       },
-      resolve(parentValue, { email, password }, req) {
+      resolve(_parentValue, { email, password }, req) {
         return AuthService.login({ email, password, req });
       },
     },
@@ -50,7 +50,7 @@ const mutation = new GraphQLObjectType({
       args: {
         name: { type: GraphQLString },
       },
-      resolve(parentValue, { name }, req) {
+      resolve(_parentValue, { name }, req) {
         return ListService.createList(name, req.user);
       },
     },
@@ -64,7 +64,7 @@ const mutation = new GraphQLObjectType({
         media_type: { type: GraphQLString },
         list: { type: GraphQLID },
       },
-      resolve(parentValue, args, req) {
+      resolve(_parentValue, args, req) {
         return MediaService.addToList(args, req.user);
       },
     },
@@ -74,7 +74,7 @@ const mutation = new GraphQLObjectType({
         id: { type: GraphQLID },
         list: { type: GraphQLID },
       },
-      resolve(parentValue, args, req) {
+      resolve(_parentValue, args, req) {
         return MediaService.removeFromList(args, req.user);
       },
     },
@@ -85,7 +85,7 @@ const mutation = new GraphQLObjectType({
         list: { type: GraphQLID },
         isWatched: { type: GraphQLBoolean },
       },
-      resolve(parentValue, args, req) {
+      resolve(_parentValue, args, req) {
         return MediaService.toggleWatched(args);
       },
     },
@@ -95,7 +95,7 @@ const mutation = new GraphQLObjectType({
         id: { type: GraphQLID },
         list: { type: GraphQLID },
       },
-      resolve(parentValue, args, req) {
+      resolve(_parentValue, args, req) {
         return MediaService.hideChildren(args);
       },
     },
@@ -107,7 +107,7 @@ const mutation = new GraphQLObjectType({
         season_number: { type: GraphQLInt },
         show_id: { type: GraphQLID },
       },
-      resolve(parentValue, args, req) {
+      resolve(_parentValue, args) {
         return MediaService.addEpisodes(args);
       },
     },
@@ -118,7 +118,7 @@ const mutation = new GraphQLObjectType({
         media_id: { type: GraphQLID },
         list: { type: GraphQLID },
       },
-      resolve(parentValue, args, req) {
+      resolve(_parentValue, args) {
         return MediaService.addSeasons(args);
       },
     },
@@ -127,7 +127,7 @@ const mutation = new GraphQLObjectType({
       args: {
         id: { type: GraphQLID },
       },
-      resolve(parentValue, args, req) {
+      resolve(_parentValue, args, req) {
         return ListService.deleteList(args, req.user);
       },
     },
@@ -137,7 +137,7 @@ const mutation = new GraphQLObjectType({
         id: { type: GraphQLID },
         name: { type: GraphQLString },
       },
-      resolve(parentValue, args, req) {
+      resolve(_parentValue, args, req) {
         return ListService.editList(args, req.user);
       },
     },

@@ -1,8 +1,5 @@
 import graphql from "graphql";
 const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLList } = graphql;
-import mongoose from "mongoose";
-
-const List = mongoose.model("list");
 
 import MediaService from "../../services/media.js";
 
@@ -16,7 +13,7 @@ const ListType = new GraphQLObjectType({
     user: { type: GraphQLID },
     media: {
       type: new GraphQLList(MediaType),
-      resolve(parentValue, args, req) {
+      resolve(parentValue) {
         return MediaService.getMediaList(parentValue.media);
       },
     },
