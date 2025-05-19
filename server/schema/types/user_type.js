@@ -1,12 +1,12 @@
-const graphql = require("graphql");
+import graphql from "graphql";
 const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLList } = graphql;
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const User = mongoose.model("user");
 
-const ListType = require("./list_type");
+import ListType from "./list_type.js";
 
-const ListService = require("../../services/list");
+import ListService from "../../services/list.js";
 
 const UserType = new GraphQLObjectType({
   name: "UserType",
@@ -17,9 +17,9 @@ const UserType = new GraphQLObjectType({
       type: new GraphQLList(ListType),
       resolve(parentValue, args, req) {
         return ListService.fetchUserLists(req.user);
-      }
-    }
-  })
+      },
+    },
+  }),
 });
 
-module.exports = UserType;
+export default UserType;

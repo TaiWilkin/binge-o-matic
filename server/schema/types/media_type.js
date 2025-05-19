@@ -1,13 +1,13 @@
-const graphql = require("graphql");
-var GraphQLDate = require("graphql-date");
+import graphql from "graphql";
+import GraphQLDate from "graphql-date";
 const {
   GraphQLObjectType,
   GraphQLString,
   GraphQLID,
   GraphQLInt,
-  GraphQLBoolean
+  GraphQLBoolean,
 } = graphql;
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const Media = mongoose.model("media");
 
@@ -27,16 +27,16 @@ const MediaType = new GraphQLObjectType({
       type: GraphQLID,
       resolve(parentValue) {
         return parentValue.parent_show || null; // this is the TMDB id
-      }
+      },
     },
     parent_season: {
       type: GraphQLID,
       resolve(parentValue) {
         return parentValue.parent_season || null; // this is the TMDB id
-      }
+      },
     },
-    episode: { type: GraphQLString }
-  })
+    episode: { type: GraphQLString },
+  }),
 });
 
-module.exports = MediaType;
+export default MediaType;

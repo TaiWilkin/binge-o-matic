@@ -1,12 +1,12 @@
-const graphql = require("graphql");
+import graphql from "graphql";
 const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLList } = graphql;
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const List = mongoose.model("list");
 
-const MediaService = require("../../services/media");
+import MediaService from "../../services/media.js";
 
-const MediaType = require("./media_type");
+import MediaType from "./media_type.js";
 
 const ListType = new GraphQLObjectType({
   name: "ListType",
@@ -18,9 +18,9 @@ const ListType = new GraphQLObjectType({
       type: new GraphQLList(MediaType),
       resolve(parentValue, args, req) {
         return MediaService.getMediaList(parentValue.media);
-      }
-    }
-  })
+      },
+    },
+  }),
 });
 
-module.exports = ListType;
+export default ListType;
