@@ -5,10 +5,10 @@ function Errors({ error }) {
     return (
       <div className="errors">
         {error.graphQLErrors
-          .map((error) => error.message)
-          .map((error) => (
-            <p key={error} className="error-small">
-              {error}
+          .map((e) => e.message)
+          .map((e) => (
+            <p key={e} className="error-small">
+              {e}
             </p>
           ))}
       </div>

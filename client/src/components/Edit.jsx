@@ -69,7 +69,7 @@ class Edit extends React.Component {
                       );
                     }}
                   >
-                    {(editList, { loading, error }) => (
+                    {(editList) => (
                       <button
                         onClick={(e) => {
                           e.preventDefault();
@@ -94,7 +94,7 @@ class Edit extends React.Component {
                     this.props.history.push("/");
                   }}
                 >
-                  {(deleteList, { loading, error }) => (
+                  {(deleteList) => (
                     <button
                       className="standalone-btn"
                       onClick={() =>
