@@ -1,13 +1,13 @@
 import React from "react";
 
-function Errors({ error, classes }) {
+function Errors({ error }) {
   if (error && error.graphQLErrors) {
     return (
       <div className="errors">
         {error.graphQLErrors
           .map((error) => error.message)
           .map((error) => (
-            <p variant="body2" key={error} className="error-small">
+            <p key={error} className="error-small">
               {error}
             </p>
           ))}

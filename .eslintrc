@@ -28,8 +28,7 @@
         "consistent-return": "off",
         "import/no-named-as-default": "off",
         "jsx-a11y/label-has-associated-control": "off",
-        "no-shadow": "off",
-        "react/no-unknown-property": "off"
+        "no-shadow": "off"
     },
     "globals": {
         "window": true,
