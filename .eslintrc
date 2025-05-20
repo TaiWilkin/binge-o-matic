@@ -17,11 +17,11 @@
         "import/extensions": "off",
         "simple-import-sort/imports": "error",
         "simple-import-sort/exports": "error",
+        // Todo: migrate to Typescript?
+        "react/prop-types": "off",
         // TODO: Turn on below rules once fixed
         "camelcase": "off",
-        "react/jsx-props-no-spreading": "off",
-        "react/prefer-stateless-function": "off",
-        "react/prop-types": "off"
+        "react/jsx-props-no-spreading": "off"
     },
     "globals": {
         "window": true,
