@@ -9,30 +9,32 @@ import deleteListItemMutation from "../mutations/RemoveFromList";
 import toggleWatchedMutation from "../mutations/ToggleWatched";
 import listQuery from "../queries/List";
 
-export class UserMovie extends React.Component {
+class UserMovie extends React.Component {
   renderWatched() {
-    if (!this.props.isOwner) return null;
+    const { isOwner, match, isWatched, id } = this.props;
+    if (!isOwner) return null;
     return (
       <Mutation
         mutation={toggleWatchedMutation}
         refetchQueries={[
-          { query: listQuery, variables: { id: this.props.match.params.id } },
+          { query: listQuery, variables: { id: match.params.id } },
         ]}
       >
-        {(toggleWatched, { loading, error }) => (
+        {(toggleWatched) => (
           <button
+            type="button"
             className="drop"
             onClick={() => {
               toggleWatched({
                 variables: {
-                  id: this.props.id,
-                  isWatched: !this.props.isWatched,
-                  list: this.props.match.params.id,
+                  id,
+                  isWatched: !isWatched,
+                  list: match.params.id,
                 },
               });
             }}
           >
-            {this.props.isWatched ? "MARK AS UNWATCHED" : "MARK AS WATCHED"}
+            {isWatched ? "MARK AS UNWATCHED" : "MARK AS WATCHED"}
           </button>
         )}
       </Mutation>
@@ -40,22 +42,26 @@ export class UserMovie extends React.Component {
   }
 
   renderDeleteButton() {
-    if (!this.props.isOwner) return null;
+    const { isOwner, match, media_id } = this.props;
+
+    if (!isOwner) return null;
+
     return (
       <Mutation
         mutation={deleteListItemMutation}
         refetchQueries={[
-          { query: listQuery, variables: { id: this.props.match.params.id } },
+          { query: listQuery, variables: { id: match.params.id } },
         ]}
       >
-        {(deleteListItem, { loading, error }) => (
+        {(deleteListItem) => (
           <button
+            type="button"
             className="drop"
             onClick={() =>
               deleteListItem({
                 variables: {
-                  id: this.props.media_id,
-                  list: this.props.match.params.id,
+                  id: media_id,
+                  list: match.params.id,
                 },
               })
             }
@@ -68,25 +74,27 @@ export class UserMovie extends React.Component {
   }
 
   renderAddSeasons() {
-    if (this.props.show_children) {
+    const { show_children, match, id, media_id } = this.props;
+    if (show_children) {
       return this.renderHideChildren("HIDE SEASONS");
     }
     return (
       <Mutation
         mutation={addSeasonsMutation}
         refetchQueries={[
-          { query: listQuery, variables: { id: this.props.match.params.id } },
+          { query: listQuery, variables: { id: match.params.id } },
         ]}
       >
-        {(addSeasons, { loading, error }) => (
+        {(addSeasons) => (
           <button
+            type="button"
             className="drop"
             onClick={() => {
               addSeasons({
                 variables: {
-                  id: this.props.id,
-                  media_id: this.props.media_id,
-                  list: this.props.match.params.id,
+                  id,
+                  media_id,
+                  list: match.params.id,
                 },
               });
             }}
@@ -99,26 +107,28 @@ export class UserMovie extends React.Component {
   }
 
   renderAddEpisodes() {
-    if (this.props.show_children) {
+    const { show_children, match, id, number, parent_show } = this.props;
+    if (show_children) {
       return this.renderHideChildren("HIDE EPISODES");
     }
     return (
       <Mutation
         mutation={addEpisodesMutation}
         refetchQueries={[
-          { query: listQuery, variables: { id: this.props.match.params.id } },
+          { query: listQuery, variables: { id: match.params.id } },
         ]}
       >
-        {(addEpisodes, { loading, error }) => (
+        {(addEpisodes) => (
           <button
+            type="button"
             className="drop"
             onClick={() => {
               addEpisodes({
                 variables: {
-                  id: this.props.id,
-                  season_number: this.props.number,
-                  list: this.props.match.params.id,
-                  show_id: this.props.parent_show,
+                  id,
+                  season_number: number,
+                  list: match.params.id,
+                  show_id: parent_show,
                 },
               });
             }}
@@ -131,21 +141,23 @@ export class UserMovie extends React.Component {
   }
 
   renderHideChildren(text) {
+    const { match, id } = this.props;
     return (
       <Mutation
         mutation={hideChildrenMutation}
         refetchQueries={[
-          { query: listQuery, variables: { id: this.props.match.params.id } },
+          { query: listQuery, variables: { id: match.params.id } },
         ]}
       >
-        {(hideChildren, { loading, error }) => (
+        {(hideChildren) => (
           <button
+            type="button"
             className="drop"
             onClick={() => {
               hideChildren({
                 variables: {
-                  id: this.props.id,
-                  list: this.props.match.params.id,
+                  id,
+                  list: match.params.id,
                 },
               });
             }}
@@ -158,13 +170,16 @@ export class UserMovie extends React.Component {
   }
 
   renderButtons() {
+    const { media_type } = this.props;
     const watched = this.renderWatched();
     const deleteButton = this.renderDeleteButton();
-    switch (this.props.media_type) {
+    switch (media_type) {
       case "movie":
         return (
           <div className="card-actions">
-            <button className="options">OPTIONS</button>
+            <button type="button" className="options">
+              OPTIONS
+            </button>
             {deleteButton}
             {watched}
           </div>
@@ -172,7 +187,9 @@ export class UserMovie extends React.Component {
       case "tv":
         return (
           <div className="card-actions">
-            <button className="options">OPTIONS</button>
+            <button type="button" className="options">
+              OPTIONS
+            </button>
             {deleteButton}
             {this.renderAddSeasons()}
             {watched}
@@ -181,7 +198,9 @@ export class UserMovie extends React.Component {
       case "season":
         return (
           <div className="card-actions">
-            <button className="options">OPTIONS</button>
+            <button type="button" className="options">
+              OPTIONS
+            </button>
             {deleteButton}
             {this.renderAddEpisodes()}
             {watched}
@@ -190,7 +209,9 @@ export class UserMovie extends React.Component {
       case "episode":
         return (
           <div className="card-actions">
-            <button className="options">OPTIONS</button>
+            <button type="button" className="options">
+              OPTIONS
+            </button>
             {deleteButton}
             {watched}
           </div>
@@ -198,7 +219,9 @@ export class UserMovie extends React.Component {
       default:
         return (
           <div className="card-actions">
-            <button className="options">OPTIONS</button>
+            <button type="button" className="options">
+              OPTIONS
+            </button>
             {deleteButton}
             {watched}
           </div>
@@ -207,51 +230,55 @@ export class UserMovie extends React.Component {
   }
 
   render() {
+    const {
+      hideChildrenOf,
+      parent_show,
+      parent_season,
+      title,
+      media_type,
+      number,
+      poster_path,
+      episode,
+      isWatched,
+      id,
+      release_date,
+    } = this.props;
     if (
-      this.props.hideChildrenOf.includes(this.props.parent_show) ||
-      this.props.hideChildrenOf.includes(this.props.parent_season)
+      hideChildrenOf.includes(parent_show) ||
+      hideChildrenOf.includes(parent_season)
     ) {
       return null;
     }
-    if (
-      this.props.media_type === "season" &&
-      (this.props.number === 0 || !this.props.number)
-    ) {
+    if (media_type === "season" && (number === 0 || !number)) {
       return null;
     }
-    const { title } = this.props;
     let img = (
-      <img
-        src={`https://image.tmdb.org/t/p/w92${this.props.poster_path}`}
-        alt="poster"
-      />
+      <img src={`https://image.tmdb.org/t/p/w92${poster_path}`} alt="poster" />
     );
     let details = "";
-    if (this.props.media_type === "season" && this.props.number) {
-      details = `Season ${this.props.number}`;
+    if (media_type === "season" && number) {
+      details = `Season ${number}`;
     }
-    if (this.props.media_type === "episode") {
-      details = `Episode ${this.props.number}: ${this.props.episode}`;
+    if (media_type === "episode") {
+      details = `Episode ${number}: ${episode}`;
       img = (
         <img
-          src={`https://image.tmdb.org/t/p/w185${this.props.poster_path}`}
+          src={`https://image.tmdb.org/t/p/w185${poster_path}`}
           alt="poster"
         />
       );
     }
-    if (!this.props.poster_path) {
+    if (!poster_path) {
       img = <div className="no-image" />;
     }
-    const classes = this.props.isWatched
-      ? `${this.props.media_type} watched`
-      : this.props.media_type;
+    const classes = isWatched ? `${media_type} watched` : media_type;
     return (
-      <li id={this.props.id} className={classes}>
+      <li id={id} className={classes}>
         <div className="circle" />
         {img}
         <h2>{title}</h2>
         <p>{details}</p>
-        <p>{this.props.release_date}</p>
+        <p>{release_date}</p>
         {this.renderButtons()}
       </li>
     );

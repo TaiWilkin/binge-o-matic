@@ -17,23 +17,10 @@
         "import/extensions": "off",
         "simple-import-sort/imports": "error",
         "simple-import-sort/exports": "error",
-        // TODO: Turn on below rules once fixed
-        "camelcase": "off",
         "react/jsx-props-no-spreading": "off",
-        "react/prefer-stateless-function": "off",
         "react/prop-types": "off",
-        "react/destructuring-assignment": "off",
-        "react/button-has-type": "off",
-        "no-unused-vars": "off",
-        "consistent-return": "off",
-        "import/no-named-as-default": "off",
-        "jsx-a11y/label-has-associated-control": "off",
-        "no-shadow": "off",
-        "react/no-unknown-property": "off",
-        "react/no-access-state-in-setstate": "off",
-        "func-names": "off",
-        "no-console": "off",
-        "react/display-name": "off"
+        // TODO: Turn on below rules once fixed
+        "camelcase": "off"
     },
     "globals": {
         "window": true,

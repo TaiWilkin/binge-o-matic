@@ -42,28 +42,31 @@ class UserList extends Component {
   }
 
   renderHeader(list, isOwner) {
+    const { history, match } = this.props;
+    const { hideWatched } = this.state;
+
     return isOwner ? (
       <UserListHeader
-        push={this.props.history.push}
+        push={history.push}
         onToggleWatched={() =>
-          this.setState({ hideWatched: !this.state.hideWatched })
+          this.setState((prevState) => ({
+            hideWatched: !prevState.hideWatched,
+          }))
         }
-        hideWatched={this.state.hideWatched}
-        id={this.props.match.params.id}
+        hideWatched={hideWatched}
+        id={match.params.id}
         name={list.name}
       />
     ) : (
-      <ListHeader name={list.name} push={this.props.history.push} />
+      <ListHeader name={list.name} push={history.push} />
     );
   }
 
   render() {
+    const { match } = this.props;
     return (
-      <QueryHandler
-        query={listQuery}
-        variables={{ id: this.props.match.params.id }}
-      >
-        {({ data, loading, error, client }) => {
+      <QueryHandler query={listQuery} variables={{ id: match.params.id }}>
+        {({ data }) => {
           if (!data.list) {
             return <p style={{ color: "red" }}> Error: List not found!</p>;
           }

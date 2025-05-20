@@ -13,7 +13,8 @@ class AuthForm extends Component {
 
   onSubmit(e) {
     e.preventDefault();
-    this.props.onSubmit({ variables: this.state });
+    const { onSubmit } = this.props;
+    onSubmit({ variables: this.state });
   }
 
   onChange(type, e) {
@@ -22,50 +23,55 @@ class AuthForm extends Component {
   }
 
   renderButton() {
-    if (this.state.loading) {
+    const { loading } = this.state;
+    const { title } = this.props;
+    if (loading) {
       return <div className="spinner" />;
     }
     return (
       <button className="standalone-btn" type="submit" onClick={this.onSubmit}>
-        {this.props.title}
+        {title}
       </button>
     );
   }
 
   render() {
-    const { error, title } = this.props;
-    console.error(error);
+    const { error, title, history } = this.props;
+    const { error: stateError, email, password } = this.state;
     return (
       <main>
         <div className="subheader">
           <h2>{title}</h2>
           <button
+            type="button"
             className="edit-btn"
-            onClick={() => this.props.history.push("/")}
+            onClick={() => history.push("/")}
           >
             Cancel
           </button>
-          <h3 className="error">{this.state.error}</h3>
+          <h3 className="error">{stateError}</h3>
           <Link to={title === "Sign in" ? "signup" : "signin"}>
             {title === "Sign in" ? "Sign up" : "Sign in"}
           </Link>
           <form className="login">
-            <label>
+            <label htmlFor="email">
               Email
               <input
+                id="email"
                 type="text"
                 placeholder="John_Doe@example.com"
-                value={this.state.email}
+                value={email}
                 required
                 onChange={(e) => this.onChange("email", e)}
               />
             </label>
-            <label>
+            <label htmlFor="password">
               Password
               <input
+                id="password"
                 type="password"
                 placeholder="password123"
-                value={this.state.password}
+                value={password}
                 onChange={(e) => this.onChange("password", e)}
                 required
               />
