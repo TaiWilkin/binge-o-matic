@@ -25,8 +25,6 @@ class NewList extends React.Component {
     const { name } = this.state;
     if (name.includes("/")) {
       this.setState({ error: "Invalid character: /", name: "" });
-      // } else if (lists.find(list => list.name === name)) {
-      //   this.setState({ error: 'List already exists.', name: '' });
     } else {
       createList({ variables: { name } });
     }

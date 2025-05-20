@@ -6,7 +6,7 @@ import mutation from "../mutations/Login";
 import query from "../queries/CurrentUser";
 import AuthForm from "./AuthForm";
 
-function LoginForm({ history }) {
+function SigninForm({ history }) {
   return (
     <Mutation
       mutation={mutation}
@@ -22,4 +22,4 @@ function LoginForm({ history }) {
   );
 }
 
-export default withRouter(LoginForm);
+export default withRouter(SigninForm);
