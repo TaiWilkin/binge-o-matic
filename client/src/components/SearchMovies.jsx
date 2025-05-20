@@ -21,11 +21,13 @@ class SearchMovies extends React.Component {
 
   onSubmit(e, client) {
     e.preventDefault();
+    const { searchQuery } = this.state;
+
     this.setState({ loading: true });
-    client
+    return client
       .query({
         query: mediaQuery,
-        variables: { searchQuery: this.state.searchQuery },
+        variables: { searchQuery },
       })
       .then((response) => {
         this.setState({
@@ -41,20 +43,19 @@ class SearchMovies extends React.Component {
   }
 
   renderMovies() {
-    if (this.state.loading) {
+    const { loading, media, filter } = this.state;
+    if (loading) {
       return <div className="spinner" />;
     }
-    if (this.state.media.length === 0) {
+    if (media.length === 0) {
       return null;
     }
     let movies;
-    if (this.state.filter === "all") {
-      movies = this.state.media.map((movie) => (
-        <SearchMovie key={movie.id} {...movie} />
-      ));
+    if (filter === "all") {
+      movies = media.map((movie) => <SearchMovie key={movie.id} {...movie} />);
     } else {
-      movies = this.state.media.map((movie) => {
-        if (movie.media_type !== this.state.filter) {
+      movies = media.map((movie) => {
+        if (movie.media_type !== filter) {
           return null;
         }
         return <SearchMovie key={movie.id} {...movie} />;
@@ -64,11 +65,10 @@ class SearchMovies extends React.Component {
   }
 
   render() {
+    const { match, history } = this.props;
+    const { searchQuery } = this.state;
     return (
-      <QueryHandler
-        query={listQuery}
-        variables={{ id: this.props.match.params.id }}
-      >
+      <QueryHandler query={listQuery} variables={{ id: match.params.id }}>
         {({ data, loading, error, client }) => {
           if (loading || !data.list) return null;
           if (error) return `Error!: ${error}`;
@@ -82,9 +82,7 @@ class SearchMovies extends React.Component {
                 <button
                   type="button"
                   className="edit-btn"
-                  onClick={() =>
-                    this.props.history.push(`/lists/${data.list.id}`)
-                  }
+                  onClick={() => history.push(`/lists/${data.list.id}`)}
                 >
                   RETURN TO LIST
                 </button>
@@ -92,7 +90,7 @@ class SearchMovies extends React.Component {
                   <input
                     type="text"
                     placeholder="Search for shows or movies"
-                    value={this.state.searchQuery}
+                    value={searchQuery}
                     onChange={(e) => {
                       this.setState({ searchQuery: e.target.value });
                     }}

@@ -25,21 +25,23 @@ class NewList extends React.Component {
     const { name } = this.state;
     if (name.includes("/")) {
       this.setState({ error: "Invalid character: /", name: "" });
-      // } else if (this.props.lists.find(list => list.name === name)) {
+      // } else if (lists.find(list => list.name === name)) {
       //   this.setState({ error: 'List already exists.', name: '' });
     } else {
-      createList({ variables: { name: this.state.name } });
+      createList({ variables: { name } });
     }
   }
 
   render() {
+    const { history } = this.props;
+    const { name, error: stateError } = this.state;
     return (
       <Mutation
         mutation={mutation}
         refetchQueries={[{ query }]}
         onCompleted={(data) => {
           if (data && data.createList) {
-            this.props.history.push(`/lists/${data.createList.id}`);
+            history.push(`/lists/${data.createList.id}`);
           }
         }}
       >
@@ -50,17 +52,17 @@ class NewList extends React.Component {
               <button
                 type="button"
                 className="edit-btn"
-                onClick={() => this.props.history.push("/")}
+                onClick={() => history.push("/")}
               >
                 CANCEL
               </button>
               <h3>Choose Title</h3>
-              <h3 className="error">{this.state.error}</h3>
+              <h3 className="error">{stateError}</h3>
               <form className="search">
                 <input
                   type="text"
                   placeholder="Star Trek"
-                  value={this.state.name}
+                  value={name}
                   required
                   onChange={(e) => this.onChange(e)}
                 />

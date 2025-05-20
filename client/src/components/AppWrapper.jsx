@@ -6,6 +6,7 @@ import Nav from "./Nav";
 
 export default class AppWrapper extends React.Component {
   render() {
+    const { children } = this.props;
     return (
       <div className="bingomatic">
         <div className="wrapper">
@@ -17,7 +18,7 @@ export default class AppWrapper extends React.Component {
             </h1>
           </header>
           <Nav />
-          {this.props.children}
+          {children}
         </div>
         <div className="push" />
         <footer className="footer">

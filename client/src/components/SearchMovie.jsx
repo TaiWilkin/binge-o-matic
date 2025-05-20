@@ -9,13 +9,14 @@ import QueryHandler from "./QueryHandler";
 
 class SearchMovie extends React.Component {
   renderButtons(onList) {
-    const { id, title, release_date, poster_path, media_type } = this.props;
+    const { id, title, release_date, poster_path, media_type, match } =
+      this.props;
     if (!onList) {
       return (
         <Mutation
           mutation={addToListMutation}
           refetchQueries={[
-            { query: listQuery, variables: { id: this.props.match.params.id } },
+            { query: listQuery, variables: { id: match.params.id } },
           ]}
         >
           {(addToList) => (
@@ -31,7 +32,7 @@ class SearchMovie extends React.Component {
                       release_date,
                       poster_path,
                       media_type,
-                      list: this.props.match.params.id,
+                      list: match.params.id,
                     },
                   });
                 }}
@@ -47,7 +48,7 @@ class SearchMovie extends React.Component {
       <Mutation
         mutation={removeFromListMutation}
         refetchQueries={[
-          { query: listQuery, variables: { id: this.props.match.params.id } },
+          { query: listQuery, variables: { id: match.params.id } },
         ]}
       >
         {(removeFromList) => (
@@ -57,7 +58,7 @@ class SearchMovie extends React.Component {
               onClick={(e) => {
                 e.preventDefault();
                 removeFromList({
-                  variables: { id, list: this.props.match.params.id },
+                  variables: { id, list: match.params.id },
                 });
               }}
             >
@@ -70,35 +71,29 @@ class SearchMovie extends React.Component {
   }
 
   renderImage() {
-    if (!this.props.poster_path) {
+    const { poster_path } = this.props;
+    if (!poster_path) {
       return <div className="no-image" />;
     }
     return (
-      <img
-        src={`https://image.tmdb.org/t/p/w92${this.props.poster_path}`}
-        alt="poster"
-      />
+      <img src={`https://image.tmdb.org/t/p/w92${poster_path}`} alt="poster" />
     );
   }
 
   render() {
+    const { match, id, title, release_date } = this.props;
     return (
-      <QueryHandler
-        query={listQuery}
-        variables={{ id: this.props.match.params.id }}
-      >
+      <QueryHandler query={listQuery} variables={{ id: match.params.id }}>
         {({ data }) => {
           let onList = "";
-          if (
-            data.list.media.find((movie) => movie.media_id === this.props.id)
-          ) {
+          if (data.list.media.find((movie) => movie.media_id === id)) {
             onList = "onList";
           }
           return (
-            <li id={this.props.id} className={onList}>
+            <li id={id} className={onList}>
               {this.renderImage()}
-              <h2>{this.props.title}</h2>
-              <p>{this.props.release_date}</p>
+              <h2>{title}</h2>
+              <p>{release_date}</p>
               {this.renderButtons(onList)}
             </li>
           );

@@ -6,14 +6,14 @@ import mutation from "../mutations/Logout";
 
 class AuthButton extends React.Component {
   render() {
-    const { client, user, loading } = this.props;
+    const { client, user, loading, history } = this.props;
     if (user) {
       return (
         <Mutation
           mutation={mutation}
           onCompleted={() => {
             client.resetStore();
-            this.props.history.push("/");
+            history.push("/");
           }}
         >
           {(logout) => (
@@ -37,10 +37,7 @@ class AuthButton extends React.Component {
     }
     return (
       <li className="right">
-        <button
-          type="button"
-          onClick={() => this.props.history.push("/signin")}
-        >
+        <button type="button" onClick={() => history.push("/signin")}>
           Login
         </button>
       </li>

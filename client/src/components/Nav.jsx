@@ -8,16 +8,14 @@ import QueryHandler from "./QueryHandler";
 
 class Nav extends React.Component {
   render() {
+    const { history } = this.props;
     return (
       <QueryHandler query={query} pollInterval={500} useCustomLoader>
         {({ data, client, loading }) => (
           <nav>
             <ul className="nav">
               <li>
-                <button
-                  type="button"
-                  onClick={() => this.props.history.push("/about")}
-                >
+                <button type="button" onClick={() => history.push("/about")}>
                   About
                 </button>
               </li>
@@ -31,7 +29,7 @@ class Nav extends React.Component {
                 <li>
                   <button
                     type="button"
-                    onClick={() => this.props.history.push("/newlist")}
+                    onClick={() => history.push("/newlist")}
                   >
                     New List
                   </button>

@@ -20,11 +20,10 @@ class Edit extends React.Component {
   }
 
   render() {
+    const { match, history } = this.props;
+    const { text } = this.state;
     return (
-      <QueryHandler
-        query={listQuery}
-        variables={{ id: this.props.match.params.id }}
-      >
+      <QueryHandler query={listQuery} variables={{ id: match.params.id }}>
         {({ data, client }) => {
           if (!data.list) {
             return <p style={{ color: "red" }}> Error: List not found!</p>;
@@ -40,11 +39,7 @@ class Edit extends React.Component {
                 <button
                   type="button"
                   className="right"
-                  onClick={() =>
-                    this.props.history.push(
-                      `/lists/${this.props.match.params.id}`,
-                    )
-                  }
+                  onClick={() => history.push(`/lists/${match.params.id}`)}
                 >
                   RETURN TO LIST
                 </button>
@@ -53,7 +48,7 @@ class Edit extends React.Component {
                   <input
                     type="text"
                     placeholder="Enter new title"
-                    value={this.state.text}
+                    value={text}
                     onChange={(e) => this.onChange(e)}
                   />
                   <Mutation
@@ -61,13 +56,11 @@ class Edit extends React.Component {
                     refetchQueries={[
                       {
                         query: listQuery,
-                        variables: { id: this.props.match.params.id },
+                        variables: { id: match.params.id },
                       },
                     ]}
                     onCompleted={() => {
-                      this.props.history.push(
-                        `/lists/${this.props.match.params.id}`,
-                      );
+                      history.push(`/lists/${match.params.id}`);
                     }}
                   >
                     {(editList) => (
@@ -77,8 +70,8 @@ class Edit extends React.Component {
                           e.preventDefault();
                           editList({
                             variables: {
-                              id: this.props.match.params.id,
-                              name: this.state.text,
+                              id: match.params.id,
+                              name: text,
                             },
                           });
                         }}
@@ -93,7 +86,7 @@ class Edit extends React.Component {
                   mutation={deleteListMutation}
                   onCompleted={() => {
                     client.resetStore();
-                    this.props.history.push("/");
+                    history.push("/");
                   }}
                 >
                   {(deleteList) => (
@@ -102,7 +95,7 @@ class Edit extends React.Component {
                       className="standalone-btn"
                       onClick={() =>
                         deleteList({
-                          variables: { id: this.props.match.params.id },
+                          variables: { id: match.params.id },
                         })
                       }
                     >

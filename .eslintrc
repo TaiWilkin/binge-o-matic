@@ -21,8 +21,7 @@
         "camelcase": "off",
         "react/jsx-props-no-spreading": "off",
         "react/prefer-stateless-function": "off",
-        "react/prop-types": "off",
-        "react/destructuring-assignment": "off"
+        "react/prop-types": "off"
     },
     "globals": {
         "window": true,

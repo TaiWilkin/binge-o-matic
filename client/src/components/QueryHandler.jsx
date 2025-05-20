@@ -6,17 +6,18 @@ import Loading from "./Loading";
 
 class QueryHandler extends Component {
   render() {
+    const { useCustomLoader, children } = this.props;
     return (
       <Query {...this.props}>
         {(queryResults) => {
           const { error, loading } = queryResults;
-          if (loading && !this.props.useCustomLoader) {
+          if (loading && !useCustomLoader) {
             return <Loading />;
           }
           if (error) {
             return <Errors error={error} />;
           }
-          return this.props.children(queryResults);
+          return children(queryResults);
         }}
       </Query>
     );

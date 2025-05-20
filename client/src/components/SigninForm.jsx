@@ -8,11 +8,12 @@ import AuthForm from "./AuthForm";
 
 class LoginForm extends Component {
   render() {
+    const { history } = this.props;
     return (
       <Mutation
         mutation={mutation}
         refetchQueries={[{ query }]}
-        onCompleted={() => this.props.history.push("/")}
+        onCompleted={() => history.push("/")}
       >
         {(login, { error }) => (
           <div>
