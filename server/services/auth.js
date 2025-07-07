@@ -13,7 +13,9 @@ passport.serializeUser((user, done) => {
 // The counterpart of 'serializeUser'.  Given only a user's ID, we must return
 // the user object.  This object is placed on 'req.user'.
 passport.deserializeUser((id, done) => {
-  User.findById(id, (err, user) => {});
+  User.findById(id, (err, user) => {
+    done(err, user);
+  });
 });
 
 passport.use(
@@ -35,7 +37,7 @@ passport.use(
         return done(null, false, "Invalid credentials.");
       });
     });
-  })
+  }),
 );
 
 // Creates a new user account.  We first check to see if a user already exists
@@ -67,7 +69,7 @@ function signup({ email, password, req }) {
             }
             resolve(user);
           });
-        })
+        }),
     );
 }
 
@@ -87,7 +89,6 @@ async function login({ email, password, context }) {
   }
 
   await context.login(user);
-  console.log("login result:", user);
   return { user };
 }
 

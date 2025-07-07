@@ -5,7 +5,6 @@ import MongoStore from "connect-mongo";
 import express from "express";
 import session from "express-session";
 import { createHandler } from "graphql-http/lib/use/express";
-import { buildContext } from "graphql-passport";
 import mongoose from "mongoose";
 import passport from "passport";
 
@@ -46,7 +45,7 @@ app.use(
       mongoUrl: MONGO_URI,
       autoReconnect: true,
     }),
-  })
+  }),
 );
 
 // Passport is wired into express as a middleware. When a request comes in,
@@ -72,7 +71,7 @@ app.use(
 
       return context;
     },
-  })
+  }),
 );
 
 app.listen(process.env.PORT || 3001, () => {});
