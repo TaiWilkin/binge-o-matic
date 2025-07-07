@@ -7,7 +7,10 @@ import { BrowserRouter } from "react-router-dom";
 
 import Root from "./components/Root";
 
-const client = new ApolloClient({});
+const client = new ApolloClient({
+  uri: "/graphql",
+  credentials: "include",
+});
 
 function App() {
   return (

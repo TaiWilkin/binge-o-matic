@@ -3,8 +3,9 @@ import "./server/models/index.js";
 
 import MongoStore from "connect-mongo";
 import express from "express";
-import expressGraphQL from "express-graphql";
 import session from "express-session";
+import { createHandler } from "graphql-http/lib/use/express";
+import { buildContext } from "graphql-passport";
 import mongoose from "mongoose";
 import passport from "passport";
 
@@ -45,7 +46,7 @@ app.use(
       mongoUrl: MONGO_URI,
       autoReconnect: true,
     }),
-  }),
+  })
 );
 
 // Passport is wired into express as a middleware. When a request comes in,
@@ -56,14 +57,22 @@ app.use(passport.session());
 
 // Instruct Express to pass on any request made to the '/graphql' route
 // to the GraphQL instance.
+const User = mongoose.model("user");
 app.use(
   "/graphql",
-  expressGraphQL({
+  createHandler({
     schema,
     graphiql: true,
-  }),
+    context: (a) => {
+      const context = {
+        user: a.raw.user,
+        req: a.raw,
+        User,
+      };
+
+      return context;
+    },
+  })
 );
 
-app.listen(process.env.PORT || 3001, () => {
-  logInfo("Listening");
-});
+app.listen(process.env.PORT || 3001, () => {});

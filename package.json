@@ -11,13 +11,13 @@
     "connect-mongo": "^5.0.0",
     "dotenv": "^16.5.0",
     "express": "^4.16.3",
-    "express-graphql": "^0.6.12",
     "express-session": "^1.15.6",
     "graphql": "^0.13.2",
     "graphql-date": "^1.0.3",
+    "graphql-http": "^1.22.4",
+    "graphql-passport": "^0.6.8",
     "mongoose": "^5.0.12",
-    "passport": "^0.6.0",
-    "passport-local": "^1.0.0"
+    "passport": "^0.6.0"
   },
   "scripts": {
     "start": "concurrently \"npm run server\" \"npm run client\"",
