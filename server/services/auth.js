@@ -79,7 +79,7 @@ function signup({ email, password, req }) {
 // Express.  We have another compatibility layer here to make it work nicely with
 // GraphQL, as GraphQL always expects to see a promise for handling async code.
 async function login({ email, password, context }) {
-  const { user } = await context.authenticate("graphql-local", {
+  const { user } = await context.buildContext.authenticate("graphql-local", {
     email,
     password,
   });
@@ -88,7 +88,7 @@ async function login({ email, password, context }) {
     throw new Error("Invalid credentials.");
   }
 
-  await context.login(user);
+  await context.buildContext.login(user);
   return { user };
 }
 

@@ -7,6 +7,7 @@ import session from "express-session";
 import { createHandler } from "graphql-http/lib/use/express";
 import mongoose from "mongoose";
 import passport from "passport";
+import { buildContext } from "graphql-passport";
 
 import schema from "./server/schema/schema.js";
 import { logError, logInfo } from "./server/utilities.js";
@@ -62,10 +63,11 @@ app.use(
   createHandler({
     schema,
     graphiql: true,
-    context: (a) => {
+    context: (req) => {
       const context = {
-        user: a.raw.user,
-        req: a.raw,
+        buildContext: buildContext({ req: req.raw, res: req.res }),
+        user: req.raw.user,
+        req: req.raw,
         User,
       };
 
