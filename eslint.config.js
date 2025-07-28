@@ -15,6 +15,10 @@ export default [
         window: "readonly",
         navigator: "readonly",
         document: "readonly",
+        process: "readonly",
+        fetch: "readonly",
+        console: "readonly",
+        URL: "readonly",
       },
       parserOptions: {
         ecmaFeatures: {
@@ -34,9 +38,14 @@ export default [
       "react/prop-types": "off",
       "no-underscore-dangle": "off",
       camelcase: "off",
-      "import/extensions": "off", // optional: if you want to suppress unresolved extensions
+      "import/extensions": "off",
       "simple-import-sort/imports": "error",
       "simple-import-sort/exports": "error",
+    },
+    settings: {
+      react: {
+        version: "^19.1.0",
+      },
     },
   },
 ];
