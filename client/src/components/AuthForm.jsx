@@ -37,7 +37,7 @@ function AuthForm({ error, title, onSubmit }) {
           Cancel
         </button>
         <h3 className="error">{stateError}</h3>
-        <Link to={title === "Sign in" ? "/signup" : "/signin"}>
+        <Link to={title === "Sign in" ? "signup" : "signin"}>
           {title === "Sign in" ? "Sign up" : "Sign in"}
         </Link>
         <form className="login" onSubmit={handleSubmit}>
