@@ -1,7 +1,8 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-function About({ history }) {
+function About() {
+  const navigate = useNavigate();
   return (
     <main>
       <div className="about">
@@ -40,7 +41,7 @@ function About({ history }) {
             <button
               type="button"
               id="create-btn"
-              onClick={() => history.push("/newlist")}
+              onClick={() => navigate("/newlist")}
             >
               Create a list.
             </button>
@@ -51,7 +52,7 @@ function About({ history }) {
           <button
             type="button"
             className=""
-            onClick={() => history.push("/newlist")}
+            onClick={() => navigate("/newlist")}
           >
             CREATE A LIST
           </button>
@@ -61,4 +62,4 @@ function About({ history }) {
   );
 }
 
-export default withRouter(About);
+export default About;

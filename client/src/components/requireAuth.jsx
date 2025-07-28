@@ -1,6 +1,6 @@
-import { useQuery } from "@apollo/client";
 import React from "react";
-import { Redirect, withRouter } from "react-router-dom";
+import { useQuery } from "@apollo/client";
+import { Navigate } from "react-router-dom";
 
 import currentUserQuery from "../queries/CurrentUser";
 import Errors from "./Errors";
@@ -18,11 +18,11 @@ export default (WrappedComponent) => {
     }
 
     if (!data?.user) {
-      return <Redirect to="/signin" />;
+      return <Navigate to="/signin" />;
     }
 
     return <WrappedComponent user={data.user} {...props} />;
   }
 
-  return withRouter(RequireAuth);
+  return RequireAuth;
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
 import About from "./About";
 import AppWrapper from "./AppWrapper";
@@ -14,20 +14,21 @@ import UserList from "./UserList";
 function Root() {
   return (
     <AppWrapper>
-      <Switch>
-        <Route exact path="/" component={About} />
-        <Route exact path="/signin" component={SigninForm} />
-        <Route exact path="/signup" component={SignupForm} />
-        <Route exact path="/about" component={About} />
-        <Route exact path="/newlist" component={requireAuth(NewList)} />
-        <Route exact path="/lists/:id/edit" component={requireAuth(Edit)} />
-        <Route exact path="/lists/:id" component={UserList} />
+      <Routes>
+        <Route exact path="/" element={<About />} />
+        <Route exact path="/signin" element={<SigninForm />} />
+        <Route exact path="/signup" element={<SignupForm />} />
+        <Route exact path="/about" element={<About />} />
+        <Route exact path="/newlist" element={requireAuth(<NewList />)} />
+        <Route exact path="/lists/:id/edit" element={requireAuth(<Edit />)} />
         <Route
           exact
           path="/lists/:id/search"
-          component={requireAuth(SearchMovies)}
+          element={requireAuth(<SearchMovies />)}
         />
-      </Switch>
+        <Route exact path="/lists/:id" element={<UserList />} />
+        <Route render={() => <p>Page not found</p>} />
+      </Routes>
     </AppWrapper>
   );
 }

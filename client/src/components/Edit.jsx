@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@apollo/client";
 import { useState } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import deleteListMutation from "../mutations/DeleteList";
 import editListMutation from "../mutations/EditList";
@@ -8,7 +8,7 @@ import listQuery from "../queries/List";
 
 function Edit() {
   const { id } = useParams();
-  const navigate = useHistory();
+  const navigate = useNavigate();
 
   const [text, setText] = useState("");
 

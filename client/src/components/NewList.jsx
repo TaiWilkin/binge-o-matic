@@ -1,6 +1,6 @@
 import { useMutation } from "@apollo/client";
 import { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import mutation from "../mutations/CreateList";
 import query from "../queries/Nav";
@@ -9,7 +9,7 @@ import Errors from "./Errors";
 function NewList() {
   const [name, setName] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
-  const navigate = useHistory();
+  const navigate = useNavigate();
 
   const [createList, { error }] = useMutation(mutation, {
     refetchQueries: [{ query }],

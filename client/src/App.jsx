@@ -22,4 +22,4 @@ function App() {
   );
 }
 
-export default App; // ✅ THIS is what was missing
+export default App;

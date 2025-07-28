@@ -1,17 +1,17 @@
 import { useMutation } from "@apollo/client";
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import mutation from "../mutations/Logout";
 
 function AuthButton({ client, user, loading }) {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   // Set up the mutation hook
   const [logout, { loading: mutationLoading }] = useMutation(mutation, {
     onCompleted: () => {
       client.resetStore();
-      history.push("/");
+      navigate("/");
     },
   });
 
@@ -37,7 +37,7 @@ function AuthButton({ client, user, loading }) {
 
   return (
     <li className="right">
-      <button type="button" onClick={() => history.push("/signin")}>
+      <button type="button" onClick={() => navigate("/signin")}>
         Login
       </button>
     </li>

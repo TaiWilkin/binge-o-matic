@@ -1,17 +1,17 @@
 import { useMutation } from "@apollo/client";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import mutation from "../mutations/Signup";
 import query from "../queries/CurrentUser";
 import AuthForm from "./AuthForm";
 
 function SignupForm() {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [signup, { error }] = useMutation(mutation, {
     refetchQueries: [{ query }],
     onCompleted: () => {
-      history.push("/");
+      navigate("/");
     },
   });
 

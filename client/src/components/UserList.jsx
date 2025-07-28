@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { Redirect, withRouter } from "react-router-dom";
+import React, { useState } from "react";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 
 import listQuery from "../queries/List";
 import ListHeader from "./ListHeader";
@@ -17,16 +17,12 @@ const calculateHiddenChildren = (media, hideWatched) => {
   return parentsWithHiddenChildren.map((movie) => movie.id);
 };
 
-class UserList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      hideWatched: true,
-    };
-  }
+function UserList() {
+  const { id } = useParams(); // get list ID from URL
+  const navigate = useNavigate(); // get navigation function
+  const [hideWatched, setHideWatched] = useState(true);
 
-  renderMovies(media, isOwner) {
-    const { hideWatched } = this.state;
+  const renderMovies = (media, isOwner) => {
     const filteredMedia = hideWatched
       ? media.filter((movie) => !movie.isWatched)
       : media;
@@ -39,62 +35,52 @@ class UserList extends Component {
         hideChildrenOf={hideChildrenOf}
       />
     ));
-  }
+  };
 
-  renderHeader(list, isOwner) {
-    const { history, match } = this.props;
-    const { hideWatched } = this.state;
-
+  const renderHeader = (list, isOwner) => {
     return isOwner ? (
       <UserListHeader
-        push={history.push}
-        onToggleWatched={() =>
-          this.setState((prevState) => ({
-            hideWatched: !prevState.hideWatched,
-          }))
-        }
+        push={navigate}
+        onToggleWatched={() => setHideWatched((prev) => !prev)}
         hideWatched={hideWatched}
-        id={match.params.id}
+        id={id}
         name={list.name}
       />
     ) : (
-      <ListHeader name={list.name} push={history.push} />
+      <ListHeader name={list.name} push={navigate} />
     );
-  }
+  };
 
-  render() {
-    const { match } = this.props;
-    return (
-      <QueryHandler query={listQuery} variables={{ id: match.params.id }}>
-        {({ data }) => {
-          if (!data.list) {
-            return <p style={{ color: "red" }}> Error: List not found!</p>;
+  return (
+    <QueryHandler query={listQuery} variables={{ id }}>
+      {({ data }) => {
+        if (!data.list) {
+          return <p style={{ color: "red" }}> Error: List not found!</p>;
+        }
+        const isOwner =
+          data.user && data.list.user.toString() === data.user.id.toString();
+        if (!data.list.media || !data.list.media.length) {
+          if (!isOwner) {
+            return (
+              <main>
+                {renderHeader(data.list, isOwner)}
+                <p>No content in list</p>
+              </main>
+            );
           }
-          const isOwner =
-            data.user && data.list.user.toString() === data.user.id.toString();
-          if (!data.list.media || !data.list.media.length) {
-            if (!isOwner) {
-              return (
-                <main>
-                  {this.renderHeader(data.list, isOwner)}
-                  <p>No content in list</p>
-                </main>
-              );
-            }
-            return <Redirect to={`/lists/${data.list.id}/search`} />;
-          }
-          return (
-            <main>
-              {this.renderHeader(data.list, isOwner)}
-              <ul className="watchlist">
-                {this.renderMovies(data.list.media, isOwner)}
-              </ul>
-            </main>
-          );
-        }}
-      </QueryHandler>
-    );
-  }
+          return <Navigate to={`/lists/${data.list.id}/search`} />;
+        }
+        return (
+          <main>
+            {renderHeader(data.list, isOwner)}
+            <ul className="watchlist">
+              {renderMovies(data.list.media, isOwner)}
+            </ul>
+          </main>
+        );
+      }}
+    </QueryHandler>
+  );
 }
 
-export default withRouter(UserList);
+export default UserList;

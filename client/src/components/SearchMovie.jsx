@@ -1,5 +1,4 @@
 import { useMutation, useQuery } from "@apollo/client";
-import { withRouter } from "react-router-dom";
 
 import addToListMutation from "../mutations/AddToList";
 import removeFromListMutation from "../mutations/RemoveFromList";
@@ -90,4 +89,4 @@ function SearchMovie(props) {
   );
 }
 
-export default withRouter(SearchMovie);
+export default SearchMovie;
