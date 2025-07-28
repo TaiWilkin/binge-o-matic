@@ -87,8 +87,13 @@ async function login({ email, password, context }) {
 // Logout the current user
 function logout(req) {
   const { user } = req;
-  req.logout();
-  return user;
+
+  return new Promise((resolve, reject) => {
+    req.logout((err) => {
+      if (err) return reject(err);
+      resolve(user);
+    });
+  });
 }
 
 export default { signup, login, logout };
