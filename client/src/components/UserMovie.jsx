@@ -56,7 +56,7 @@ function UserMovie(props) {
     return null;
   }
 
-  if (media_type === "season" && (!number || number === 0)) {
+  if (media_type === "season" && (number == null || number === 0)) {
     return null;
   }
 
