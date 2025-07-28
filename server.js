@@ -34,6 +34,7 @@ async function startServer() {
         secret: process.env.SECRET,
         store: MongoStore.create({
           mongoUrl: MONGO_URI,
+          touchAfter: 24 * 3600, // Reduce database writes by updating sessions only once every 24 hours
         }),
       }),
     );
