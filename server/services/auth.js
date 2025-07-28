@@ -13,9 +13,9 @@ passport.serializeUser((user, done) => {
 // The counterpart of 'serializeUser'.  Given only a user's ID, we must return
 // the user object.  This object is placed on 'req.user'.
 passport.deserializeUser((id, done) => {
-  User.findById(id, (err, user) => {
-    done(err, user);
-  });
+  User.findById(id)
+    .then((user) => done(null, user))
+    .catch((err) => done(err));
 });
 
 passport.use(
