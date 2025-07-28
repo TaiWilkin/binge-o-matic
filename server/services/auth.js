@@ -71,6 +71,10 @@ function signup({ email, password, req }) {
 
 // Login using the local GraphQL strategy
 async function login({ email, password, context }) {
+  if (!email || !password) {
+    throw new Error("You must provide an email and password.");
+  }
+
   const { user } = await context.buildContext.authenticate("graphql-local", {
     email,
     password,

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import "../models/user.js";
-import authService from "../services/auth.js";
+import "../../models/user.js";
+import authService from "../../services/auth.js";
 
 const User = mongoose.model("user");
 
@@ -26,30 +26,30 @@ const createMockContext = (
 
 describe("Auth Service", () => {
   describe("signup validation", () => {
-    test("should throw error if email is missing", async () => {
+    test("should throw error if email is missing", () => {
       const password = "password123";
       const req = createMockReq();
 
-      await expect(authService.signup({ password, req })).rejects.toThrow(
-        "You must provide an email and password.",
-      );
+      expect(() => {
+        authService.signup({ password, req });
+      }).toThrow("You must provide an email and password.");
     });
 
-    test("should throw error if password is missing", async () => {
+    test("should throw error if password is missing", () => {
       const email = "test@example.com";
       const req = createMockReq();
 
-      await expect(authService.signup({ email, req })).rejects.toThrow(
-        "You must provide an email and password.",
-      );
+      expect(() => {
+        authService.signup({ email, req });
+      }).toThrow("You must provide an email and password.");
     });
 
-    test("should throw error if both email and password are missing", async () => {
+    test("should throw error if both email and password are missing", () => {
       const req = createMockReq();
 
-      await expect(authService.signup({ req })).rejects.toThrow(
-        "You must provide an email and password.",
-      );
+      expect(() => {
+        authService.signup({ req });
+      }).toThrow("You must provide an email and password.");
     });
 
     test("should handle req.logIn error", async () => {
@@ -58,9 +58,25 @@ describe("Auth Service", () => {
       const logInError = new Error("Login failed");
       const req = createMockReq(null, logInError);
 
-      await expect(
-        authService.signup({ email, password, req }),
-      ).rejects.toThrow("Login failed");
+      // Mock User.findOne to return null (no existing user)
+      const originalFindOne = User.findOne;
+      User.findOne = () => Promise.resolve(null);
+
+      // Mock User.prototype.save to return a user object
+      const originalSave = User.prototype.save;
+      User.prototype.save = function () {
+        return Promise.resolve(this);
+      };
+
+      try {
+        await expect(
+          authService.signup({ email, password, req }),
+        ).rejects.toThrow("Login failed");
+      } finally {
+        // Restore original methods
+        User.findOne = originalFindOne;
+        User.prototype.save = originalSave;
+      }
     });
   });
 
