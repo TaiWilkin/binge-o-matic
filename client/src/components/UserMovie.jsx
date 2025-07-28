@@ -60,6 +60,16 @@ function UserMovie(props) {
     return null;
   }
 
+  const renderHideChildren = (text) => (
+    <button
+      type="button"
+      className="drop"
+      onClick={() => hideChildren({ variables: { id, list: listId } })}
+    >
+      {text}
+    </button>
+  );
+
   const renderWatched = () => {
     if (!isOwner) return null;
     return (
@@ -132,16 +142,6 @@ function UserMovie(props) {
       </button>
     );
   };
-
-  const renderHideChildren = (text) => (
-    <button
-      type="button"
-      className="drop"
-      onClick={() => hideChildren({ variables: { id, list: listId } })}
-    >
-      {text}
-    </button>
-  );
 
   const renderButtons = () => {
     const watchedBtn = renderWatched();

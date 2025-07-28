@@ -7,7 +7,6 @@ import mutation from "../mutations/Logout";
 function AuthButton({ client, user, loading }) {
   const navigate = useNavigate();
 
-  // Set up the mutation hook
   const [logout, { loading: mutationLoading }] = useMutation(mutation, {
     onCompleted: () => {
       client.resetStore();
@@ -30,6 +29,7 @@ function AuthButton({ client, user, loading }) {
       <li className="right">
         <button type="button" disabled>
           <div className="spinner" />
+          <span className="sr-only">Loading</span>
         </button>
       </li>
     );
