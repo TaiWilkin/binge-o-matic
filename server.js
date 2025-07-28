@@ -69,6 +69,7 @@ async function startServer() {
     });
   } catch (error) {
     logError("Error connecting to MongoDB:", error);
+    process.exit(1);
   }
 }
 
