@@ -16,7 +16,7 @@
     "graphql-date": "^1.0.3",
     "graphql-http": "^1.22.4",
     "graphql-passport": "^0.6.8",
-    "mongoose": "^5.0.12",
+    "mongoose": "^8.16.5",
     "passport": "^0.6.0"
   },
   "scripts": {
