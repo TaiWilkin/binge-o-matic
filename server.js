@@ -5,9 +5,9 @@ import MongoStore from "connect-mongo";
 import express from "express";
 import session from "express-session";
 import { createHandler } from "graphql-http/lib/use/express";
+import { buildContext } from "graphql-passport";
 import mongoose from "mongoose";
 import passport from "passport";
-import { buildContext } from "graphql-passport";
 
 import schema from "./server/schema/schema.js";
 import { logError, logInfo } from "./server/utilities.js";
