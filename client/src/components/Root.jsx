@@ -22,7 +22,7 @@ function Root() {
         <Route exact path="/lists/:id/edit" element={<Edit />} />
         <Route exact path="/lists/:id/search" element={<SearchMovies />} />
         <Route exact path="/lists/:id" element={<UserList />} />
-        <Route render={() => <p>Page not found</p>} />
+        <Route path="*" element={<p>Page not found</p>} />
       </Routes>
     </AppWrapper>
   );
