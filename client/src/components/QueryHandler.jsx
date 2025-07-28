@@ -1,27 +1,27 @@
-import React, { Component } from "react";
-import { Query } from "react-apollo";
+import { useQuery } from "@apollo/client";
+import React from "react";
 
 import Errors from "./Errors";
 import Loading from "./Loading";
 
-class QueryHandler extends Component {
-  render() {
-    const { useCustomLoader, children } = this.props;
-    return (
-      <Query {...this.props}>
-        {(queryResults) => {
-          const { error, loading } = queryResults;
-          if (loading && !useCustomLoader) {
-            return <Loading />;
-          }
-          if (error) {
-            return <Errors error={error} />;
-          }
-          return children(queryResults);
-        }}
-      </Query>
-    );
+function QueryHandler({ useCustomLoader, children, ...queryProps }) {
+  const { loading, error, data, client, refetch, ...rest } = useQuery(
+    queryProps.query,
+    {
+      variables: queryProps.variables,
+      fetchPolicy: queryProps.fetchPolicy,
+    },
+  );
+
+  if (loading && !useCustomLoader) {
+    return <Loading />;
   }
+
+  if (error) {
+    return <Errors error={error} />;
+  }
+
+  return children({ loading, error, data, client, refetch, ...rest });
 }
 
 export default QueryHandler;

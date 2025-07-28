@@ -4,51 +4,49 @@ import passport from "passport";
 
 const User = mongoose.model("user");
 
-// SerializeUser is used to provide some identifying token that can be saved
-// in the users session.  We traditionally use the 'ID' for this.
+// Serialize the user's ID into the session
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
-// The counterpart of 'serializeUser'.  Given only a user's ID, we must return
-// the user object.  This object is placed on 'req.user'.
+// Deserialize the ID to get the full user object
 passport.deserializeUser((id, done) => {
   User.findById(id)
     .then((user) => done(null, user))
     .catch((err) => done(err));
 });
 
+// Local strategy for GraphQL authentication
 passport.use(
-  new GraphQLLocalStrategy((email, password, done) => {
-    return User.findOne({ email: email.toLowerCase() }, (err, user) => {
-      if (err) {
-        return done(err);
-      }
+  new GraphQLLocalStrategy(async (email, password, done) => {
+    try {
+      const user = await User.findOne({ email: email.toLowerCase() });
       if (!user) {
-        return done(null, false, "Invalid Credentials");
+        return done(null, false, "Invalid credentials");
       }
-      return user.comparePassword(password, (e, isMatch) => {
-        if (e) {
-          return done(e);
-        }
-        if (isMatch) {
-          return done(null, user);
-        }
-        return done(null, false, "Invalid credentials.");
+
+      const isMatch = await new Promise((resolve, reject) => {
+        user.comparePassword(password, (err, match) => {
+          if (err) return reject(err);
+          resolve(match);
+        });
       });
-    });
+
+      if (isMatch) {
+        return done(null, user);
+      } else {
+        return done(null, false, "Invalid credentials.");
+      }
+    } catch (err) {
+      return done(err);
+    }
   }),
 );
 
-// Creates a new user account.  We first check to see if a user already exists
-// with this email address to avoid making multiple accounts with identical addresses
-// If it does not, we save the existing user.  After the user is created, it is
-// provided to the 'req.logIn' function.  This is apart of Passport JS.
-// Notice the Promise created in the second 'then' statement.  This is done
-// because Passport only supports callbacks, while GraphQL only supports promises
-// for async code!  Awkward!
+// Signup: creates a user and logs them in
 function signup({ email, password, req }) {
   const newUser = new User({ email, password });
+
   if (!email || !password) {
     throw new Error("You must provide an email and password.");
   }
@@ -64,20 +62,14 @@ function signup({ email, password, req }) {
       (user) =>
         new Promise((resolve, reject) => {
           req.logIn(user, (err) => {
-            if (err) {
-              reject(err);
-            }
+            if (err) return reject(err);
             resolve(user);
           });
         }),
     );
 }
 
-// Logs in a user.  This will invoke the 'local-strategy' defined above in this
-// file. Notice the strange method signature here: the 'passport.authenticate'
-// function returns a function, as its indended to be used as a middleware with
-// Express.  We have another compatibility layer here to make it work nicely with
-// GraphQL, as GraphQL always expects to see a promise for handling async code.
+// Login using the local GraphQL strategy
 async function login({ email, password, context }) {
   const { user } = await context.buildContext.authenticate("graphql-local", {
     email,
@@ -92,6 +84,7 @@ async function login({ email, password, context }) {
   return { user };
 }
 
+// Logout the current user
 function logout(req) {
   const { user } = req;
   req.logout();

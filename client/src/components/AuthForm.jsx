@@ -1,88 +1,76 @@
-import React, { Component } from "react";
-import { Link, withRouter } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 import Errors from "./Errors";
 
-class AuthForm extends Component {
-  constructor(props) {
-    super(props);
+function AuthForm({ error, title, onSubmit }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [stateError, setStateError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-    this.state = { email: "", password: "" };
-    this.onSubmit = this.onSubmit.bind(this);
-  }
+  const navigate = useNavigate();
 
-  onSubmit(e) {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const { onSubmit } = this.props;
-    onSubmit({ variables: this.state });
-  }
+    setLoading(true);
+    setStateError("");
 
-  onChange(type, e) {
-    const text = e.target.value;
-    this.setState({ [type]: text, error: "" });
-  }
+    onSubmit({ variables: { email, password } })
+      .catch((err) => {
+        setStateError(err.message || "Submission failed");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
-  renderButton() {
-    const { loading } = this.state;
-    const { title } = this.props;
-    if (loading) {
-      return <div className="spinner" />;
-    }
-    return (
-      <button className="standalone-btn" type="submit" onClick={this.onSubmit}>
-        {title}
-      </button>
-    );
-  }
-
-  render() {
-    const { error, title, history } = this.props;
-    const { error: stateError, email, password } = this.state;
-    return (
-      <main>
-        <div className="subheader">
-          <h2>{title}</h2>
-          <button
-            type="button"
-            className="edit-btn"
-            onClick={() => history.push("/")}
-          >
-            Cancel
+  return (
+    <main>
+      <div className="subheader">
+        <h2>{title}</h2>
+        <button
+          type="button"
+          className="edit-btn"
+          onClick={() => navigate("/")}
+        >
+          Cancel
+        </button>
+        <h3 className="error">{stateError}</h3>
+        <Link to={title === "Sign in" ? "signup" : "signin"}>
+          {title === "Sign in" ? "Sign up" : "Sign in"}
+        </Link>
+        <form className="login" onSubmit={handleSubmit}>
+          <label htmlFor="email">
+            Email
+            <input
+              id="email"
+              type="text"
+              placeholder="John_Doe@example.com"
+              value={email}
+              required
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </label>
+          <label htmlFor="password">
+            Password
+            <input
+              id="password"
+              type="password"
+              placeholder="password123"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </label>
+          <Errors error={error} />
+          <button className="standalone-btn" type="submit" disabled={loading}>
+            {loading ? <div className="spinner" /> : title}
           </button>
-          <h3 className="error">{stateError}</h3>
-          <Link to={title === "Sign in" ? "signup" : "signin"}>
-            {title === "Sign in" ? "Sign up" : "Sign in"}
-          </Link>
-          <form className="login">
-            <label htmlFor="email">
-              Email
-              <input
-                id="email"
-                type="text"
-                placeholder="John_Doe@example.com"
-                value={email}
-                required
-                onChange={(e) => this.onChange("email", e)}
-              />
-            </label>
-            <label htmlFor="password">
-              Password
-              <input
-                id="password"
-                type="password"
-                placeholder="password123"
-                value={password}
-                onChange={(e) => this.onChange("password", e)}
-                required
-              />
-            </label>
-            <Errors error={error} />
-            {this.renderButton()}
-          </form>
-        </div>
-      </main>
-    );
-  }
+        </form>
+      </div>
+    </main>
+  );
 }
 
-export default withRouter(AuthForm);
+export default AuthForm;

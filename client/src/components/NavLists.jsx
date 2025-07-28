@@ -1,12 +1,13 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-function NavLists({ lists, history, title }) {
+function NavLists({ lists, title }) {
+  const navigate = useNavigate();
   if (!lists.length) return null;
   const options = lists.map((list) => (
     <button
       type="button"
-      onClick={() => history.push(`/lists/${list.id}`)}
+      onClick={() => navigate(`/lists/${list.id}`)}
       key={list.id}
       className="dropdown-btn"
     >
@@ -23,4 +24,4 @@ function NavLists({ lists, history, title }) {
   );
 }
 
-export default withRouter(NavLists);
+export default NavLists;

@@ -1,36 +1,37 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import query from "../queries/Nav";
 import AuthButton from "./AuthButton";
 import NavLists from "./NavLists";
 import QueryHandler from "./QueryHandler";
 
-function Nav({ history }) {
+function Nav() {
+  const navigate = useNavigate();
   return (
     <QueryHandler query={query} pollInterval={500} useCustomLoader>
       {({ data, client, loading }) => (
         <nav>
           <ul className="nav">
             <li>
-              <button type="button" onClick={() => history.push("/about")}>
+              <button type="button" onClick={() => navigate("/about")}>
                 About
               </button>
             </li>
-            {data.lists && (
+            {data?.lists && (
               <NavLists lists={data.lists} title="User-Managed Lists" />
             )}
-            {!!data.user && (
+            {!!data?.user && (
               <NavLists lists={data.user.lists} title="My Lists" />
             )}
-            {!!data.user && (
+            {!!data?.user && (
               <li>
-                <button type="button" onClick={() => history.push("/newlist")}>
+                <button type="button" onClick={() => navigate("/newlist")}>
                   New List
                 </button>
               </li>
             )}
-            <AuthButton user={data.user} client={client} loading={loading} />
+            <AuthButton user={data?.user} client={client} loading={loading} />
           </ul>
         </nav>
       )}
@@ -38,4 +39,4 @@ function Nav({ history }) {
   );
 }
 
-export default withRouter(Nav);
+export default Nav;
