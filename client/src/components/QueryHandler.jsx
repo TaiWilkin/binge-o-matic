@@ -1,5 +1,5 @@
-import React from "react";
 import { useQuery } from "@apollo/client";
+import React from "react";
 
 import Errors from "./Errors";
 import Loading from "./Loading";

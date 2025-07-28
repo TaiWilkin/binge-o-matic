@@ -1,5 +1,5 @@
-import React from "react";
 import { useQuery } from "@apollo/client";
+import React from "react";
 import { Redirect, withRouter } from "react-router-dom";
 
 import currentUserQuery from "../queries/CurrentUser";

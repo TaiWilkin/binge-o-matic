@@ -1,6 +1,6 @@
+import { useMutation, useQuery } from "@apollo/client";
 import { useState } from "react";
-import { useQuery, useMutation } from "@apollo/client";
-import { useParams, useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 import deleteListMutation from "../mutations/DeleteList";
 import editListMutation from "../mutations/EditList";

@@ -1,12 +1,12 @@
-import React from "react";
 import { useMutation } from "@apollo/client";
+import React from "react";
 import { useParams } from "react-router-dom";
 
-import toggleWatchedMutation from "../mutations/ToggleWatched";
-import deleteListItemMutation from "../mutations/RemoveFromList";
-import addSeasonsMutation from "../mutations/AddSeasons";
 import addEpisodesMutation from "../mutations/AddEpisodes";
+import addSeasonsMutation from "../mutations/AddSeasons";
 import hideChildrenMutation from "../mutations/HideChildren";
+import deleteListItemMutation from "../mutations/RemoveFromList";
+import toggleWatchedMutation from "../mutations/ToggleWatched";
 import listQuery from "../queries/List";
 
 function UserMovie(props) {
@@ -203,7 +203,7 @@ function UserMovie(props) {
     }
   };
 
-  let img = poster_path ? (
+  const img = poster_path ? (
     <img
       src={`https://image.tmdb.org/t/p/${media_type === "episode" ? "w185" : "w92"}${poster_path}`}
       alt="poster"

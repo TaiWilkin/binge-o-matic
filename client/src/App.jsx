@@ -1,7 +1,7 @@
 import "./index.css";
 
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import React from "react";
-import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import { BrowserRouter } from "react-router-dom";
 
 import Root from "./components/Root";
@@ -9,7 +9,7 @@ import Root from "./components/Root";
 const client = new ApolloClient({
   uri: "/graphql",
   credentials: "include",
-  cache: new InMemoryCache(), // Apollo Client v3 requires an explicit cache
+  cache: new InMemoryCache(),
 });
 
 function App() {
@@ -22,4 +22,4 @@ function App() {
   );
 }
 
-export default App;
+export default App; // ✅ THIS is what was missing
