@@ -1,10 +1,10 @@
 import { useMutation, useQuery } from "@apollo/client";
 import React from "react";
+import { useParams } from "react-router-dom";
 
 import addToListMutation from "../mutations/AddToList";
 import removeFromListMutation from "../mutations/RemoveFromList";
 import listQuery from "../queries/List";
-import { useParams } from "react-router-dom";
 
 function SearchMovie(props) {
   const { id, title, release_date, poster_path, media_type } = props;

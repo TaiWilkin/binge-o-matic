@@ -4,8 +4,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import listQuery from "../queries/List";
 import mediaQuery from "../queries/Media";
 import QueryHandler from "./QueryHandler";
-import SearchMovie from "./SearchMovie";
 import requireAuth from "./requireAuth";
+import SearchMovie from "./SearchMovie";
 
 function SearchMovies() {
   const [searchQuery, setSearchQuery] = useState("");
