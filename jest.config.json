@@ -1,0 +1,27 @@
+{
+  "testEnvironment": "node",
+  "roots": ["<rootDir>/server"],
+  "testMatch": [
+    "**/__tests__/**/*.test.js",
+    "**/?(*.)+(spec|test).js"
+  ],
+  "testPathIgnorePatterns": [
+    "/node_modules/",
+    "/server/__tests__/setup.js"
+  ],
+  "collectCoverageFrom": [
+    "server/**/*.js",
+    "!server/**/__tests__/**",
+    "!server/node_modules/**"
+  ],
+  "coverageDirectory": "coverage",
+  "coverageReporters": ["text", "lcov", "html"],
+  "verbose": true,
+  "forceExit": true,
+  "detectOpenHandles": true,
+  "globals": {
+    "__DEV__": true
+  },
+  "injectGlobals": true,
+  "transform": {}
+}
