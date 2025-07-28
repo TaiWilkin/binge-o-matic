@@ -17,20 +17,20 @@ function Nav({ history }) {
                 About
               </button>
             </li>
-            {data.lists && (
+            {data?.lists && (
               <NavLists lists={data.lists} title="User-Managed Lists" />
             )}
-            {!!data.user && (
+            {!!data?.user && (
               <NavLists lists={data.user.lists} title="My Lists" />
             )}
-            {!!data.user && (
+            {!!data?.user && (
               <li>
                 <button type="button" onClick={() => history.push("/newlist")}>
                   New List
                 </button>
               </li>
             )}
-            <AuthButton user={data.user} client={client} loading={loading} />
+            <AuthButton user={data?.user} client={client} loading={loading} />
           </ul>
         </nav>
       )}

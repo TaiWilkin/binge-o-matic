@@ -1,25 +1,25 @@
-import React from "react";
-import { Mutation } from "react-apollo";
-import { withRouter } from "react-router-dom";
+import { useMutation } from "@apollo/client";
+import { useHistory } from "react-router-dom";
 
 import mutation from "../mutations/Login";
 import query from "../queries/CurrentUser";
 import AuthForm from "./AuthForm";
 
-function SigninForm({ history }) {
+function SigninForm() {
+  const history = useHistory();
+
+  const [login, { error }] = useMutation(mutation, {
+    refetchQueries: [{ query }],
+    onCompleted: () => {
+      history.push("/");
+    },
+  });
+
   return (
-    <Mutation
-      mutation={mutation}
-      refetchQueries={[{ query }]}
-      onCompleted={() => history.push("/")}
-    >
-      {(login, { error }) => (
-        <div>
-          <AuthForm title="Sign in" onSubmit={login} error={error} />
-        </div>
-      )}
-    </Mutation>
+    <div>
+      <AuthForm title="Sign in" onSubmit={login} error={error} />
+    </div>
   );
 }
 
-export default withRouter(SigninForm);
+export default SigninForm;

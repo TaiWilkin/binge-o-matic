@@ -1,178 +1,152 @@
 import React from "react";
-import { Mutation } from "react-apollo";
-import { withRouter } from "react-router-dom";
+import { useMutation } from "@apollo/client";
+import { useParams } from "react-router-dom";
 
-import addEpisodesMutation from "../mutations/AddEpisodes";
-import addSeasonsMutation from "../mutations/AddSeasons";
-import hideChildrenMutation from "../mutations/HideChildren";
-import deleteListItemMutation from "../mutations/RemoveFromList";
 import toggleWatchedMutation from "../mutations/ToggleWatched";
+import deleteListItemMutation from "../mutations/RemoveFromList";
+import addSeasonsMutation from "../mutations/AddSeasons";
+import addEpisodesMutation from "../mutations/AddEpisodes";
+import hideChildrenMutation from "../mutations/HideChildren";
 import listQuery from "../queries/List";
 
-class UserMovie extends React.Component {
-  renderWatched() {
-    const { isOwner, match, isWatched, id } = this.props;
+function UserMovie(props) {
+  const { id: listId } = useParams(); // get list id from route params
+  const {
+    isOwner,
+    isWatched,
+    id,
+    media_type,
+    media_id,
+    show_children,
+    number,
+    parent_show,
+    parent_season,
+    title,
+    poster_path,
+    episode,
+    release_date,
+    hideChildrenOf,
+  } = props;
+
+  // Define hooks for each mutation with refetchQueries as needed
+  const [toggleWatched] = useMutation(toggleWatchedMutation, {
+    refetchQueries: [{ query: listQuery, variables: { id: listId } }],
+  });
+
+  const [deleteListItem] = useMutation(deleteListItemMutation, {
+    refetchQueries: [{ query: listQuery, variables: { id: listId } }],
+  });
+
+  const [addSeasons] = useMutation(addSeasonsMutation, {
+    refetchQueries: [{ query: listQuery, variables: { id: listId } }],
+  });
+
+  const [addEpisodes] = useMutation(addEpisodesMutation, {
+    refetchQueries: [{ query: listQuery, variables: { id: listId } }],
+  });
+
+  const [hideChildren] = useMutation(hideChildrenMutation, {
+    refetchQueries: [{ query: listQuery, variables: { id: listId } }],
+  });
+
+  if (
+    hideChildrenOf.includes(parent_show) ||
+    hideChildrenOf.includes(parent_season)
+  ) {
+    return null;
+  }
+
+  if (media_type === "season" && (!number || number === 0)) {
+    return null;
+  }
+
+  const renderWatched = () => {
     if (!isOwner) return null;
     return (
-      <Mutation
-        mutation={toggleWatchedMutation}
-        refetchQueries={[
-          { query: listQuery, variables: { id: match.params.id } },
-        ]}
+      <button
+        type="button"
+        className="drop"
+        onClick={() =>
+          toggleWatched({
+            variables: { id, isWatched: !isWatched, list: listId },
+          })
+        }
       >
-        {(toggleWatched) => (
-          <button
-            type="button"
-            className="drop"
-            onClick={() => {
-              toggleWatched({
-                variables: {
-                  id,
-                  isWatched: !isWatched,
-                  list: match.params.id,
-                },
-              });
-            }}
-          >
-            {isWatched ? "MARK AS UNWATCHED" : "MARK AS WATCHED"}
-          </button>
-        )}
-      </Mutation>
+        {isWatched ? "MARK AS UNWATCHED" : "MARK AS WATCHED"}
+      </button>
     );
-  }
+  };
 
-  renderDeleteButton() {
-    const { isOwner, match, media_id } = this.props;
-
+  const renderDeleteButton = () => {
     if (!isOwner) return null;
-
     return (
-      <Mutation
-        mutation={deleteListItemMutation}
-        refetchQueries={[
-          { query: listQuery, variables: { id: match.params.id } },
-        ]}
+      <button
+        type="button"
+        className="drop"
+        onClick={() =>
+          deleteListItem({ variables: { id: media_id, list: listId } })
+        }
       >
-        {(deleteListItem) => (
-          <button
-            type="button"
-            className="drop"
-            onClick={() =>
-              deleteListItem({
-                variables: {
-                  id: media_id,
-                  list: match.params.id,
-                },
-              })
-            }
-          >
-            DELETE
-          </button>
-        )}
-      </Mutation>
+        DELETE
+      </button>
     );
-  }
+  };
 
-  renderAddSeasons() {
-    const { show_children, match, id, media_id } = this.props;
+  const renderAddSeasons = () => {
     if (show_children) {
-      return this.renderHideChildren("HIDE SEASONS");
+      return renderHideChildren("HIDE SEASONS");
     }
     return (
-      <Mutation
-        mutation={addSeasonsMutation}
-        refetchQueries={[
-          { query: listQuery, variables: { id: match.params.id } },
-        ]}
+      <button
+        type="button"
+        className="drop"
+        onClick={() =>
+          addSeasons({ variables: { id, media_id, list: listId } })
+        }
       >
-        {(addSeasons) => (
-          <button
-            type="button"
-            className="drop"
-            onClick={() => {
-              addSeasons({
-                variables: {
-                  id,
-                  media_id,
-                  list: match.params.id,
-                },
-              });
-            }}
-          >
-            ADD SEASONS
-          </button>
-        )}
-      </Mutation>
+        ADD SEASONS
+      </button>
     );
-  }
+  };
 
-  renderAddEpisodes() {
-    const { show_children, match, id, number, parent_show } = this.props;
+  const renderAddEpisodes = () => {
     if (show_children) {
-      return this.renderHideChildren("HIDE EPISODES");
+      return renderHideChildren("HIDE EPISODES");
     }
     return (
-      <Mutation
-        mutation={addEpisodesMutation}
-        refetchQueries={[
-          { query: listQuery, variables: { id: match.params.id } },
-        ]}
+      <button
+        type="button"
+        className="drop"
+        onClick={() =>
+          addEpisodes({
+            variables: {
+              id,
+              season_number: number,
+              list: listId,
+              show_id: parent_show,
+            },
+          })
+        }
       >
-        {(addEpisodes) => (
-          <button
-            type="button"
-            className="drop"
-            onClick={() => {
-              addEpisodes({
-                variables: {
-                  id,
-                  season_number: number,
-                  list: match.params.id,
-                  show_id: parent_show,
-                },
-              });
-            }}
-          >
-            ADD EPISODES
-          </button>
-        )}
-      </Mutation>
+        ADD EPISODES
+      </button>
     );
-  }
+  };
 
-  renderHideChildren(text) {
-    const { match, id } = this.props;
-    return (
-      <Mutation
-        mutation={hideChildrenMutation}
-        refetchQueries={[
-          { query: listQuery, variables: { id: match.params.id } },
-        ]}
-      >
-        {(hideChildren) => (
-          <button
-            type="button"
-            className="drop"
-            onClick={() => {
-              hideChildren({
-                variables: {
-                  id,
-                  list: match.params.id,
-                },
-              });
-            }}
-          >
-            {text}
-          </button>
-        )}
-      </Mutation>
-    );
-  }
+  const renderHideChildren = (text) => (
+    <button
+      type="button"
+      className="drop"
+      onClick={() => hideChildren({ variables: { id, list: listId } })}
+    >
+      {text}
+    </button>
+  );
 
-  renderButtons() {
-    const { media_type } = this.props;
-    const watched = this.renderWatched();
-    const deleteButton = this.renderDeleteButton();
+  const renderButtons = () => {
+    const watchedBtn = renderWatched();
+    const deleteBtn = renderDeleteButton();
+
     switch (media_type) {
       case "movie":
         return (
@@ -180,8 +154,8 @@ class UserMovie extends React.Component {
             <button type="button" className="options">
               OPTIONS
             </button>
-            {deleteButton}
-            {watched}
+            {deleteBtn}
+            {watchedBtn}
           </div>
         );
       case "tv":
@@ -190,9 +164,9 @@ class UserMovie extends React.Component {
             <button type="button" className="options">
               OPTIONS
             </button>
-            {deleteButton}
-            {this.renderAddSeasons()}
-            {watched}
+            {deleteBtn}
+            {renderAddSeasons()}
+            {watchedBtn}
           </div>
         );
       case "season":
@@ -201,9 +175,9 @@ class UserMovie extends React.Component {
             <button type="button" className="options">
               OPTIONS
             </button>
-            {deleteButton}
-            {this.renderAddEpisodes()}
-            {watched}
+            {deleteBtn}
+            {renderAddEpisodes()}
+            {watchedBtn}
           </div>
         );
       case "episode":
@@ -212,8 +186,8 @@ class UserMovie extends React.Component {
             <button type="button" className="options">
               OPTIONS
             </button>
-            {deleteButton}
-            {watched}
+            {deleteBtn}
+            {watchedBtn}
           </div>
         );
       default:
@@ -222,67 +196,41 @@ class UserMovie extends React.Component {
             <button type="button" className="options">
               OPTIONS
             </button>
-            {deleteButton}
-            {watched}
+            {deleteBtn}
+            {watchedBtn}
           </div>
         );
     }
+  };
+
+  let img = poster_path ? (
+    <img
+      src={`https://image.tmdb.org/t/p/${media_type === "episode" ? "w185" : "w92"}${poster_path}`}
+      alt="poster"
+    />
+  ) : (
+    <div className="no-image" />
+  );
+
+  let details = "";
+  if (media_type === "season" && number) {
+    details = `Season ${number}`;
+  } else if (media_type === "episode") {
+    details = `Episode ${number}: ${episode}`;
   }
 
-  render() {
-    const {
-      hideChildrenOf,
-      parent_show,
-      parent_season,
-      title,
-      media_type,
-      number,
-      poster_path,
-      episode,
-      isWatched,
-      id,
-      release_date,
-    } = this.props;
-    if (
-      hideChildrenOf.includes(parent_show) ||
-      hideChildrenOf.includes(parent_season)
-    ) {
-      return null;
-    }
-    if (media_type === "season" && (number === 0 || !number)) {
-      return null;
-    }
-    let img = (
-      <img src={`https://image.tmdb.org/t/p/w92${poster_path}`} alt="poster" />
-    );
-    let details = "";
-    if (media_type === "season" && number) {
-      details = `Season ${number}`;
-    }
-    if (media_type === "episode") {
-      details = `Episode ${number}: ${episode}`;
-      img = (
-        <img
-          src={`https://image.tmdb.org/t/p/w185${poster_path}`}
-          alt="poster"
-        />
-      );
-    }
-    if (!poster_path) {
-      img = <div className="no-image" />;
-    }
-    const classes = isWatched ? `${media_type} watched` : media_type;
-    return (
-      <li id={id} className={classes}>
-        <div className="circle" />
-        {img}
-        <h2>{title}</h2>
-        <p>{details}</p>
-        <p>{release_date}</p>
-        {this.renderButtons()}
-      </li>
-    );
-  }
+  const classes = isWatched ? `${media_type} watched` : media_type;
+
+  return (
+    <li id={id} className={classes}>
+      <div className="circle" />
+      {img}
+      <h2>{title}</h2>
+      <p>{details}</p>
+      <p>{release_date}</p>
+      {renderButtons()}
+    </li>
+  );
 }
 
-export default withRouter(UserMovie);
+export default UserMovie;

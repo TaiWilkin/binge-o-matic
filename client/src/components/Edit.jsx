@@ -1,115 +1,86 @@
-import React from "react";
-import { Mutation } from "react-apollo";
-import { withRouter } from "react-router-dom";
+import { useState } from "react";
+import { useQuery, useMutation } from "@apollo/client";
+import { useParams, useHistory } from "react-router-dom";
 
 import deleteListMutation from "../mutations/DeleteList";
 import editListMutation from "../mutations/EditList";
 import listQuery from "../queries/List";
-import QueryHandler from "./QueryHandler";
 
-class Edit extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      text: "",
-    };
+function Edit() {
+  const { id } = useParams();
+  const navigate = useHistory();
+
+  const [text, setText] = useState("");
+
+  const { loading, error, data, client } = useQuery(listQuery, {
+    variables: { id },
+  });
+
+  const [editList] = useMutation(editListMutation, {
+    refetchQueries: [{ query: listQuery, variables: { id } }],
+    onCompleted: () => navigate(`/lists/${id}`),
+  });
+
+  const [deleteList] = useMutation(deleteListMutation, {
+    onCompleted: () => {
+      client.resetStore();
+      navigate("/");
+    },
+  });
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p style={{ color: "red" }}>Error: {error.message}</p>;
+
+  if (!data.list) {
+    return <p style={{ color: "red" }}>Error: List not found!</p>;
   }
 
-  onChange(e) {
-    this.setState({ text: e.target.value });
+  const isOwner =
+    data.user && data.list.user.toString() === data.user.id.toString();
+
+  if (!isOwner) {
+    return <p style={{ color: "red" }}>Error: Unauthorized</p>;
   }
 
-  render() {
-    const { match, history } = this.props;
-    const { text } = this.state;
-    return (
-      <QueryHandler query={listQuery} variables={{ id: match.params.id }}>
-        {({ data, client }) => {
-          if (!data.list) {
-            return <p style={{ color: "red" }}> Error: List not found!</p>;
-          }
-          const isOwner =
-            data.user && data.list.user.toString() === data.user.id.toString();
-          if (!isOwner)
-            return <p style={{ color: "red" }}>Error: Unauthorized</p>;
-          return (
-            <main>
-              <div className="subheader">
-                <h2>Editing {data.list.name}</h2>
-                <button
-                  type="button"
-                  className="right"
-                  onClick={() => history.push(`/lists/${match.params.id}`)}
-                >
-                  RETURN TO LIST
-                </button>
-                <h3 className="simple-header">Change Title</h3>
-                <form className="search">
-                  <input
-                    type="text"
-                    placeholder="Enter new title"
-                    value={text}
-                    onChange={(e) => this.onChange(e)}
-                  />
-                  <Mutation
-                    mutation={editListMutation}
-                    refetchQueries={[
-                      {
-                        query: listQuery,
-                        variables: { id: match.params.id },
-                      },
-                    ]}
-                    onCompleted={() => {
-                      history.push(`/lists/${match.params.id}`);
-                    }}
-                  >
-                    {(editList) => (
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          editList({
-                            variables: {
-                              id: match.params.id,
-                              name: text,
-                            },
-                          });
-                        }}
-                      >
-                        SUBMIT
-                      </button>
-                    )}
-                  </Mutation>
-                </form>
-                <h3 className="simple-header">Delete List</h3>
-                <Mutation
-                  mutation={deleteListMutation}
-                  onCompleted={() => {
-                    client.resetStore();
-                    history.push("/");
-                  }}
-                >
-                  {(deleteList) => (
-                    <button
-                      type="button"
-                      className="standalone-btn"
-                      onClick={() =>
-                        deleteList({
-                          variables: { id: match.params.id },
-                        })
-                      }
-                    >
-                      DELETE
-                    </button>
-                  )}
-                </Mutation>
-              </div>
-            </main>
-          );
-        }}
-      </QueryHandler>
-    );
-  }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    editList({ variables: { id, name: text } });
+  };
+
+  const handleDelete = () => {
+    deleteList({ variables: { id } });
+  };
+
+  return (
+    <main>
+      <div className="subheader">
+        <h2>Editing {data.list.name}</h2>
+        <button
+          type="button"
+          className="right"
+          onClick={() => navigate(`/lists/${id}`)}
+        >
+          RETURN TO LIST
+        </button>
+
+        <h3 className="simple-header">Change Title</h3>
+        <form className="search" onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="Enter new title"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+          />
+          <button type="submit">SUBMIT</button>
+        </form>
+
+        <h3 className="simple-header">Delete List</h3>
+        <button type="button" className="standalone-btn" onClick={handleDelete}>
+          DELETE
+        </button>
+      </div>
+    </main>
+  );
 }
 
-export default withRouter(Edit);
+export default Edit;
