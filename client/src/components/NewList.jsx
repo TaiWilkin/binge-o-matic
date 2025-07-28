@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import mutation from "../mutations/CreateList";
 import query from "../queries/Nav";
 import Errors from "./Errors";
+import requireAuth from "./requireAuth";
 
 function NewList() {
   const [name, setName] = useState("");
@@ -64,4 +65,4 @@ function NewList() {
   );
 }
 
-export default NewList;
+export default requireAuth(NewList);

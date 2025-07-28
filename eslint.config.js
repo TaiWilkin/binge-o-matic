@@ -44,7 +44,7 @@ export default [
     },
     settings: {
       react: {
-        version: "^19.1.0",
+        version: "19.1.0",
       },
     },
   },

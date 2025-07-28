@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import deleteListMutation from "../mutations/DeleteList";
 import editListMutation from "../mutations/EditList";
 import listQuery from "../queries/List";
+import requireAuth from "./requireAuth";
 
 function Edit() {
   const { id } = useParams();
@@ -83,4 +84,4 @@ function Edit() {
   );
 }
 
-export default Edit;
+export default requireAuth(Edit);

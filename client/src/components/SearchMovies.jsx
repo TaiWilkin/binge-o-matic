@@ -5,6 +5,7 @@ import listQuery from "../queries/List";
 import mediaQuery from "../queries/Media";
 import QueryHandler from "./QueryHandler";
 import SearchMovie from "./SearchMovie";
+import requireAuth from "./requireAuth";
 
 function SearchMovies() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -94,4 +95,4 @@ function SearchMovies() {
   );
 }
 
-export default SearchMovies;
+export default requireAuth(SearchMovies);

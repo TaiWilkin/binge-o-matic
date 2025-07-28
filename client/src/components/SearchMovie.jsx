@@ -4,22 +4,23 @@ import React from "react";
 import addToListMutation from "../mutations/AddToList";
 import removeFromListMutation from "../mutations/RemoveFromList";
 import listQuery from "../queries/List";
+import { useParams } from "react-router-dom";
 
 function SearchMovie(props) {
-  const { id, title, release_date, poster_path, media_type, match } = props;
-
+  const { id, title, release_date, poster_path, media_type } = props;
+  const params = useParams();
   // Query to fetch the list
   const { data, loading, error } = useQuery(listQuery, {
-    variables: { id: match.params.id },
+    variables: { id: params.id },
   });
 
   // Mutations to add or remove from list
   const [addToList] = useMutation(addToListMutation, {
-    refetchQueries: [{ query: listQuery, variables: { id: match.params.id } }],
+    refetchQueries: [{ query: listQuery, variables: { id: params.id } }],
   });
 
   const [removeFromList] = useMutation(removeFromListMutation, {
-    refetchQueries: [{ query: listQuery, variables: { id: match.params.id } }],
+    refetchQueries: [{ query: listQuery, variables: { id: params.id } }],
   });
 
   if (loading) return <p>Loading...</p>;
@@ -43,7 +44,7 @@ function SearchMovie(props) {
                   release_date,
                   poster_path,
                   media_type,
-                  list: match.params.id,
+                  list: params.id,
                 },
               });
             }}
@@ -61,7 +62,7 @@ function SearchMovie(props) {
           onClick={(e) => {
             e.preventDefault();
             removeFromList({
-              variables: { id, list: match.params.id },
+              variables: { id, list: params.id },
             });
           }}
         >
