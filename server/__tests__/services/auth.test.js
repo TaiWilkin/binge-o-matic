@@ -1,12 +1,9 @@
-import mongoose from "mongoose";
 import "../../models/user.js";
+
+import mongoose from "mongoose";
+
 import authService from "../../services/auth.js";
-import {
-  TestData,
-  TestPatterns,
-  MockFactories,
-  ModelMocking,
-} from "../testUtils.js";
+import { MockFactories, ModelMocking } from "../testUtils.js";
 
 const User = mongoose.model("user");
 

@@ -1,13 +1,12 @@
 import mongoose from "mongoose";
+
 import {
-  TestData,
   MockFactories,
   ModelMocking,
-  TestSetup,
+  TestData,
   TestPatterns,
+  TestSetup,
 } from "../testUtils.js";
-
-const { ObjectId } = mongoose.Types;
 
 // Setup test environment and mocking
 const { originalLogError } = TestSetup.setupTestEnvironment();
