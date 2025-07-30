@@ -1,4 +1,4 @@
-name: Lint
+name: Test
 
 on:
   push:
@@ -7,9 +7,10 @@ on:
     branches: [main, master, develop]
 
 jobs:
-  linting:
-    name: Linting
+  test:
+    name: Run Tests
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -21,7 +22,7 @@ jobs:
           cache: "npm"
 
       - name: Install Dependencies
-        run: npm ci && cd client && npm ci && cd ..
+        run: npm ci
 
-      - name: Run ESLint
-        run: npm run lint
+      - name: Run Tests
+        run: npm run test
