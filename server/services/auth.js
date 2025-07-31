@@ -10,63 +10,63 @@ passport.serializeUser((user, done) => {
 });
 
 // Deserialize the ID to get the full user object
-passport.deserializeUser((id, done) => {
-  User.findById(id)
-    .then((user) => done(null, user))
-    .catch((err) => done(err));
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (err) {
+    done(err);
+  }
 });
 
-// Local strategy for GraphQL authentication
-passport.use(
-  new GraphQLLocalStrategy(async (email, password, done) => {
-    try {
-      const user = await User.findOne({ email: email.toLowerCase() });
-      if (!user) {
-        return done(null, false, "Invalid credentials");
-      }
-
-      const isMatch = await new Promise((resolve, reject) => {
-        user.comparePassword(password, (err, match) => {
-          if (err) return reject(err);
-          resolve(match);
-        });
-      });
-
-      if (isMatch) {
-        return done(null, user);
-      } else {
-        return done(null, false, "Invalid credentials.");
-      }
-    } catch (err) {
-      return done(err);
+async function authenticateUser(email, password, done) {
+  try {
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) {
+      return done(null, false, "Invalid credentials");
     }
-  }),
-);
+
+    const isMatch = await new Promise((resolve, reject) => {
+      user.comparePassword(password, (err, match) => {
+        if (err) return reject(err);
+        resolve(match);
+      });
+    });
+
+    if (isMatch) {
+      return done(null, user);
+    } else {
+      return done(null, false, "Invalid credentials.");
+    }
+  } catch (err) {
+    return done(err);
+  }
+}
+
+// Local strategy for GraphQL authentication
+passport.use(new GraphQLLocalStrategy(authenticateUser));
 
 // Signup: creates a user and logs them in
-function signup({ email, password, req }) {
+async function signup({ email, password, req }) {
   const newUser = new User({ email, password });
 
   if (!email || !password) {
     throw new Error("You must provide an email and password.");
   }
 
-  return User.findOne({ email })
-    .then((existingUser) => {
-      if (existingUser) {
-        throw new Error("Email in use");
-      }
-      return newUser.save();
-    })
-    .then(
-      (user) =>
-        new Promise((resolve, reject) => {
-          req.logIn(user, (err) => {
-            if (err) return reject(err);
-            resolve(user);
-          });
-        }),
-    );
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    throw new Error("Email in use");
+  }
+
+  const user = await newUser.save();
+
+  return new Promise((resolve, reject) => {
+    req.logIn(user, (err) => {
+      if (err) return reject(err);
+      resolve(user);
+    });
+  });
 }
 
 // Login using the local GraphQL strategy
@@ -89,7 +89,7 @@ async function login({ email, password, context }) {
 }
 
 // Logout the current user
-function logout(req) {
+async function logout(req) {
   const { user } = req;
 
   return new Promise((resolve, reject) => {
@@ -100,4 +100,4 @@ function logout(req) {
   });
 }
 
-export default { signup, login, logout };
+export default { signup, login, logout, authenticateUser };
