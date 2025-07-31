@@ -13,30 +13,30 @@ describe("Auth Service", () => {
   });
 
   describe("signup validation", () => {
-    test("should throw error if email is missing", () => {
+    test("should throw error if email is missing", async () => {
       const password = "password123";
       const req = MockFactories.createMockReq();
 
-      expect(() => {
-        authService.signup({ password, req });
-      }).toThrow("You must provide an email and password.");
+      await expect(authService.signup({ password, req })).rejects.toThrow(
+        "You must provide an email and password.",
+      );
     });
 
-    test("should throw error if password is missing", () => {
+    test("should throw error if password is missing", async () => {
       const email = "test@example.com";
       const req = MockFactories.createMockReq();
 
-      expect(() => {
-        authService.signup({ email, req });
-      }).toThrow("You must provide an email and password.");
+      await expect(authService.signup({ email, req })).rejects.toThrow(
+        "You must provide an email and password.",
+      );
     });
 
-    test("should throw error if both email and password are missing", () => {
+    test("should throw error if both email and password are missing", async () => {
       const req = MockFactories.createMockReq();
 
-      expect(() => {
-        authService.signup({ req });
-      }).toThrow("You must provide an email and password.");
+      await expect(authService.signup({ req })).rejects.toThrow(
+        "You must provide an email and password.",
+      );
     });
 
     test("should handle req.logIn error", async () => {
@@ -68,6 +68,32 @@ describe("Auth Service", () => {
   });
 
   describe("login", () => {
+    test("should throw error if email is missing", async () => {
+      const password = "password123";
+      const context = MockFactories.createMockContext();
+
+      await expect(authService.login({ password, context })).rejects.toThrow(
+        "You must provide an email and password.",
+      );
+    });
+
+    test("should throw error if password is missing", async () => {
+      const email = "test@example.com";
+      const context = MockFactories.createMockContext();
+
+      await expect(authService.login({ email, context })).rejects.toThrow(
+        "You must provide an email and password.",
+      );
+    });
+
+    test("should throw error if both email and password are missing", async () => {
+      const context = MockFactories.createMockContext();
+
+      await expect(authService.login({ context })).rejects.toThrow(
+        "You must provide an email and password.",
+      );
+    });
+
     test("should successfully log in with valid credentials", async () => {
       const email = "test@example.com";
       const password = "password123";
