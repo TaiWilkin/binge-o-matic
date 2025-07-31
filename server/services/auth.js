@@ -19,32 +19,32 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-// Local strategy for GraphQL authentication
-passport.use(
-  new GraphQLLocalStrategy(async (email, password, done) => {
-    try {
-      const user = await User.findOne({ email: email.toLowerCase() });
-      if (!user) {
-        return done(null, false, "Invalid credentials");
-      }
-
-      const isMatch = await new Promise((resolve, reject) => {
-        user.comparePassword(password, (err, match) => {
-          if (err) return reject(err);
-          resolve(match);
-        });
-      });
-
-      if (isMatch) {
-        return done(null, user);
-      } else {
-        return done(null, false, "Invalid credentials.");
-      }
-    } catch (err) {
-      return done(err);
+async function authenticateUser(email, password, done) {
+  try {
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) {
+      return done(null, false, "Invalid credentials");
     }
-  }),
-);
+
+    const isMatch = await new Promise((resolve, reject) => {
+      user.comparePassword(password, (err, match) => {
+        if (err) return reject(err);
+        resolve(match);
+      });
+    });
+
+    if (isMatch) {
+      return done(null, user);
+    } else {
+      return done(null, false, "Invalid credentials.");
+    }
+  } catch (err) {
+    return done(err);
+  }
+}
+
+// Local strategy for GraphQL authentication
+passport.use(new GraphQLLocalStrategy(authenticateUser));
 
 // Signup: creates a user and logs them in
 async function signup({ email, password, req }) {
@@ -54,23 +54,19 @@ async function signup({ email, password, req }) {
     throw new Error("You must provide an email and password.");
   }
 
-  try {
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      throw new Error("Email in use");
-    }
-
-    const user = await newUser.save();
-
-    return new Promise((resolve, reject) => {
-      req.logIn(user, (err) => {
-        if (err) return reject(err);
-        resolve(user);
-      });
-    });
-  } catch (error) {
-    throw error;
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    throw new Error("Email in use");
   }
+
+  const user = await newUser.save();
+
+  return new Promise((resolve, reject) => {
+    req.logIn(user, (err) => {
+      if (err) return reject(err);
+      resolve(user);
+    });
+  });
 }
 
 // Login using the local GraphQL strategy
@@ -104,4 +100,4 @@ async function logout(req) {
   });
 }
 
-export default { signup, login, logout };
+export default { signup, login, logout, authenticateUser };
