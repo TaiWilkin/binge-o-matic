@@ -3,7 +3,6 @@ import { jest } from "@jest/globals";
 // Mock all external dependencies
 jest.mock("dotenv/config", () => ({}));
 jest.mock("mongoose");
-jest.mock("../utilities.js");
 jest.mock("../models/index.js", () => ({}));
 jest.mock("../services/auth.js", () => ({}));
 jest.mock("../schema/mutations.js", () => ({}));

@@ -16,7 +16,7 @@ const {
 } = graphql;
 
 // Mock all services at module level
-jest.mock("../../services/auth.js", () => ({
+jest.mock("../services/auth.js", () => ({
   default: {
     signup: jest.fn(),
     login: jest.fn(),
@@ -24,7 +24,7 @@ jest.mock("../../services/auth.js", () => ({
   },
 }));
 
-jest.mock("../../services/list.js", () => ({
+jest.mock("../services/list.js", () => ({
   default: {
     createList: jest.fn(),
     deleteList: jest.fn(),
@@ -32,7 +32,7 @@ jest.mock("../../services/list.js", () => ({
   },
 }));
 
-jest.mock("../../services/media.js", () => ({
+jest.mock("../services/media.js", () => ({
   default: {
     addToList: jest.fn(),
     removeFromList: jest.fn(),

@@ -1,7 +1,9 @@
 import mongoose from "mongoose";
+const { ObjectId } = mongoose.Types;
 
 import {
   MockFactories,
+  MockManager,
   ModelMocking,
   TestData,
   TestPatterns,
@@ -13,30 +15,49 @@ const { originalLogError } = TestSetup.setupTestEnvironment();
 const originalModel = mongoose.model;
 const modelMocks = ModelMocking.setupModelMocking(originalModel);
 
+// Create mock manager for easy test customization
+const mockManager = new MockManager(modelMocks);
+
 // Import service after mocking
 const mediaService = await import("../../services/media.js").then(
   (m) => m.default,
 );
+const listService = await import("../../services/list.js").then(
+  (m) => m.default,
+);
+
+// Import helper functions for testing from their respective services
+const { fetchFromTMDB } = await import("../../services/tmdb.js");
+const { getAuthorizedList, updateMediaProperty } = listService;
 
 describe("Media Service", () => {
   // Test data
   const mockUser = TestData.createUser();
   const mockListData = TestData.createList();
   const mockMediaItem = TestData.createMediaItem();
-  const mockMediaData = [mockMediaItem];
-  const mockUpdatedList = { ...mockListData, media: [...mockListData.media] };
 
   beforeEach(() => {
-    // Reset model mocks with test data
-    modelMocks.list.findOne = () => Promise.resolve(mockListData);
-    modelMocks.list.findOneAndUpdate = () => Promise.resolve(mockUpdatedList);
-    modelMocks.media.find = () => Promise.resolve(mockMediaData);
-    modelMocks.media.findOne = () => Promise.resolve(mockMediaItem);
-    modelMocks.media.findOneAndUpdate = () => Promise.resolve(mockMediaItem);
+    // Reset to default mocks before each test
+    mockManager.resetAll();
+
+    // Set up default mocks that work for most tests
+    mockManager.setupTest({
+      list: {
+        findOne: () => Promise.resolve(mockListData),
+        findOneAndUpdate: () =>
+          Promise.resolve({ ...mockListData, media: [...mockListData.media] }),
+      },
+      media: {
+        find: () => Promise.resolve([mockMediaItem]),
+        findOne: () => Promise.resolve(mockMediaItem),
+        findOneAndUpdate: () => Promise.resolve(mockMediaItem),
+      },
+    });
   });
 
   afterAll(() => {
     // Cleanup
+    mockManager.resetAll();
     ModelMocking.restoreModelMocking(originalModel);
     TestSetup.restoreTestEnvironment({ originalLogError });
   });
@@ -85,6 +106,47 @@ describe("Media Service", () => {
         "Network error",
       );
     });
+
+    it("should sort search results by release date and media type", async () => {
+      // Create test data with different dates and types to verify sorting
+      const searchResponse = {
+        results: [
+          {
+            id: 3,
+            title: "Latest Movie",
+            release_date: "2023-12-01", // Latest
+            poster_path: "/latest.jpg",
+            media_type: "movie",
+          },
+          {
+            id: 1,
+            name: "Old TV Show",
+            first_air_date: "2020-01-01", // Oldest
+            poster_path: "/old-tv.jpg",
+            media_type: "tv",
+          },
+          {
+            id: 2,
+            title: "Mid Movie",
+            release_date: "2021-06-01", // Middle
+            poster_path: "/mid.jpg",
+            media_type: "movie",
+          },
+        ],
+      };
+
+      global.fetch = MockFactories.createSuccessFetch(searchResponse);
+      const result = await mediaService.searchMedia("test query");
+
+      // Should be sorted by release_date ascending, then by media type
+      expect(result).toHaveLength(3);
+      expect(result[0].title).toBe("Old TV Show");
+      expect(result[0].release_date).toEqual(new Date("2020-01-01"));
+      expect(result[1].title).toBe("Mid Movie");
+      expect(result[1].release_date).toEqual(new Date("2021-06-01"));
+      expect(result[2].title).toBe("Latest Movie");
+      expect(result[2].release_date).toEqual(new Date("2023-12-01"));
+    });
   });
 
   describe("addToList", () => {
@@ -102,20 +164,48 @@ describe("Media Service", () => {
       TestPatterns.testSuccess(result);
     });
 
-    it("should return null for unauthorized user", async () => {
-      const unauthorizedUser = TestData.createUnauthorizedUser();
-      modelMocks.list.findOne = () => Promise.resolve(mockListData);
+    it("should throw error for unauthorized user", async () => {
+      // Create different user ID to simulate unauthorized access
+      const unauthorizedUser = {
+        _id: "507f1f77bcf86cd799439013", // Different from list.user
+      };
 
       const media = {
         id: "12345",
         list: "507f1f77bcf86cd799439012",
       };
 
-      const result = await mediaService.addToList(media, unauthorizedUser);
-      expect(result).toBeNull(); // addToList catches errors and returns null
+      await expect(
+        mediaService.addToList(media, unauthorizedUser),
+      ).rejects.toThrow("Unauthorized");
     });
 
-    it("should return null on database error", async () => {
+    it("should return null when list is not found", async () => {
+      // Mock getAuthorizedList to return null (list not found)
+      const originalGetAuthorizedList = listService.getAuthorizedList;
+      listService.getAuthorizedList = jest.fn().mockResolvedValue(null);
+
+      const media = {
+        id: "12345",
+        title: "Test Movie",
+        release_date: new Date("2023-01-01"),
+        poster_path: "/test.jpg",
+        media_type: "movie",
+        list: "507f1f77bcf86cd799439012",
+      };
+
+      const result = await mediaService.addToList(media, mockUser);
+      expect(result).toBeNull();
+      expect(listService.getAuthorizedList).toHaveBeenCalledWith(
+        media.list,
+        mockUser._id,
+      );
+
+      // Restore original function
+      listService.getAuthorizedList = originalGetAuthorizedList;
+    });
+
+    it("should throw error on database error", async () => {
       modelMocks.list.findOne = () =>
         Promise.reject(new Error("Database error"));
 
@@ -124,10 +214,8 @@ describe("Media Service", () => {
         list: "507f1f77bcf86cd799439012",
       };
 
-      await TestPatterns.testDatabaseError(
-        mediaService.addToList,
-        media,
-        mockUser,
+      await expect(mediaService.addToList(media, mockUser)).rejects.toThrow(
+        "Database error",
       );
     });
   });
@@ -178,6 +266,126 @@ describe("Media Service", () => {
       expect(result[0].title).toBe("TV Show 2022"); // Earlier date, comes first
       expect(result[1].title).toBe("Test Movie");
     });
+
+    it("should sort media by title when release date and type are the same", async () => {
+      // Test line 99: return a.title.localeCompare(b.title);
+      const sameDate = new Date("2023-01-01");
+      const mockMultipleMedia = [
+        {
+          ...TestData.createMediaItem("12345", "507f1f77bcf86cd799439013"),
+          title: "Zebra Movie", // Should come last alphabetically
+          release_date: sameDate,
+          media_type: "movie",
+        },
+        {
+          ...TestData.createMediaItem("67890", "507f1f77bcf86cd799439014"),
+          title: "Apple Movie", // Should come first alphabetically
+          release_date: sameDate,
+          media_type: "movie",
+        },
+        {
+          ...TestData.createMediaItem("54321", "507f1f77bcf86cd799439015"),
+          title: "Beta Movie", // Should come in middle alphabetically
+          release_date: sameDate,
+          media_type: "movie",
+        },
+      ];
+
+      modelMocks.media.find = () => Promise.resolve(mockMultipleMedia);
+
+      const mediaIds = [
+        {
+          item_id: "507f1f77bcf86cd799439013",
+          isWatched: false,
+          show_children: false,
+        },
+        {
+          item_id: "507f1f77bcf86cd799439014",
+          isWatched: false,
+          show_children: false,
+        },
+        {
+          item_id: "507f1f77bcf86cd799439015",
+          isWatched: false,
+          show_children: false,
+        },
+      ];
+
+      const result = await mediaService.getMediaList(mediaIds);
+      expect(result).toHaveLength(3);
+      // Should be sorted alphabetically by title since date and type are the same
+      expect(result[0].title).toBe("Apple Movie");
+      expect(result[1].title).toBe("Beta Movie");
+      expect(result[2].title).toBe("Zebra Movie");
+    });
+
+    it("should sort media by type when release dates are the same (movie < tv < season < episode)", async () => {
+      // Test lines 98-100: if (mediaTypes[a.media_type] < mediaTypes[b.media_type]) return -1;
+      const sameDate = new Date("2023-01-01");
+      const mockMultipleMedia = [
+        {
+          ...TestData.createMediaItem("12345", "507f1f77bcf86cd799439013"),
+          title: "Test Episode", // episode = 3 (highest priority number)
+          release_date: sameDate,
+          media_type: "episode",
+        },
+        {
+          ...TestData.createMediaItem("67890", "507f1f77bcf86cd799439014"),
+          title: "Test Movie", // movie = 0 (lowest priority number, should come first)
+          release_date: sameDate,
+          media_type: "movie",
+        },
+        {
+          ...TestData.createMediaItem("54321", "507f1f77bcf86cd799439015"),
+          title: "Test Season", // season = 2
+          release_date: sameDate,
+          media_type: "season",
+        },
+        {
+          ...TestData.createMediaItem("98765", "507f1f77bcf86cd799439016"),
+          title: "Test TV Show", // tv = 1
+          release_date: sameDate,
+          media_type: "tv",
+        },
+      ];
+
+      modelMocks.media.find = () => Promise.resolve(mockMultipleMedia);
+
+      const mediaIds = [
+        {
+          item_id: "507f1f77bcf86cd799439013",
+          isWatched: false,
+          show_children: false,
+        },
+        {
+          item_id: "507f1f77bcf86cd799439014",
+          isWatched: false,
+          show_children: false,
+        },
+        {
+          item_id: "507f1f77bcf86cd799439015",
+          isWatched: false,
+          show_children: false,
+        },
+        {
+          item_id: "507f1f77bcf86cd799439016",
+          isWatched: false,
+          show_children: false,
+        },
+      ];
+
+      const result = await mediaService.getMediaList(mediaIds);
+      expect(result).toHaveLength(4);
+      // Should be sorted by media type priority: movie(0) < tv(1) < season(2) < episode(3)
+      expect(result[0].title).toBe("Test Movie");
+      expect(result[0].media_type).toBe("movie");
+      expect(result[1].title).toBe("Test TV Show");
+      expect(result[1].media_type).toBe("tv");
+      expect(result[2].title).toBe("Test Season");
+      expect(result[2].media_type).toBe("season");
+      expect(result[3].title).toBe("Test Episode");
+      expect(result[3].media_type).toBe("episode");
+    });
   });
 
   describe("removeFromList", () => {
@@ -186,22 +394,25 @@ describe("Media Service", () => {
     beforeEach(() => {
       // Mock getMediaList function
       originalGetMediaList = mediaService.getMediaList;
-      mediaService.getMediaList = () =>
-        Promise.resolve([
-          {
-            id: TestData.createObjectId("507f1f77bcf86cd799439013"),
-            media_id: "12345",
-            title: "Parent Show",
-            media_type: "tv",
-          },
-          {
-            id: TestData.createObjectId("507f1f77bcf86cd799439014"),
-            media_id: "67890",
-            title: "Child Season",
-            media_type: "season",
-            parent_show: TestData.createObjectId("507f1f77bcf86cd799439013"),
-          },
-        ]);
+      // Only set up mock for tests that don't override it
+      if (!global.skipRemoveFromListMock) {
+        mediaService.getMediaList = () =>
+          Promise.resolve([
+            {
+              id: TestData.createObjectId("507f1f77bcf86cd799439013"),
+              media_id: "12345",
+              title: "Parent Show",
+              media_type: "tv",
+            },
+            {
+              id: TestData.createObjectId("507f1f77bcf86cd799439014"),
+              media_id: "67890",
+              title: "Child Season",
+              media_type: "season",
+              parent_show: TestData.createObjectId("507f1f77bcf86cd799439013"),
+            },
+          ]);
+      }
     });
 
     afterEach(() => {
@@ -226,6 +437,201 @@ describe("Media Service", () => {
         unauthorizedUser,
       );
     });
+
+    it("should handle case when list is not found", async () => {
+      // Mock List.findOne to return null
+      modelMocks.list.findOne = () => Promise.resolve(null);
+
+      const result = await mediaService.removeFromList(
+        { id: "12345", list: "507f1f77bcf86cd799439012" },
+        mockUser,
+      );
+
+      expect(result).toBeNull(); // Should gracefully return null when list is not found
+    });
+
+    it("should map child media IDs when removing parent items", async () => {
+      const result = await mediaService.removeFromList(
+        { id: "12345", list: "507f1f77bcf86cd799439012" },
+        mockUser,
+      );
+
+      TestPatterns.testSuccess(result);
+    });
+  });
+
+  describe("getChildMedia function (via removeFromList)", () => {
+    it("should filter and map child media with parent_show relationships", async () => {
+      const parentId = TestData.createObjectId("507f1f77bcf86cd799439013");
+      const childId1 = TestData.createObjectId("507f1f77bcf86cd799439014");
+      const childId2 = TestData.createObjectId("507f1f77bcf86cd799439015");
+
+      // Use MockManager to easily set up parent-child test data
+      const testMocks = mockManager.createParentChildTestData({
+        parentId,
+        children: [
+          {
+            id: childId1,
+            media_id: "67890",
+            title: "Season 1",
+            media_type: "season",
+            parent_show: parentId,
+          },
+          {
+            id: childId2,
+            media_id: "67891",
+            title: "Season 2",
+            media_type: "season",
+            parent_show: parentId,
+          },
+          {
+            id: TestData.createObjectId("507f1f77bcf86cd799439016"),
+            media_id: "67892",
+            title: "Season from different show",
+            media_type: "season",
+            parent_show: TestData.createObjectId("507f1f77bcf86cd799439099"), // Different parent
+          },
+        ],
+        listData: mockListData,
+      });
+
+      // Apply the test-specific mocks
+      mockManager.setupTest(testMocks);
+
+      const result = await mediaService.removeFromList(
+        { id: "12345", list: "507f1f77bcf86cd799439012" },
+        mockUser,
+      );
+
+      TestPatterns.testSuccess(result);
+    });
+
+    it("should filter and map child media with parent_season relationships", async () => {
+      const parentSeasonId = TestData.createObjectId(
+        "507f1f77bcf86cd799439013",
+      );
+      const childEpisodeId1 = TestData.createObjectId(
+        "507f1f77bcf86cd799439014",
+      );
+      const childEpisodeId2 = TestData.createObjectId(
+        "507f1f77bcf86cd799439015",
+      );
+
+      mediaService.getMediaList = () =>
+        Promise.resolve([
+          {
+            id: parentSeasonId,
+            media_id: "12345",
+            title: "Season 1",
+            media_type: "season",
+            parent_show: TestData.createObjectId("507f1f77bcf86cd799439010"),
+          },
+          {
+            id: childEpisodeId1,
+            media_id: "67890",
+            title: "Episode 1",
+            media_type: "episode",
+            parent_season: parentSeasonId, // This should match the parent season
+            parent_show: TestData.createObjectId("507f1f77bcf86cd799439010"),
+          },
+          {
+            id: childEpisodeId2,
+            media_id: "67891",
+            title: "Episode 2",
+            media_type: "episode",
+            parent_season: parentSeasonId, // This should match the parent season
+            parent_show: TestData.createObjectId("507f1f77bcf86cd799439010"),
+          },
+          {
+            id: TestData.createObjectId("507f1f77bcf86cd799439016"),
+            media_id: "67892",
+            title: "Episode from different season",
+            media_type: "episode",
+            parent_season: TestData.createObjectId("507f1f77bcf86cd799439099"),
+            parent_show: TestData.createObjectId("507f1f77bcf86cd799439010"),
+          },
+        ]);
+
+      const result = await mediaService.removeFromList(
+        { id: "12345", list: "507f1f77bcf86cd799439012" },
+        mockUser,
+      );
+
+      TestPatterns.testSuccess(result);
+    });
+
+    it("should handle case with no matching children (empty filter result)", async () => {
+      const parentId = TestData.createObjectId("507f1f77bcf86cd799439013");
+
+      mediaService.getMediaList = () =>
+        Promise.resolve([
+          {
+            id: parentId,
+            media_id: "12345",
+            title: "Parent Item with No Children",
+            media_type: "movie",
+          },
+          {
+            id: TestData.createObjectId("507f1f77bcf86cd799439014"),
+            media_id: "67890",
+            title: "Unrelated Item",
+            media_type: "movie",
+            // No parent relationships - should be filtered out
+          },
+        ]);
+
+      const result = await mediaService.removeFromList(
+        { id: "12345", list: "507f1f77bcf86cd799439012" },
+        mockUser,
+      );
+
+      TestPatterns.testSuccess(result);
+    });
+
+    it("should handle mixed parent relationships (both parent_show and parent_season)", async () => {
+      const parentShowId = TestData.createObjectId("507f1f77bcf86cd799439013");
+      const seasonId = TestData.createObjectId("507f1f77bcf86cd799439014");
+      const episodeId = TestData.createObjectId("507f1f77bcf86cd799439015");
+
+      mediaService.getMediaList = () =>
+        Promise.resolve([
+          {
+            id: parentShowId,
+            media_id: "12345",
+            title: "Parent TV Show",
+            media_type: "tv",
+          },
+          {
+            id: seasonId,
+            media_id: "67890",
+            title: "Season 1",
+            media_type: "season",
+            parent_show: parentShowId, // This should match
+          },
+          {
+            id: episodeId,
+            media_id: "67891",
+            title: "Episode 1",
+            media_type: "episode",
+            parent_season: seasonId,
+            parent_show: parentShowId, // Both parent relationships present
+          },
+          {
+            id: TestData.createObjectId("507f1f77bcf86cd799439016"),
+            media_id: "67892",
+            title: "Different Show Season",
+            media_type: "season",
+            parent_show: TestData.createObjectId("507f1f77bcf86cd799439099"),
+          },
+        ]);
+
+      const result = await mediaService.removeFromList(
+        { id: "12345", list: "507f1f77bcf86cd799439012" },
+        mockUser,
+      );
+
+      TestPatterns.testSuccess(result);
+    });
   });
 
   describe("toggleWatched", () => {
@@ -236,6 +642,18 @@ describe("Media Service", () => {
         list: "507f1f77bcf86cd799439012",
       });
       TestPatterns.testSuccess(result);
+    });
+
+    it("should return null when list is not found", async () => {
+      modelMocks.list.findOne = () => Promise.resolve(null);
+
+      const result = await mediaService.toggleWatched({
+        id: "507f1f77bcf86cd799439013",
+        isWatched: true,
+        list: "507f1f77bcf86cd799439012",
+      });
+
+      expect(result).toBeNull();
     });
 
     it("should return null on error", async () => {
@@ -256,6 +674,43 @@ describe("Media Service", () => {
         id: "507f1f77bcf86cd799439013",
         list: "507f1f77bcf86cd799439012",
       });
+      TestPatterns.testSuccess(result);
+    });
+
+    it("should return null when list is not found", async () => {
+      modelMocks.list.findOne = () => Promise.resolve(null);
+
+      const result = await mediaService.hideChildren({
+        id: "507f1f77bcf86cd799439013",
+        list: "507f1f77bcf86cd799439012",
+      });
+      expect(result).toBeNull();
+    });
+
+    it("should find and update media item by matching item_id", async () => {
+      const testListData = {
+        ...mockListData,
+        media: [
+          {
+            item_id: new ObjectId("507f1f77bcf86cd799439013"),
+            isWatched: false,
+            show_children: true,
+          },
+          {
+            item_id: new ObjectId("507f1f77bcf86cd799439014"),
+            isWatched: false,
+            show_children: true,
+          },
+        ],
+      };
+
+      modelMocks.list.findOne = () => Promise.resolve(testListData);
+
+      const result = await mediaService.hideChildren({
+        id: "507f1f77bcf86cd799439013",
+        list: "507f1f77bcf86cd799439012",
+      });
+
       TestPatterns.testSuccess(result);
     });
 
@@ -286,14 +741,16 @@ describe("Media Service", () => {
       TestPatterns.testSuccess(result);
     });
 
-    it("should return null on API error", async () => {
+    it("should throw error on API error", async () => {
       global.fetch = MockFactories.createFailureFetch();
 
-      await TestPatterns.testDatabaseError(mediaService.addSeasons, {
-        id: "507f1f77bcf86cd799439013",
-        media_id: "12345",
-        list: "507f1f77bcf86cd799439012",
-      });
+      await expect(
+        mediaService.addSeasons({
+          id: "507f1f77bcf86cd799439013",
+          media_id: "12345",
+          list: "507f1f77bcf86cd799439012",
+        }),
+      ).rejects.toThrow();
     });
   });
 
@@ -314,14 +771,125 @@ describe("Media Service", () => {
       TestPatterns.testSuccess(result);
     });
 
-    it("should return null on API error", async () => {
+    it("should throw error on API error", async () => {
       global.fetch = MockFactories.createFailureFetch();
 
-      await TestPatterns.testDatabaseError(mediaService.addEpisodes, {
-        id: "507f1f77bcf86cd799439013",
-        season_number: 1,
-        show_id: "507f1f77bcf86cd799439014",
-        list: "507f1f77bcf86cd799439012",
+      await expect(
+        mediaService.addEpisodes({
+          id: "507f1f77bcf86cd799439013",
+          season_number: 1,
+          show_id: "507f1f77bcf86cd799439014",
+          list: "507f1f77bcf86cd799439012",
+        }),
+      ).rejects.toThrow();
+    });
+  });
+
+  describe("Helper Functions", () => {
+    describe("fetchFromTMDB", () => {
+      it("should fetch data from TMDB API successfully", async () => {
+        const mockData = { results: [] };
+        global.fetch = jest.fn(() =>
+          Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve(mockData),
+          }),
+        );
+
+        const result = await fetchFromTMDB("test-url");
+        expect(result).toEqual(mockData);
+        expect(global.fetch).toHaveBeenCalledWith("test-url");
+      });
+
+      it("should throw error when API request fails", async () => {
+        global.fetch = jest.fn(() =>
+          Promise.resolve({
+            ok: false,
+            statusText: "Not Found",
+          }),
+        );
+
+        await expect(fetchFromTMDB("test-url")).rejects.toThrow("Not Found");
+      });
+    });
+
+    describe("getAuthorizedList", () => {
+      it("should return list when user is authorized", async () => {
+        const mockList = { ...mockListData, user: mockUser._id };
+        modelMocks.list.findOne = () => Promise.resolve(mockList);
+
+        const result = await getAuthorizedList(mockList._id, mockUser._id);
+        expect(result).toEqual(mockList);
+      });
+
+      it("should throw error when user is not authorized", async () => {
+        const mockList = { ...mockListData, user: new ObjectId() };
+        modelMocks.list.findOne = () => Promise.resolve(mockList);
+
+        await expect(
+          getAuthorizedList(mockList._id, mockUser._id),
+        ).rejects.toThrow("Unauthorized");
+      });
+
+      it("should return null when list is not found", async () => {
+        modelMocks.list.findOne = () => Promise.resolve(null);
+
+        const result = await getAuthorizedList(new ObjectId(), mockUser._id);
+        expect(result).toBeNull();
+      });
+    });
+
+    describe("updateMediaProperty", () => {
+      it("should update media property successfully", async () => {
+        const mockList = {
+          ...mockListData,
+          media: [{ item_id: mockMediaItem._id, isWatched: false }],
+        };
+        modelMocks.list.findOne = () => Promise.resolve(mockList);
+        modelMocks.list.findOneAndUpdate = jest.fn(() =>
+          Promise.resolve(mockList),
+        );
+
+        const result = await updateMediaProperty(
+          mockList._id,
+          mockMediaItem._id,
+          { isWatched: true },
+        );
+
+        expect(result).toEqual(mockList);
+        expect(modelMocks.list.findOneAndUpdate).toHaveBeenCalled();
+      });
+
+      it("should return null when list is not found", async () => {
+        modelMocks.list.findOne = () => Promise.resolve(null);
+
+        const result = await updateMediaProperty(
+          "nonexistent",
+          mockMediaItem._id,
+          { isWatched: true },
+        );
+        expect(result).toBeNull();
+      });
+
+      it("should return null when media item is not found in list", async () => {
+        const mockList = { ...mockListData, media: [] };
+        modelMocks.list.findOne = () => Promise.resolve(mockList);
+
+        const result = await updateMediaProperty(mockList._id, new ObjectId(), {
+          isWatched: true,
+        });
+        expect(result).toBeNull();
+      });
+
+      it("should handle errors gracefully", async () => {
+        modelMocks.list.findOne = () => Promise.reject(new Error("DB error"));
+
+        const result = await updateMediaProperty(
+          mockListData._id,
+          mockMediaItem._id,
+          { isWatched: true },
+        );
+        expect(result).toBeNull();
       });
     });
   });
@@ -365,14 +933,15 @@ describe("Media Service", () => {
       });
     });
 
-    it("should return null for unauthorized user", async () => {
+    it("should throw error for unauthorized user", async () => {
       const unauthorizedUser = TestData.createUnauthorizedUser();
 
-      const result = await mediaService.addToList(
-        { id: "12345", list: "507f1f77bcf86cd799439012" },
-        unauthorizedUser,
-      );
-      expect(result).toBeNull(); // addToList catches errors and returns null
+      await expect(
+        mediaService.addToList(
+          { id: "12345", list: "507f1f77bcf86cd799439012" },
+          unauthorizedUser,
+        ),
+      ).rejects.toThrow("Unauthorized");
     });
   });
 });

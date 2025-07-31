@@ -2,6 +2,9 @@ import mongoose from "mongoose";
 
 const { ObjectId } = mongoose.Types;
 
+// Import MockManager
+import MockManager from "./testUtils/mockManager.js";
+
 // Common test data factories
 export const TestData = {
   // ObjectId factories
@@ -170,26 +173,26 @@ export const MockFactories = {
       Promise.reject(new Error(errorMessage)),
 };
 
-// Mongoose model mocking utilities
+// Mongoose model mocking utilities - now using Jest
 export const ModelMocking = {
-  // Create mongoose model mocks with default implementations
+  // Create mongoose model mocks with Jest functions
   createListModel: () => ({
-    find: () => Promise.resolve([]),
-    findOne: () => Promise.resolve(null),
-    create: () => Promise.resolve({}),
-    deleteOne: () => Promise.resolve({}),
-    findOneAndUpdate: () => Promise.resolve({}),
+    find: jest.fn(() => Promise.resolve([])),
+    findOne: jest.fn(() => Promise.resolve(null)),
+    create: jest.fn(() => Promise.resolve({})),
+    deleteOne: jest.fn(() => Promise.resolve({})),
+    findOneAndUpdate: jest.fn(() => Promise.resolve({})),
   }),
 
   createMediaModel: () => ({
-    find: () => Promise.resolve([]),
-    findOne: () => Promise.resolve(null),
-    findOneAndUpdate: () => Promise.resolve({}),
+    find: jest.fn(() => Promise.resolve([])),
+    findOne: jest.fn(() => Promise.resolve(null)),
+    findOneAndUpdate: jest.fn(() => Promise.resolve({})),
   }),
 
   createUserModel: () => ({
-    findOne: () => Promise.resolve(null),
-    create: () => Promise.resolve({}),
+    findOne: jest.fn(() => Promise.resolve(null)),
+    create: jest.fn(() => Promise.resolve({})),
   }),
 
   // Setup mongoose model mocking
@@ -214,19 +217,19 @@ export const ModelMocking = {
   },
 };
 
-// Test setup utilities
+// Test setup utilities - now with Jest support
 export const TestSetup = {
   // Setup environment and mocks
   setupTestEnvironment: () => {
     // Mock environment variables
     process.env.API_KEY = "test_api_key";
 
-    // Mock global fetch
-    global.fetch = () => Promise.resolve();
+    // Mock global fetch with Jest
+    global.fetch = jest.fn(() => Promise.resolve());
 
-    // Mock console.error
+    // Mock console.error with Jest
     const originalLogError = console.error;
-    console.error = () => {};
+    console.error = jest.fn();
 
     return { originalLogError };
   },
@@ -234,6 +237,8 @@ export const TestSetup = {
   // Restore environment
   restoreTestEnvironment: ({ originalLogError }) => {
     console.error = originalLogError;
+    // Clear all Jest mocks
+    jest.clearAllMocks();
   },
 
   // Store and restore original methods for a model
@@ -255,7 +260,7 @@ export const TestSetup = {
   },
 };
 
-// Common test patterns
+// Common test patterns - enhanced with Jest
 export const TestPatterns = {
   // Test that a function exists and is callable
   testFunctionExists: (service, functionName) => {
@@ -277,4 +282,31 @@ export const TestPatterns = {
   testSuccess: (result) => {
     expect(result).toBeDefined();
   },
+
+  // Jest-specific test patterns
+
+  // Test that a mock was called with specific arguments
+  testMockCalledWith: (mockFn, ...expectedArgs) => {
+    expect(mockFn).toHaveBeenCalledWith(...expectedArgs);
+  },
+
+  // Test that a mock was called a specific number of times
+  testMockCallCount: (mockFn, expectedCount) => {
+    expect(mockFn).toHaveBeenCalledTimes(expectedCount);
+  },
+
+  // Test that a mock function returns a specific value
+  testMockReturnValue: (mockFn, returnValue) => {
+    mockFn.mockReturnValue(returnValue);
+    expect(mockFn()).toBe(returnValue);
+  },
+
+  // Test that a mock function rejects with an error
+  testMockRejects: (mockFn, error) => {
+    mockFn.mockRejectedValue(error);
+    return expect(mockFn()).rejects.toThrow(error);
+  },
 };
+
+// Export MockManager
+export { MockManager };
