@@ -214,9 +214,7 @@ describe("List Service", () => {
         expect(true).toBe(false);
       } catch (error) {
         expect(error.name).toBe("BSONError");
-        expect(error.message).toContain(
-          "input must be a 24 character hex string",
-        );
+        expect(error.message).toContain("hex string must be 24 characters");
       }
     });
 
@@ -230,6 +228,101 @@ describe("List Service", () => {
         unauthorizedUser,
       );
       expect(result).toBeNull();
+    });
+  });
+
+  describe("Helper Functions", () => {
+    describe("getAuthorizedList", () => {
+      it("should return list when user is authorized", async () => {
+        const mockList = { ...mockListData, user: mockUser._id };
+        modelMocks.list.findOne = () => Promise.resolve(mockList);
+
+        const result = await listService.getAuthorizedList(
+          mockList._id,
+          mockUser._id,
+        );
+        expect(result).toEqual(mockList);
+      });
+
+      it("should throw error when user is not authorized", async () => {
+        const unauthorizedUserId = TestData.createObjectId(
+          "507f1f77bcf86cd799439099",
+        );
+        const mockList = { ...mockListData, user: mockUser._id };
+        modelMocks.list.findOne = () => Promise.resolve(mockList);
+
+        await expect(
+          listService.getAuthorizedList(mockList._id, unauthorizedUserId),
+        ).rejects.toThrow("Unauthorized");
+      });
+
+      it("should return null when list is not found", async () => {
+        modelMocks.list.findOne = () => Promise.resolve(null);
+
+        const result = await listService.getAuthorizedList(
+          TestData.createObjectId(),
+          mockUser._id,
+        );
+        expect(result).toBeNull();
+      });
+    });
+
+    describe("updateMediaProperty", () => {
+      const mockMediaId = TestData.createObjectId();
+
+      it("should update media property successfully", async () => {
+        const mockList = {
+          ...mockListData,
+          media: [{ item_id: mockMediaId, isWatched: false }],
+        };
+        modelMocks.list.findOne = () => Promise.resolve(mockList);
+        modelMocks.list.findOneAndUpdate = jest.fn(() =>
+          Promise.resolve(mockList),
+        );
+
+        const result = await listService.updateMediaProperty(
+          mockList._id,
+          mockMediaId,
+          { isWatched: true },
+        );
+
+        expect(result).toEqual(mockList);
+        expect(modelMocks.list.findOneAndUpdate).toHaveBeenCalled();
+      });
+
+      it("should return null when list is not found", async () => {
+        modelMocks.list.findOne = () => Promise.resolve(null);
+
+        const result = await listService.updateMediaProperty(
+          TestData.createObjectId(),
+          mockMediaId,
+          { isWatched: true },
+        );
+        expect(result).toBeNull();
+      });
+
+      it("should return null when media item is not found in list", async () => {
+        const mockList = { ...mockListData, media: [] };
+        modelMocks.list.findOne = () => Promise.resolve(mockList);
+
+        const result = await listService.updateMediaProperty(
+          mockList._id,
+          TestData.createObjectId(),
+          { isWatched: true },
+        );
+        expect(result).toBeNull();
+      });
+
+      it("should handle errors gracefully", async () => {
+        modelMocks.list.findOne = () => Promise.reject(new Error("DB error"));
+
+        const result = await listService.updateMediaProperty(
+          mockListData._id,
+          mockMediaId,
+          { isWatched: true },
+        );
+        expect(result).toBeNull();
+      });
     });
   });
 });

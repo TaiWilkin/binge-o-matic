@@ -9,8 +9,8 @@ import { buildContext } from "graphql-passport";
 import mongoose from "mongoose";
 import passport from "passport";
 
+import { logError, logInfo } from "./server/helpers/index.js";
 import schema from "./server/schema/schema.js";
-import { logError, logInfo } from "./server/utilities.js";
 
 // Create a new Express application
 const app = express();

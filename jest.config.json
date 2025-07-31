@@ -9,6 +9,9 @@
     "/node_modules/",
     "/server/__tests__/setup.js"
   ],
+  "setupFilesAfterEnv": [
+    "<rootDir>/server/__tests__/setupJest.js"
+  ],
   "collectCoverageFrom": [
     "server/**/*.js",
     "!server/**/__tests__/**",
