@@ -1,17 +1,26 @@
-import "../../models/list.js";
-import "../../models/media.js";
-import "../../models/user.js";
-
-import mongoose from "mongoose";
-
-const List = mongoose.model("list");
+import { TestSetup } from "../testUtils.js";
 
 describe("List Model", () => {
   let testList;
   let testUserId;
   let testMediaId;
+  let List;
+  let mongoose;
 
-  beforeEach(() => {
+  // Initialize database once for the entire suite
+  beforeAll(async () => {
+    await TestSetup.initializeTestOnce();
+
+    // Use dynamic imports to load models after setup
+    const mongooseModule = await import("mongoose");
+    mongoose = mongooseModule.default;
+    List = mongoose.model("list");
+  });
+
+  beforeEach(async () => {
+    // Only clear database and reset mocks, don't reinitialize
+    await TestSetup.clearDatabase();
+
     // Create test ObjectIds
     testUserId = new mongoose.Types.ObjectId();
     testMediaId = new mongoose.Types.ObjectId();
@@ -28,6 +37,10 @@ describe("List Model", () => {
         },
       ],
     });
+  });
+
+  afterEach(async () => {
+    await TestSetup.cleanupTest();
   });
 
   describe("Schema Definition", () => {

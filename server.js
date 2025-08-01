@@ -9,8 +9,9 @@ import { buildContext } from "graphql-passport";
 import mongoose from "mongoose";
 import passport from "passport";
 
-import { logError, logInfo } from "./server/helpers/index.js";
 import schema from "./server/schema/schema.js";
+
+export const isProduction = () => process.env.NODE_ENV === "production";
 
 // Create a new Express application
 const app = express();
@@ -24,7 +25,9 @@ const { MONGO_URI } = process.env;
 async function startServer() {
   try {
     await mongoose.connect(MONGO_URI);
-    logInfo("Connected to MongoDB instance.");
+    if (!isProduction()) {
+      console.log("Connected to MongoDB instance."); // eslint-disable-line no-console
+    }
 
     // Session setup
     app.use(
@@ -65,10 +68,14 @@ async function startServer() {
 
     // Start the server
     app.listen(process.env.PORT || 3001, () => {
-      logInfo("Server is running.");
+      if (!isProduction()) {
+        console.log("Server is running."); // eslint-disable-line no-console
+      }
     });
   } catch (error) {
-    logError("Error connecting to MongoDB:", error);
+    if (!isProduction()) {
+      console.error("Error connecting to MongoDB:", error); // eslint-disable-line no-console
+    }
     process.exit(1);
   }
 }

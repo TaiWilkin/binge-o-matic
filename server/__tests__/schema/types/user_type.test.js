@@ -1,16 +1,56 @@
-// Import models to register them with mongoose
-import "../../../models/index.js";
-
-import { jest } from "@jest/globals";
 import graphql from "graphql";
+import mongoose from "mongoose";
 
-import UserType from "../../../schema/types/user_type.js";
+import {
+  createList,
+  createUser,
+  MockManager,
+  restoreMockFactories,
+  setupMockFactories,
+  TestSetup,
+} from "../../testUtils.js";
 
 const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLList } = graphql;
 
+// Setup test environment and mocking
+const { originalLogError } = TestSetup.setupTestEnvironment();
+const originalModel = mongoose.model;
+const modelMocks = setupMockFactories(originalModel);
+
+// Create mock manager for easy test customization
+const mockManager = new MockManager(modelMocks);
+
+// Import UserType after mocking
+const UserType = await import("../../../schema/types/user_type.js").then(
+  (m) => m.default,
+);
+
 describe("UserType", () => {
+  // Test data
+  const mockUser = createUser();
+  const mockListData = createList();
+
   beforeEach(() => {
-    jest.clearAllMocks();
+    // Reset to default mocks before each test
+    mockManager.resetAll();
+
+    // Set up default mocks that work for most tests
+    mockManager.setupTest({
+      list: {
+        find: () => Promise.resolve([mockListData]),
+        findOne: () => Promise.resolve(mockListData),
+      },
+      user: {
+        findOne: () => Promise.resolve(mockUser),
+      },
+    });
+  });
+
+  afterAll(() => {
+    // Cleanup
+    mockManager.resetAll();
+    restoreMockFactories(originalModel);
+    TestSetup.restoreTestEnvironment({ originalLogError });
   });
 
   describe("Type Definition", () => {
@@ -71,6 +111,166 @@ describe("UserType", () => {
     it("should have a resolver for lists field", () => {
       expect(fields.lists.resolve).toBeDefined();
       expect(typeof fields.lists.resolve).toBe("function");
+    });
+  });
+
+  describe("Lists Field Resolver", () => {
+    let fields;
+    let listServiceSpy;
+
+    beforeEach(async () => {
+      fields = UserType.getFields();
+
+      // Import and spy on ListService
+      const ListServiceModule = await import("../../../services/list.js");
+      listServiceSpy = jest.spyOn(ListServiceModule.default, "fetchUserLists");
+    });
+
+    afterEach(() => {
+      if (listServiceSpy) {
+        listServiceSpy.mockRestore();
+      }
+    });
+
+    it("should call ListService.fetchUserLists with req.user", async () => {
+      const mockUser = {
+        id: "user123",
+        email: "test@example.com",
+      };
+
+      const mockLists = [
+        { id: "list1", name: "Movies", user: "user123" },
+        { id: "list2", name: "TV Shows", user: "user123" },
+      ];
+
+      const mockRequest = {
+        user: mockUser,
+      };
+
+      listServiceSpy.mockResolvedValue(mockLists);
+
+      const result = await fields.lists.resolve({}, {}, mockRequest);
+
+      expect(listServiceSpy).toHaveBeenCalledWith(mockUser);
+      expect(listServiceSpy).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(mockLists);
+    });
+
+    it("should handle undefined req.user", async () => {
+      const mockRequest = {
+        user: undefined,
+      };
+
+      listServiceSpy.mockResolvedValue([]);
+
+      const result = await fields.lists.resolve({}, {}, mockRequest);
+
+      expect(listServiceSpy).toHaveBeenCalledWith(undefined);
+      expect(result).toEqual([]);
+    });
+
+    it("should handle null req.user", async () => {
+      const mockRequest = {
+        user: null,
+      };
+
+      listServiceSpy.mockResolvedValue([]);
+
+      const result = await fields.lists.resolve({}, {}, mockRequest);
+
+      expect(listServiceSpy).toHaveBeenCalledWith(null);
+      expect(result).toEqual([]);
+    });
+
+    it("should propagate errors from ListService.fetchUserLists", async () => {
+      const mockUser = {
+        id: "user123",
+        email: "test@example.com",
+      };
+
+      const mockRequest = {
+        user: mockUser,
+      };
+
+      const mockError = new Error("List service error");
+      listServiceSpy.mockRejectedValue(mockError);
+
+      await expect(fields.lists.resolve({}, {}, mockRequest)).rejects.toThrow(
+        "List service error",
+      );
+      expect(listServiceSpy).toHaveBeenCalledWith(mockUser);
+    });
+
+    it("should pass through the exact user object from req.user", async () => {
+      const complexUser = {
+        id: "user456",
+        email: "complex@example.com",
+        customProperty: "test",
+        nestedObject: {
+          preferences: ["action", "comedy"],
+          settings: { theme: "dark" },
+        },
+      };
+
+      const mockRequest = {
+        user: complexUser,
+        session: { id: "session123" },
+        headers: { authorization: "Bearer token" },
+      };
+
+      listServiceSpy.mockResolvedValue([]);
+
+      await fields.lists.resolve({}, {}, mockRequest);
+
+      // Verify that the exact same user object reference is passed
+      expect(listServiceSpy).toHaveBeenCalledWith(complexUser);
+      expect(listServiceSpy.mock.calls[0][0]).toBe(complexUser);
+    });
+
+    it("should ignore parentValue and args parameters", async () => {
+      const mockUser = {
+        id: "user789",
+        email: "ignore@example.com",
+      };
+
+      const parentValue = {
+        someProperty: "should be ignored",
+        id: "parent123",
+      };
+
+      const args = {
+        filter: "some filter",
+        sort: "name",
+      };
+
+      const mockRequest = {
+        user: mockUser,
+      };
+
+      listServiceSpy.mockResolvedValue([]);
+
+      await fields.lists.resolve(parentValue, args, mockRequest);
+
+      // Should only be called with req.user, ignoring parentValue and args
+      expect(listServiceSpy).toHaveBeenCalledWith(mockUser);
+      expect(listServiceSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it("should handle missing req object", () => {
+      // Test edge case where req might be undefined/null
+      // This would cause an error as expected since req.user would throw
+      expect(() => fields.lists.resolve({}, {}, undefined)).toThrow(TypeError);
+    });
+
+    it("should handle req object without user property", async () => {
+      const mockRequest = {}; // req object exists but no user property
+
+      listServiceSpy.mockResolvedValue([]);
+
+      const result = await fields.lists.resolve({}, {}, mockRequest);
+
+      expect(listServiceSpy).toHaveBeenCalledWith(undefined);
+      expect(result).toEqual([]);
     });
   });
 

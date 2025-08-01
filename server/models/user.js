@@ -15,7 +15,7 @@ const UserSchema = new Schema({
 // procedure that modifies the password - the plain text password cannot be
 // derived from the salted + hashed version. See 'comparePassword' to understand
 // how this is used.
-UserSchema.pre("save", function save(next) {
+export function save(next) {
   const user = this;
   if (!user.isModified("password")) {
     return next();
@@ -32,7 +32,9 @@ UserSchema.pre("save", function save(next) {
       return next();
     });
   });
-});
+}
+
+UserSchema.pre("save", save);
 
 // We need to compare the plain text password (submitted whenever logging in)
 // with the salted + hashed version that is sitting in the database.

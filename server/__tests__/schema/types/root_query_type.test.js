@@ -1,16 +1,60 @@
-// Import models to register them with mongoose
-import "../../../models/index.js";
-
-import { jest } from "@jest/globals";
 import graphql from "graphql";
+import mongoose from "mongoose";
 
-import RootQueryType from "../../../schema/types/root_query_type.js";
+import {
+  createFailureFetch,
+  createList,
+  createMediaItem,
+  createSuccessFetch,
+  createTMDBSearchResponse,
+  MockManager,
+  restoreMockFactories,
+  setupMockFactories,
+  TestSetup,
+} from "../../testUtils.js";
 
 const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLList } = graphql;
 
+// Setup test environment and mocking
+const { originalLogError } = TestSetup.setupTestEnvironment();
+const originalModel = mongoose.model;
+const modelMocks = setupMockFactories(originalModel);
+
+// Create mock manager for easy test customization
+const mockManager = new MockManager(modelMocks);
+
+// Import RootQueryType after mocking
+const RootQueryType = await import(
+  "../../../schema/types/root_query_type.js"
+).then((m) => m.default);
+
 describe("RootQueryType", () => {
+  // Test data
+  const mockListData = createList();
+  const mockMediaItem = createMediaItem();
+
   beforeEach(() => {
-    jest.clearAllMocks();
+    // Reset to default mocks before each test
+    mockManager.resetAll();
+
+    // Set up default mocks that work for most tests
+    mockManager.setupTest({
+      list: {
+        find: () => Promise.resolve([mockListData]),
+        findOne: () => Promise.resolve(mockListData),
+      },
+      media: {
+        find: () => Promise.resolve([mockMediaItem]),
+        findOne: () => Promise.resolve(mockMediaItem),
+      },
+    });
+  });
+
+  afterAll(() => {
+    // Cleanup
+    mockManager.resetAll();
+    restoreMockFactories(originalModel);
+    TestSetup.restoreTestEnvironment({ originalLogError });
   });
 
   describe("Type Definition", () => {
@@ -83,9 +127,25 @@ describe("RootQueryType", () => {
 
   describe("Field Resolvers", () => {
     let fields;
+    let listServiceSpy;
+    let fetchListSpy;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       fields = RootQueryType.getFields();
+
+      // Import and spy on ListService
+      const ListServiceModule = await import("../../../services/list.js");
+      listServiceSpy = jest.spyOn(ListServiceModule.default, "fetchAllLists");
+      fetchListSpy = jest.spyOn(ListServiceModule.default, "fetchList");
+    });
+
+    afterEach(() => {
+      if (listServiceSpy) {
+        listServiceSpy.mockRestore();
+      }
+      if (fetchListSpy) {
+        fetchListSpy.mockRestore();
+      }
     });
 
     it("should have resolvers for all fields", () => {
@@ -116,6 +176,227 @@ describe("RootQueryType", () => {
         const result = fields.user.resolve(null, null, mockContext);
 
         expect(result).toBeUndefined();
+      });
+    });
+
+    describe("lists resolver", () => {
+      beforeEach(() => {
+        // Set up specific mocks for lists resolver tests
+        global.fetch = createSuccessFetch(createTMDBSearchResponse());
+      });
+
+      it("should call ListService.fetchAllLists with no arguments", async () => {
+        const mockLists = [
+          {
+            id: "507f1f77bcf86cd799439012",
+            name: "Movies",
+            user: "507f1f77bcf86cd799439011",
+          },
+          {
+            id: "507f1f77bcf86cd799439013",
+            name: "TV Shows",
+            user: "507f1f77bcf86cd799439014",
+          },
+        ];
+
+        listServiceSpy.mockResolvedValue(mockLists);
+
+        const result = await fields.lists.resolve();
+
+        expect(listServiceSpy).toHaveBeenCalledWith();
+        expect(listServiceSpy).toHaveBeenCalledTimes(1);
+        expect(result).toEqual(mockLists);
+      });
+
+      it("should handle empty lists response", async () => {
+        listServiceSpy.mockResolvedValue([]);
+
+        const result = await fields.lists.resolve();
+
+        expect(result).toEqual([]);
+      });
+
+      it("should propagate errors from ListService.fetchAllLists", async () => {
+        listServiceSpy.mockRejectedValue(
+          new Error("Database connection failed"),
+        );
+
+        await expect(fields.lists.resolve()).rejects.toThrow(
+          "Database connection failed",
+        );
+      });
+
+      it("should ignore parentValue, args, and context parameters", async () => {
+        const parentValue = { someProperty: "should be ignored" };
+        const args = { filter: "some filter" };
+        const context = { user: { id: "507f1f77bcf86cd799439011" } };
+
+        listServiceSpy.mockResolvedValue([]);
+
+        const result = await fields.lists.resolve(parentValue, args, context);
+        expect(listServiceSpy).toHaveBeenCalledWith();
+        expect(result).toEqual([]);
+      });
+    });
+
+    describe("list resolver", () => {
+      it("should call ListService.fetchList with args.id", async () => {
+        const mockList = {
+          id: "507f1f77bcf86cd799439012",
+          name: "My List",
+          user: "507f1f77bcf86cd799439011",
+        };
+        const args = { id: "507f1f77bcf86cd799439012" };
+
+        fetchListSpy.mockResolvedValue(mockList);
+
+        const result = await fields.list.resolve(null, args);
+
+        expect(fetchListSpy).toHaveBeenCalledWith("507f1f77bcf86cd799439012");
+        expect(result).toEqual(mockList);
+      });
+
+      it("should handle undefined args.id", async () => {
+        const args = { id: undefined };
+
+        fetchListSpy.mockResolvedValue(null);
+
+        const result = await fields.list.resolve(null, args);
+
+        expect(fetchListSpy).toHaveBeenCalledWith(undefined);
+        expect(result).toBeNull();
+      });
+
+      it("should handle null args.id", async () => {
+        const args = { id: null };
+
+        fetchListSpy.mockResolvedValue(null);
+
+        const result = await fields.list.resolve(null, args);
+
+        expect(fetchListSpy).toHaveBeenCalledWith(null);
+        expect(result).toBeNull();
+      });
+
+      it("should propagate errors from ListService.fetchList", async () => {
+        const args = { id: "507f1f77bcf86cd799439012" };
+        const mockError = new Error("List not found");
+
+        fetchListSpy.mockRejectedValue(mockError);
+
+        await expect(fields.list.resolve(null, args)).rejects.toThrow(
+          "List not found",
+        );
+      });
+
+      it("should ignore parentValue and context parameters", async () => {
+        const parentValue = { someProperty: "should be ignored" };
+        const args = { id: "507f1f77bcf86cd799439012" };
+        const context = { user: { id: "507f1f77bcf86cd799439011" } };
+
+        fetchListSpy.mockResolvedValue(null);
+
+        const result = await fields.list.resolve(parentValue, args, context);
+        expect(fetchListSpy).toHaveBeenCalledWith("507f1f77bcf86cd799439012");
+        expect(result).toBeNull();
+      });
+
+      it("should handle args with extra properties", async () => {
+        const args = {
+          id: "507f1f77bcf86cd799439012",
+          extraProperty: "should be ignored",
+          anotherProp: 42,
+        };
+
+        const mockList = { id: "507f1f77bcf86cd799439012", name: "Test List" };
+
+        fetchListSpy.mockResolvedValue(mockList);
+
+        const result = await fields.list.resolve(null, args);
+        expect(fetchListSpy).toHaveBeenCalledWith("507f1f77bcf86cd799439012");
+        expect(result).toEqual(mockList);
+      });
+    });
+
+    describe("media resolver", () => {
+      beforeEach(() => {
+        // Set up global fetch mock for media search
+        global.fetch = createSuccessFetch(createTMDBSearchResponse());
+      });
+
+      it("should call MediaService.searchMedia with destructured searchQuery", async () => {
+        const args = { searchQuery: "matrix" };
+
+        const result = await fields.media.resolve(null, args);
+
+        expect(result).toHaveLength(2); // Should return transformed TMDB response
+        expect(result[0]).toHaveProperty("title");
+        expect(result[0]).toHaveProperty("media_type");
+      });
+
+      it("should handle undefined searchQuery", async () => {
+        const args = { searchQuery: undefined };
+
+        const result = await fields.media.resolve(null, args);
+
+        expect(result).toHaveLength(2); // Default TMDB response
+      });
+
+      it("should handle null searchQuery", async () => {
+        const args = { searchQuery: null };
+
+        const result = await fields.media.resolve(null, args);
+
+        expect(result).toHaveLength(2); // Default TMDB response
+      });
+
+      it("should handle empty string searchQuery", async () => {
+        const args = { searchQuery: "" };
+
+        const result = await fields.media.resolve(null, args);
+
+        expect(result).toHaveLength(2); // Default TMDB response
+      });
+
+      it("should propagate errors from MediaService.searchMedia", async () => {
+        const args = { searchQuery: "test" };
+
+        global.fetch = createFailureFetch("API request failed");
+
+        await expect(fields.media.resolve(null, args)).rejects.toThrow(
+          "API request failed",
+        );
+      });
+
+      it("should ignore parentValue and context parameters", async () => {
+        const parentValue = { someProperty: "should be ignored" };
+        const args = { searchQuery: "avengers" };
+        const context = { user: { id: "user123" } };
+
+        const result = await fields.media.resolve(parentValue, args, context);
+
+        expect(result).toHaveLength(2); // Should return results regardless of other params
+      });
+
+      it("should handle args with extra properties using destructuring", async () => {
+        const args = {
+          searchQuery: "batman",
+          extraProperty: "should be ignored",
+          anotherProp: 42,
+        };
+
+        const result = await fields.media.resolve(null, args);
+
+        expect(result).toHaveLength(2); // Should extract searchQuery and ignore other props
+      });
+
+      it("should handle complex searchQuery strings", async () => {
+        const complexQuery = "The Dark Knight Rises 2012";
+        const args = { searchQuery: complexQuery };
+
+        const result = await fields.media.resolve(null, args);
+
+        expect(result).toHaveLength(2); // Should handle complex queries
       });
     });
   });
