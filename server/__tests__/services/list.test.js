@@ -228,7 +228,7 @@ describe("List Service", () => {
 
       await expect(
         listService.deleteList({ id: listId }, unauthorizedUser),
-      ).rejects.toThrow("Unauthorized!");
+      ).rejects.toThrow("Unauthorized");
     });
 
     it("should throw error when list is not found", async () => {
@@ -271,7 +271,19 @@ describe("List Service", () => {
 
       await expect(
         listService.editList(updates, unauthorizedUser),
-      ).rejects.toThrow("Unauthorized!");
+      ).rejects.toThrow("Unauthorized");
+    });
+
+    it("should throw error when list is not found", async () => {
+      const listId = createObjectId();
+      const updates = { id: listId, name: "Updated List" };
+
+      // Mock getAuthorizedList to return null (list not found)
+      modelMocks.list.findOne = () => Promise.resolve(null);
+
+      await expect(listService.editList(updates, mockUser)).rejects.toThrow(
+        "List not found",
+      );
     });
   });
 
@@ -319,7 +331,7 @@ describe("List Service", () => {
 
       await expect(
         listService.deleteList({ id: listId }, unauthorizedUser),
-      ).rejects.toThrow("Unauthorized!");
+      ).rejects.toThrow("Unauthorized");
     });
   });
 

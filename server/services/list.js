@@ -61,21 +61,16 @@ export async function fetchList(id) {
 }
 
 export async function deleteList({ id }, user) {
-  const list = await List.findOne({ _id: convertToObjectId(id) });
+  const list = await getAuthorizedList(id, user._id);
   if (!list) throw new Error("List not found");
-  if (!areIdsEqual(list.user, user._id)) {
-    throw new Error("Unauthorized!");
-  }
+
   await List.deleteOne({ _id: convertToObjectId(id) });
   return null;
 }
 
 export async function editList({ id, name }, user) {
-  const list = await List.findOne({ _id: convertToObjectId(id) });
-
-  if (!areIdsEqual(list.user, user._id)) {
-    throw new Error("Unauthorized!");
-  }
+  const list = await getAuthorizedList(id, user._id);
+  if (!list) throw new Error("List not found");
 
   return List.findOneAndUpdate(
     { _id: convertToObjectId(id) },
