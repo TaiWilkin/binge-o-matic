@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-import { areIdsEqual, convertToObjectId, logError } from "../helpers/index.js";
+import { areIdsEqual, convertToObjectId } from "../helpers/index.js";
 
 const List = mongoose.model("list");
 
@@ -16,98 +16,75 @@ export async function getAuthorizedList(listId, userId) {
 
 // Helper function to update a media item property in a list
 export async function updateMediaProperty(listId, itemId, propertyUpdates) {
-  try {
-    const list = await List.findOne({ _id: convertToObjectId(listId) });
-    if (!list) return null;
+  const list = await List.findOne({ _id: convertToObjectId(listId) });
+  if (!list) return null;
 
-    const updatedList = { ...list };
-    const index = list.media.findIndex((el) => areIdsEqual(el.item_id, itemId));
-    if (index === -1) return null;
+  const updatedList = { ...list };
+  const index = list.media.findIndex((el) => areIdsEqual(el.item_id, itemId));
+  if (index === -1) return null;
 
-    Object.assign(updatedList.media[index], propertyUpdates);
-    return List.findOneAndUpdate(
-      { _id: convertToObjectId(listId) },
-      updatedList,
-    );
-  } catch (e) {
-    logError(e);
-    return null;
+  Object.assign(updatedList.media[index], propertyUpdates);
+  return List.findOneAndUpdate({ _id: convertToObjectId(listId) }, updatedList);
+}
+
+export async function fetchAllLists() {
+  return await List.find().sort({ name: "desc" });
+}
+
+export async function fetchUserLists(user) {
+  return await List.find({ user: convertToObjectId(user.id) }).sort({
+    name: "desc",
+  });
+}
+
+export async function createList(name, user) {
+  // Check if a list with this name already exists for the user
+  const existingLists = await List.find({
+    user: convertToObjectId(user._id || user.id),
+    name: name,
+  });
+
+  if (existingLists.length > 0) {
+    throw new Error("A list with this name already exists.");
   }
-}
 
-function fetchAllLists() {
-  return List.find()
-    .sort({ name: "desc" })
-    .catch((e) => {
-      logError(e);
-      return null;
-    });
-}
-
-function fetchUserLists(user) {
-  return List.find({ user: convertToObjectId(user.id) })
-    .sort({ name: "desc" })
-    .catch((e) => {
-      logError(e);
-      return null;
-    });
-}
-
-function createList(name, user) {
-  return List.find({ name }).then((res) => {
-    if (res.length) {
-      throw new Error("A list with this name already exists.");
-    }
-    return List.create({ user: convertToObjectId(user.id), name });
+  // Create the new list using List.create
+  return await List.create({
+    name: name,
+    user: convertToObjectId(user._id || user.id),
+    media: [],
   });
 }
 
-function fetchList(id) {
-  return List.findOne({ _id: convertToObjectId(id) }).catch((e) => {
-    logError(e);
-    return null;
-  });
+export async function fetchList(id) {
+  return await List.findOne({ _id: convertToObjectId(id) });
 }
 
-function deleteList({ id }, user) {
-  return List.findOne({ _id: convertToObjectId(id) })
-    .then((list) => {
-      if (!areIdsEqual(list.user, user._id)) {
-        throw new Error("Unauthorized!");
-      }
-      return List.deleteOne({ _id: convertToObjectId(id) });
-    })
-    .then(() => null)
-    .catch((e) => {
-      logError(e);
-      return null;
-    });
+export async function deleteList({ id }, user) {
+  const list = await getAuthorizedList(id, user._id);
+  if (!list) throw new Error("List not found");
+
+  await List.deleteOne({ _id: convertToObjectId(id) });
+  return null;
 }
 
-function editList({ id, name }, user) {
-  return List.findOne({ _id: convertToObjectId(id) })
-    .then((list) => {
-      if (!areIdsEqual(list.user, user._id)) {
-        throw new Error("Unauthorized!");
-      }
-      return List.findOneAndUpdate(
-        { _id: convertToObjectId(id) },
-        { $set: { name } },
-      );
-    })
-    .catch((e) => {
-      logError(e);
-      return null;
-    });
+export async function editList({ id, name }, user) {
+  const list = await getAuthorizedList(id, user._id);
+  if (!list) throw new Error("List not found");
+
+  return List.findOneAndUpdate(
+    { _id: convertToObjectId(id) },
+    { $set: { name } },
+  );
 }
 
 export default {
+  getAuthorizedList,
+  updateMediaProperty,
   fetchAllLists,
   fetchUserLists,
   createList,
   fetchList,
   deleteList,
   editList,
-  getAuthorizedList,
-  updateMediaProperty,
 };

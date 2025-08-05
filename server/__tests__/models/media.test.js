@@ -1,15 +1,26 @@
-import "../../models/media.js";
-
-import mongoose from "mongoose";
-
-const Media = mongoose.model("media");
+import { TestSetup } from "../testUtils.js";
 
 describe("Media Model", () => {
   let testMedia;
   let testParentSeasonId;
   let testParentShowId;
+  let Media;
+  let mongoose;
 
-  beforeEach(() => {
+  // Initialize database once for the entire suite
+  beforeAll(async () => {
+    await TestSetup.initializeTestOnce();
+
+    // Use dynamic imports to load models after setup
+    const mongooseModule = await import("mongoose");
+    mongoose = mongooseModule.default;
+    Media = mongoose.model("media");
+  });
+
+  beforeEach(async () => {
+    // Only clear database and reset mocks, don't reinitialize
+    await TestSetup.clearDatabase();
+
     // Create test ObjectIds
     testParentSeasonId = new mongoose.Types.ObjectId();
     testParentShowId = new mongoose.Types.ObjectId();
@@ -27,6 +38,10 @@ describe("Media Model", () => {
       parent_show: testParentShowId,
       episode: "S01E01",
     });
+  });
+
+  afterEach(async () => {
+    await TestSetup.cleanupTest();
   });
 
   describe("Schema Definition", () => {

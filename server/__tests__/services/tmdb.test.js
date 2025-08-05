@@ -1,6 +1,7 @@
 import { jest } from "@jest/globals";
 
-import { fetchFromTMDB } from "../../services/tmdb.js";
+// Import service after mocking
+const { fetchFromTMDB } = await import("../../services/tmdb.js");
 
 describe("TMDB Service", () => {
   describe("fetchFromTMDB", () => {

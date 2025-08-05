@@ -1,10 +1,14 @@
-import "../../../models/media.js";
-
-import { jest } from "@jest/globals";
 import graphql from "graphql";
 import GraphQLDate from "graphql-date";
+import mongoose from "mongoose";
 
-import MediaType from "../../../schema/types/media_type.js";
+import {
+  createMediaItem,
+  MockManager,
+  restoreMockFactories,
+  setupMockFactories,
+  TestSetup,
+} from "../../testUtils.js";
 
 const {
   GraphQLObjectType,
@@ -14,9 +18,40 @@ const {
   GraphQLBoolean,
 } = graphql;
 
+// Setup test environment and mocking
+const { originalLogError } = TestSetup.setupTestEnvironment();
+const originalModel = mongoose.model;
+const modelMocks = setupMockFactories(originalModel);
+
+// Create mock manager for easy test customization
+const mockManager = new MockManager(modelMocks);
+
+// Import MediaType after mocking
+const MediaType = await import("../../../schema/types/media_type.js").then(
+  (m) => m.default,
+);
+
 describe("MediaType", () => {
+  // Test data
+  const mockMediaData = createMediaItem();
+
   beforeEach(() => {
-    jest.clearAllMocks();
+    // Reset to default mocks before each test
+    mockManager.resetAll();
+
+    // Set up default mocks that work for most tests
+    mockManager.setupTest({
+      media: {
+        findOne: () => Promise.resolve(mockMediaData),
+        find: () => Promise.resolve([mockMediaData]),
+      },
+    });
+  });
+  afterAll(() => {
+    // Cleanup
+    mockManager.resetAll();
+    restoreMockFactories(originalModel);
+    TestSetup.restoreTestEnvironment({ originalLogError });
   });
 
   describe("Type Definition", () => {

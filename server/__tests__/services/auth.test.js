@@ -3,20 +3,28 @@ import "../../models/user.js";
 import mongoose from "mongoose";
 import passport from "passport";
 
-import authService from "../../services/auth.js";
-import { MockFactories, ModelMocking } from "../testUtils.js";
+import {
+  createMockContext,
+  createMockReq,
+  setupMockFactories,
+} from "../testUtils.js";
+
+// Import service after mocking
+const authService = await import("../../services/auth.js").then(
+  (m) => m.default,
+);
 
 const User = mongoose.model("user");
 
 describe("Auth Service", () => {
   beforeEach(() => {
-    ModelMocking.setupModelMocking(mongoose.model);
+    setupMockFactories(mongoose.model);
   });
 
   describe("signup validation", () => {
     test("should throw error if email is missing", async () => {
       const password = "password123";
-      const req = MockFactories.createMockReq();
+      const req = createMockReq();
 
       await expect(authService.signup({ password, req })).rejects.toThrow(
         "You must provide an email and password.",
@@ -25,7 +33,7 @@ describe("Auth Service", () => {
 
     test("should throw error if password is missing", async () => {
       const email = "test@example.com";
-      const req = MockFactories.createMockReq();
+      const req = createMockReq();
 
       await expect(authService.signup({ email, req })).rejects.toThrow(
         "You must provide an email and password.",
@@ -33,7 +41,7 @@ describe("Auth Service", () => {
     });
 
     test("should throw error if both email and password are missing", async () => {
-      const req = MockFactories.createMockReq();
+      const req = createMockReq();
 
       await expect(authService.signup({ req })).rejects.toThrow(
         "You must provide an email and password.",
@@ -44,7 +52,7 @@ describe("Auth Service", () => {
       const email = "test@example.com";
       const password = "password123";
       const logInError = new Error("Login failed");
-      const req = MockFactories.createMockReq(null, logInError);
+      const req = createMockReq(null, logInError);
 
       // Mock User.findOne to return null (no existing user)
       const originalFindOne = User.findOne;
@@ -70,7 +78,7 @@ describe("Auth Service", () => {
     test("should successfully signup and resolve with user when req.logIn succeeds", async () => {
       const email = "newuser@example.com";
       const password = "password123";
-      const req = MockFactories.createMockReq(); // No logInError = success
+      const req = createMockReq(); // No logInError = success
       const savedUser = { id: "new-user-id", email, password };
 
       // Mock User.findOne to return null (no existing user)
@@ -96,7 +104,7 @@ describe("Auth Service", () => {
     test("should throw error if email already exists", async () => {
       const email = "existing@example.com";
       const password = "password123";
-      const req = MockFactories.createMockReq();
+      const req = createMockReq();
       const existingUser = { email, id: "123" };
 
       // Mock User.findOne to return an existing user
@@ -117,7 +125,7 @@ describe("Auth Service", () => {
   describe("login", () => {
     test("should throw error if email is missing", async () => {
       const password = "password123";
-      const context = MockFactories.createMockContext();
+      const context = createMockContext();
 
       await expect(authService.login({ password, context })).rejects.toThrow(
         "You must provide an email and password.",
@@ -126,7 +134,7 @@ describe("Auth Service", () => {
 
     test("should throw error if password is missing", async () => {
       const email = "test@example.com";
-      const context = MockFactories.createMockContext();
+      const context = createMockContext();
 
       await expect(authService.login({ email, context })).rejects.toThrow(
         "You must provide an email and password.",
@@ -134,7 +142,7 @@ describe("Auth Service", () => {
     });
 
     test("should throw error if both email and password are missing", async () => {
-      const context = MockFactories.createMockContext();
+      const context = createMockContext();
 
       await expect(authService.login({ context })).rejects.toThrow(
         "You must provide an email and password.",
@@ -145,7 +153,7 @@ describe("Auth Service", () => {
       const email = "test@example.com";
       const password = "password123";
       const testUser = { email, id: "123" };
-      const context = MockFactories.createMockContext({ user: testUser });
+      const context = createMockContext({ user: testUser });
 
       const result = await authService.login({ email, password, context });
 
@@ -155,7 +163,7 @@ describe("Auth Service", () => {
     test("should throw error for invalid credentials (null user)", async () => {
       const email = "test@example.com";
       const password = "wrongpassword";
-      const context = MockFactories.createMockContext({ user: null });
+      const context = createMockContext({ user: null });
 
       await expect(
         authService.login({ email, password, context }),
@@ -165,7 +173,7 @@ describe("Auth Service", () => {
     test("should throw error for invalid credentials (undefined user)", async () => {
       const email = "test@example.com";
       const password = "wrongpassword";
-      const context = MockFactories.createMockContext({ user: undefined });
+      const context = createMockContext({ user: undefined });
 
       await expect(
         authService.login({ email, password, context }),
@@ -177,10 +185,7 @@ describe("Auth Service", () => {
       const password = "password123";
       const testUser = { email, id: "123" };
       const loginError = new Error("Login context failed");
-      const context = MockFactories.createMockContext(
-        { user: testUser },
-        loginError,
-      );
+      const context = createMockContext({ user: testUser }, loginError);
 
       await expect(
         authService.login({ email, password, context }),
@@ -191,7 +196,7 @@ describe("Auth Service", () => {
   describe("logout", () => {
     test("should successfully logout a user", async () => {
       const testUser = { id: "123", email: "test@example.com" };
-      const req = MockFactories.createMockReq(testUser);
+      const req = createMockReq(testUser);
 
       const result = await authService.logout(req);
 
@@ -201,13 +206,13 @@ describe("Auth Service", () => {
     test("should handle logout error", async () => {
       const testUser = { id: "123", email: "test@example.com" };
       const logoutError = new Error("Logout failed");
-      const req = MockFactories.createMockReq(testUser, null, logoutError);
+      const req = createMockReq(testUser, null, logoutError);
 
       await expect(authService.logout(req)).rejects.toThrow("Logout failed");
     });
 
     test("should logout successfully without a user", async () => {
-      const req = MockFactories.createMockReq();
+      const req = createMockReq();
 
       const result = await authService.logout(req);
 

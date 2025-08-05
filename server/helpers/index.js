@@ -1,6 +1,3 @@
-// Environment helpers
-export { isProduction, logError, logInfo } from "./environment.js";
-
 // Database helpers
 export { areIdsEqual, convertToObjectId } from "./database.js";
 

@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
-const { ObjectId } = mongoose.Types;
 
 import { areIdsEqual, convertToObjectId } from "../../helpers/database.js";
+
+const { ObjectId } = mongoose.Types;
 
 describe("Database Helpers", () => {
   describe("convertToObjectId", () => {

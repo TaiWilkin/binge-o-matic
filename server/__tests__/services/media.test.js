@@ -2,18 +2,32 @@ import mongoose from "mongoose";
 const { ObjectId } = mongoose.Types;
 
 import {
-  MockFactories,
+  createFailureFetch,
+  createList,
+  createMediaIds,
+  createMediaItem,
+  createNetworkErrorFetch,
+  createObjectId,
+  createSuccessFetch,
+  createTMDBEpisodesResponse,
+  createTMDBSearchResponse,
+  createTMDBSeasonsResponse,
+  createUnauthorizedUser,
+  createUser,
   MockManager,
-  ModelMocking,
-  TestData,
-  TestPatterns,
+  restoreMockFactories,
+  setupMockFactories,
+  testAuthorizationError,
+  testDatabaseError,
+  testFunctionExists,
   TestSetup,
+  testSuccess,
 } from "../testUtils.js";
 
 // Setup test environment and mocking
 const { originalLogError } = TestSetup.setupTestEnvironment();
 const originalModel = mongoose.model;
-const modelMocks = ModelMocking.setupModelMocking(originalModel);
+const modelMocks = setupMockFactories(originalModel);
 
 // Create mock manager for easy test customization
 const mockManager = new MockManager(modelMocks);
@@ -32,9 +46,9 @@ const { getAuthorizedList, updateMediaProperty } = listService;
 
 describe("Media Service", () => {
   // Test data
-  const mockUser = TestData.createUser();
-  const mockListData = TestData.createList();
-  const mockMediaItem = TestData.createMediaItem();
+  const mockUser = createUser();
+  const mockListData = createList();
+  const mockMediaItem = createMediaItem();
 
   beforeEach(() => {
     // Reset to default mocks before each test
@@ -58,15 +72,13 @@ describe("Media Service", () => {
   afterAll(() => {
     // Cleanup
     mockManager.resetAll();
-    ModelMocking.restoreModelMocking(originalModel);
+    restoreMockFactories(originalModel);
     TestSetup.restoreTestEnvironment({ originalLogError });
   });
 
   describe("searchMedia", () => {
     beforeEach(() => {
-      global.fetch = MockFactories.createSuccessFetch(
-        TestData.createTMDBSearchResponse(),
-      );
+      global.fetch = createSuccessFetch(createTMDBSearchResponse());
     });
 
     it("should search for media and transform results", async () => {
@@ -92,7 +104,7 @@ describe("Media Service", () => {
     });
 
     it("should throw error on API failure", async () => {
-      global.fetch = MockFactories.createFailureFetch("Not Found");
+      global.fetch = createFailureFetch("Not Found");
 
       await expect(mediaService.searchMedia("bad query")).rejects.toThrow(
         "Not Found",
@@ -100,7 +112,7 @@ describe("Media Service", () => {
     });
 
     it("should throw error on network failure", async () => {
-      global.fetch = MockFactories.createNetworkErrorFetch();
+      global.fetch = createNetworkErrorFetch();
 
       await expect(mediaService.searchMedia("network fail")).rejects.toThrow(
         "Network error",
@@ -135,7 +147,7 @@ describe("Media Service", () => {
         ],
       };
 
-      global.fetch = MockFactories.createSuccessFetch(searchResponse);
+      global.fetch = createSuccessFetch(searchResponse);
       const result = await mediaService.searchMedia("test query");
 
       // Should be sorted by release_date ascending, then by media type
@@ -161,7 +173,7 @@ describe("Media Service", () => {
       };
 
       const result = await mediaService.addToList(media, mockUser);
-      TestPatterns.testSuccess(result);
+      testSuccess(result);
     });
 
     it("should throw error for unauthorized user", async () => {
@@ -222,7 +234,7 @@ describe("Media Service", () => {
 
   describe("getMediaList", () => {
     it("should transform media IDs to media objects", async () => {
-      const mediaIds = TestData.createMediaIds();
+      const mediaIds = createMediaIds();
 
       const result = await mediaService.getMediaList(mediaIds);
       expect(result).toHaveLength(1);
@@ -237,9 +249,9 @@ describe("Media Service", () => {
 
     it("should sort media by release date and type", async () => {
       const mockMultipleMedia = [
-        TestData.createMediaItem("12345", "507f1f77bcf86cd799439013"),
+        createMediaItem("12345", "507f1f77bcf86cd799439013"),
         {
-          ...TestData.createMediaItem("67890", "507f1f77bcf86cd799439014"),
+          ...createMediaItem("67890", "507f1f77bcf86cd799439014"),
           title: "TV Show 2022",
           release_date: new Date("2022-01-01"),
           media_type: "tv",
@@ -272,19 +284,19 @@ describe("Media Service", () => {
       const sameDate = new Date("2023-01-01");
       const mockMultipleMedia = [
         {
-          ...TestData.createMediaItem("12345", "507f1f77bcf86cd799439013"),
+          ...createMediaItem("12345", "507f1f77bcf86cd799439013"),
           title: "Zebra Movie", // Should come last alphabetically
           release_date: sameDate,
           media_type: "movie",
         },
         {
-          ...TestData.createMediaItem("67890", "507f1f77bcf86cd799439014"),
+          ...createMediaItem("67890", "507f1f77bcf86cd799439014"),
           title: "Apple Movie", // Should come first alphabetically
           release_date: sameDate,
           media_type: "movie",
         },
         {
-          ...TestData.createMediaItem("54321", "507f1f77bcf86cd799439015"),
+          ...createMediaItem("54321", "507f1f77bcf86cd799439015"),
           title: "Beta Movie", // Should come in middle alphabetically
           release_date: sameDate,
           media_type: "movie",
@@ -324,25 +336,25 @@ describe("Media Service", () => {
       const sameDate = new Date("2023-01-01");
       const mockMultipleMedia = [
         {
-          ...TestData.createMediaItem("12345", "507f1f77bcf86cd799439013"),
+          ...createMediaItem("12345", "507f1f77bcf86cd799439013"),
           title: "Test Episode", // episode = 3 (highest priority number)
           release_date: sameDate,
           media_type: "episode",
         },
         {
-          ...TestData.createMediaItem("67890", "507f1f77bcf86cd799439014"),
+          ...createMediaItem("67890", "507f1f77bcf86cd799439014"),
           title: "Test Movie", // movie = 0 (lowest priority number, should come first)
           release_date: sameDate,
           media_type: "movie",
         },
         {
-          ...TestData.createMediaItem("54321", "507f1f77bcf86cd799439015"),
+          ...createMediaItem("54321", "507f1f77bcf86cd799439015"),
           title: "Test Season", // season = 2
           release_date: sameDate,
           media_type: "season",
         },
         {
-          ...TestData.createMediaItem("98765", "507f1f77bcf86cd799439016"),
+          ...createMediaItem("98765", "507f1f77bcf86cd799439016"),
           title: "Test TV Show", // tv = 1
           release_date: sameDate,
           media_type: "tv",
@@ -399,17 +411,17 @@ describe("Media Service", () => {
         mediaService.getMediaList = () =>
           Promise.resolve([
             {
-              id: TestData.createObjectId("507f1f77bcf86cd799439013"),
+              id: createObjectId("507f1f77bcf86cd799439013"),
               media_id: "12345",
               title: "Parent Show",
               media_type: "tv",
             },
             {
-              id: TestData.createObjectId("507f1f77bcf86cd799439014"),
+              id: createObjectId("507f1f77bcf86cd799439014"),
               media_id: "67890",
               title: "Child Season",
               media_type: "season",
-              parent_show: TestData.createObjectId("507f1f77bcf86cd799439013"),
+              parent_show: createObjectId("507f1f77bcf86cd799439013"),
             },
           ]);
       }
@@ -425,13 +437,13 @@ describe("Media Service", () => {
         { id: "12345", list: "507f1f77bcf86cd799439012" },
         mockUser,
       );
-      TestPatterns.testSuccess(result);
+      testSuccess(result);
     });
 
     it("should throw error for unauthorized user", async () => {
-      const unauthorizedUser = TestData.createUnauthorizedUser();
+      const unauthorizedUser = createUnauthorizedUser();
 
-      await TestPatterns.testAuthorizationError(
+      await testAuthorizationError(
         mediaService.removeFromList,
         { id: "12345", list: "507f1f77bcf86cd799439012" },
         unauthorizedUser,
@@ -456,18 +468,18 @@ describe("Media Service", () => {
         mockUser,
       );
 
-      TestPatterns.testSuccess(result);
+      testSuccess(result);
     });
   });
 
   describe("getChildMedia function (via removeFromList)", () => {
     it("should filter and map child media with parent_show relationships", async () => {
-      const parentId = TestData.createObjectId("507f1f77bcf86cd799439013");
-      const childId1 = TestData.createObjectId("507f1f77bcf86cd799439014");
-      const childId2 = TestData.createObjectId("507f1f77bcf86cd799439015");
+      const parentId = createObjectId("507f1f77bcf86cd799439013");
+      const childId1 = createObjectId("507f1f77bcf86cd799439014");
+      const childId2 = createObjectId("507f1f77bcf86cd799439015");
 
       // Use MockManager to easily set up parent-child test data
-      const testMocks = mockManager.createParentChildTestData({
+      const testMocks = mockManager.createParentChildMockFactories({
         parentId,
         children: [
           {
@@ -485,11 +497,11 @@ describe("Media Service", () => {
             parent_show: parentId,
           },
           {
-            id: TestData.createObjectId("507f1f77bcf86cd799439016"),
+            id: createObjectId("507f1f77bcf86cd799439016"),
             media_id: "67892",
             title: "Season from different show",
             media_type: "season",
-            parent_show: TestData.createObjectId("507f1f77bcf86cd799439099"), // Different parent
+            parent_show: createObjectId("507f1f77bcf86cd799439099"), // Different parent
           },
         ],
         listData: mockListData,
@@ -503,19 +515,13 @@ describe("Media Service", () => {
         mockUser,
       );
 
-      TestPatterns.testSuccess(result);
+      testSuccess(result);
     });
 
     it("should filter and map child media with parent_season relationships", async () => {
-      const parentSeasonId = TestData.createObjectId(
-        "507f1f77bcf86cd799439013",
-      );
-      const childEpisodeId1 = TestData.createObjectId(
-        "507f1f77bcf86cd799439014",
-      );
-      const childEpisodeId2 = TestData.createObjectId(
-        "507f1f77bcf86cd799439015",
-      );
+      const parentSeasonId = createObjectId("507f1f77bcf86cd799439013");
+      const childEpisodeId1 = createObjectId("507f1f77bcf86cd799439014");
+      const childEpisodeId2 = createObjectId("507f1f77bcf86cd799439015");
 
       mediaService.getMediaList = () =>
         Promise.resolve([
@@ -524,7 +530,7 @@ describe("Media Service", () => {
             media_id: "12345",
             title: "Season 1",
             media_type: "season",
-            parent_show: TestData.createObjectId("507f1f77bcf86cd799439010"),
+            parent_show: createObjectId("507f1f77bcf86cd799439010"),
           },
           {
             id: childEpisodeId1,
@@ -532,7 +538,7 @@ describe("Media Service", () => {
             title: "Episode 1",
             media_type: "episode",
             parent_season: parentSeasonId, // This should match the parent season
-            parent_show: TestData.createObjectId("507f1f77bcf86cd799439010"),
+            parent_show: createObjectId("507f1f77bcf86cd799439010"),
           },
           {
             id: childEpisodeId2,
@@ -540,15 +546,15 @@ describe("Media Service", () => {
             title: "Episode 2",
             media_type: "episode",
             parent_season: parentSeasonId, // This should match the parent season
-            parent_show: TestData.createObjectId("507f1f77bcf86cd799439010"),
+            parent_show: createObjectId("507f1f77bcf86cd799439010"),
           },
           {
-            id: TestData.createObjectId("507f1f77bcf86cd799439016"),
+            id: createObjectId("507f1f77bcf86cd799439016"),
             media_id: "67892",
             title: "Episode from different season",
             media_type: "episode",
-            parent_season: TestData.createObjectId("507f1f77bcf86cd799439099"),
-            parent_show: TestData.createObjectId("507f1f77bcf86cd799439010"),
+            parent_season: createObjectId("507f1f77bcf86cd799439099"),
+            parent_show: createObjectId("507f1f77bcf86cd799439010"),
           },
         ]);
 
@@ -557,11 +563,11 @@ describe("Media Service", () => {
         mockUser,
       );
 
-      TestPatterns.testSuccess(result);
+      testSuccess(result);
     });
 
     it("should handle case with no matching children (empty filter result)", async () => {
-      const parentId = TestData.createObjectId("507f1f77bcf86cd799439013");
+      const parentId = createObjectId("507f1f77bcf86cd799439013");
 
       mediaService.getMediaList = () =>
         Promise.resolve([
@@ -572,7 +578,7 @@ describe("Media Service", () => {
             media_type: "movie",
           },
           {
-            id: TestData.createObjectId("507f1f77bcf86cd799439014"),
+            id: createObjectId("507f1f77bcf86cd799439014"),
             media_id: "67890",
             title: "Unrelated Item",
             media_type: "movie",
@@ -585,13 +591,13 @@ describe("Media Service", () => {
         mockUser,
       );
 
-      TestPatterns.testSuccess(result);
+      testSuccess(result);
     });
 
     it("should handle mixed parent relationships (both parent_show and parent_season)", async () => {
-      const parentShowId = TestData.createObjectId("507f1f77bcf86cd799439013");
-      const seasonId = TestData.createObjectId("507f1f77bcf86cd799439014");
-      const episodeId = TestData.createObjectId("507f1f77bcf86cd799439015");
+      const parentShowId = createObjectId("507f1f77bcf86cd799439013");
+      const seasonId = createObjectId("507f1f77bcf86cd799439014");
+      const episodeId = createObjectId("507f1f77bcf86cd799439015");
 
       mediaService.getMediaList = () =>
         Promise.resolve([
@@ -617,11 +623,11 @@ describe("Media Service", () => {
             parent_show: parentShowId, // Both parent relationships present
           },
           {
-            id: TestData.createObjectId("507f1f77bcf86cd799439016"),
+            id: createObjectId("507f1f77bcf86cd799439016"),
             media_id: "67892",
             title: "Different Show Season",
             media_type: "season",
-            parent_show: TestData.createObjectId("507f1f77bcf86cd799439099"),
+            parent_show: createObjectId("507f1f77bcf86cd799439099"),
           },
         ]);
 
@@ -630,7 +636,7 @@ describe("Media Service", () => {
         mockUser,
       );
 
-      TestPatterns.testSuccess(result);
+      testSuccess(result);
     });
   });
 
@@ -641,7 +647,7 @@ describe("Media Service", () => {
         isWatched: true,
         list: "507f1f77bcf86cd799439012",
       });
-      TestPatterns.testSuccess(result);
+      testSuccess(result);
     });
 
     it("should return null when list is not found", async () => {
@@ -660,7 +666,7 @@ describe("Media Service", () => {
       modelMocks.list.findOne = () =>
         Promise.reject(new Error("Database error"));
 
-      await TestPatterns.testDatabaseError(mediaService.toggleWatched, {
+      await testDatabaseError(mediaService.toggleWatched, {
         id: "507f1f77bcf86cd799439013",
         isWatched: true,
         list: "507f1f77bcf86cd799439012",
@@ -674,7 +680,7 @@ describe("Media Service", () => {
         id: "507f1f77bcf86cd799439013",
         list: "507f1f77bcf86cd799439012",
       });
-      TestPatterns.testSuccess(result);
+      testSuccess(result);
     });
 
     it("should return null when list is not found", async () => {
@@ -711,14 +717,14 @@ describe("Media Service", () => {
         list: "507f1f77bcf86cd799439012",
       });
 
-      TestPatterns.testSuccess(result);
+      testSuccess(result);
     });
 
     it("should return null on error", async () => {
       modelMocks.list.findOne = () =>
         Promise.reject(new Error("Database error"));
 
-      await TestPatterns.testDatabaseError(mediaService.hideChildren, {
+      await testDatabaseError(mediaService.hideChildren, {
         id: "507f1f77bcf86cd799439013",
         list: "507f1f77bcf86cd799439012",
       });
@@ -727,9 +733,7 @@ describe("Media Service", () => {
 
   describe("addSeasons", () => {
     beforeEach(() => {
-      global.fetch = MockFactories.createSuccessFetch(
-        TestData.createTMDBSeasonsResponse(),
-      );
+      global.fetch = createSuccessFetch(createTMDBSeasonsResponse());
     });
 
     it("should fetch and add seasons to list", async () => {
@@ -738,11 +742,11 @@ describe("Media Service", () => {
         media_id: "12345",
         list: "507f1f77bcf86cd799439012",
       });
-      TestPatterns.testSuccess(result);
+      testSuccess(result);
     });
 
     it("should throw error on API error", async () => {
-      global.fetch = MockFactories.createFailureFetch();
+      global.fetch = createFailureFetch();
 
       await expect(
         mediaService.addSeasons({
@@ -756,9 +760,7 @@ describe("Media Service", () => {
 
   describe("addEpisodes", () => {
     beforeEach(() => {
-      global.fetch = MockFactories.createSuccessFetch(
-        TestData.createTMDBEpisodesResponse(),
-      );
+      global.fetch = createSuccessFetch(createTMDBEpisodesResponse());
     });
 
     it("should fetch and add episodes to list", async () => {
@@ -768,11 +770,11 @@ describe("Media Service", () => {
         show_id: "507f1f77bcf86cd799439014",
         list: "507f1f77bcf86cd799439012",
       });
-      TestPatterns.testSuccess(result);
+      testSuccess(result);
     });
 
     it("should throw error on API error", async () => {
-      global.fetch = MockFactories.createFailureFetch();
+      global.fetch = createFailureFetch();
 
       await expect(
         mediaService.addEpisodes({
@@ -864,7 +866,7 @@ describe("Media Service", () => {
         modelMocks.list.findOne = () => Promise.resolve(null);
 
         const result = await updateMediaProperty(
-          "nonexistent",
+          new ObjectId(),
           mockMediaItem._id,
           { isWatched: true },
         );
@@ -884,12 +886,11 @@ describe("Media Service", () => {
       it("should handle errors gracefully", async () => {
         modelMocks.list.findOne = () => Promise.reject(new Error("DB error"));
 
-        const result = await updateMediaProperty(
-          mockListData._id,
-          mockMediaItem._id,
-          { isWatched: true },
-        );
-        expect(result).toBeNull();
+        await expect(
+          updateMediaProperty(mockListData._id, mockMediaItem._id, {
+            isWatched: true,
+          }),
+        ).rejects.toThrow("DB error");
       });
     });
   });
@@ -908,14 +909,14 @@ describe("Media Service", () => {
       ];
 
       expectedFunctions.forEach((functionName) => {
-        TestPatterns.testFunctionExists(mediaService, functionName);
+        testFunctionExists(mediaService, functionName);
       });
     });
   });
 
   describe("Error Handling", () => {
     it("should handle network failures gracefully", async () => {
-      global.fetch = MockFactories.createNetworkErrorFetch();
+      global.fetch = createNetworkErrorFetch();
 
       await expect(mediaService.searchMedia("test")).rejects.toThrow(
         "Network error",
@@ -926,7 +927,7 @@ describe("Media Service", () => {
       modelMocks.list.findOne = () =>
         Promise.reject(new Error("Invalid ObjectId"));
 
-      await TestPatterns.testDatabaseError(mediaService.toggleWatched, {
+      await testDatabaseError(mediaService.toggleWatched, {
         id: "507f1f77bcf86cd799439013", // Valid ObjectId format
         isWatched: true,
         list: "507f1f77bcf86cd799439012", // Valid ObjectId format
@@ -934,7 +935,7 @@ describe("Media Service", () => {
     });
 
     it("should throw error for unauthorized user", async () => {
-      const unauthorizedUser = TestData.createUnauthorizedUser();
+      const unauthorizedUser = createUnauthorizedUser();
 
       await expect(
         mediaService.addToList(

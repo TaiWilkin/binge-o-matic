@@ -5,9 +5,14 @@ import { jest } from "@jest/globals";
 import graphql from "graphql";
 import GraphQLDate from "graphql-date";
 
-import mutation from "../../schema/mutations.js";
-import schema from "../../schema/schema.js";
-import RootQueryType from "../../schema/types/root_query_type.js";
+// Import schema components dynamically
+const mutation = await import("../../schema/mutations.js").then(
+  (m) => m.default,
+);
+const schema = await import("../../schema/schema.js").then((m) => m.default);
+const RootQueryType = await import(
+  "../../schema/types/root_query_type.js"
+).then((m) => m.default);
 
 const { GraphQLSchema, GraphQLString, GraphQLID, GraphQLBoolean, GraphQLInt } =
   graphql;

@@ -1,16 +1,24 @@
 import mongoose from "mongoose";
 
 import {
-  ModelMocking,
-  TestData,
-  TestPatterns,
+  createList,
+  createObjectId,
+  createUnauthorizedUser,
+  createUser,
+  MockManager,
+  restoreMockFactories,
+  setupMockFactories,
+  testFunctionExists,
   TestSetup,
 } from "../testUtils.js";
 
 // Setup test environment and mocking
 const { originalLogError } = TestSetup.setupTestEnvironment();
 const originalModel = mongoose.model;
-const modelMocks = ModelMocking.setupModelMocking(originalModel);
+const modelMocks = setupMockFactories(originalModel);
+
+// Create mock manager for easy test customization
+const mockManager = new MockManager(modelMocks);
 
 // Import service after mocking
 const listService = await import("../../services/list.js").then(
@@ -19,29 +27,31 @@ const listService = await import("../../services/list.js").then(
 
 describe("List Service", () => {
   // Test data
-  const mockUser = TestData.createUser();
-  const mockListData = TestData.createList();
-  const mockLists = [
-    TestData.createList("List A"),
-    TestData.createList("List B"),
-  ];
+  const mockUser = createUser();
+  const mockListData = createList();
+  const mockLists = [createList("List A"), createList("List B")];
 
   beforeEach(() => {
-    // Reset model mocks with test data
-    modelMocks.list.find = () => ({
-      sort: () => ({
-        catch: () => Promise.resolve(mockLists),
-      }),
+    // Reset to default mocks before each test
+    mockManager.resetAll();
+
+    // Set up default mocks that work for most tests
+    mockManager.setupTest({
+      list: {
+        find: () => ({
+          sort: () => Promise.resolve(mockLists),
+        }),
+        findOne: () => Promise.resolve(mockListData),
+        create: () => Promise.resolve(mockListData),
+        findOneAndUpdate: () => Promise.resolve(mockListData),
+        deleteOne: () => Promise.resolve({ deletedCount: 1 }),
+      },
     });
-    modelMocks.list.findOne = () => Promise.resolve(mockListData);
-    modelMocks.list.create = () => Promise.resolve(mockListData);
-    modelMocks.list.findOneAndUpdate = () => Promise.resolve(mockListData);
-    modelMocks.list.deleteOne = () => Promise.resolve({ deletedCount: 1 });
   });
 
   afterAll(() => {
     // Cleanup
-    ModelMocking.restoreModelMocking(originalModel);
+    restoreMockFactories(originalModel);
     TestSetup.restoreTestEnvironment({ originalLogError });
   });
 
@@ -51,15 +61,14 @@ describe("List Service", () => {
       expect(result).toEqual(mockLists);
     });
 
-    it("should return null on error", async () => {
+    it("should throw error on database error", async () => {
       modelMocks.list.find = () => ({
-        sort: () => ({
-          catch: (callback) => callback(new Error("Database error")),
-        }),
+        sort: () => Promise.reject(new Error("Database error")),
       });
 
-      const result = await listService.fetchAllLists();
-      expect(result).toBeNull();
+      await expect(listService.fetchAllLists()).rejects.toThrow(
+        "Database error",
+      );
     });
   });
 
@@ -69,15 +78,14 @@ describe("List Service", () => {
       expect(result).toEqual(mockLists);
     });
 
-    it("should return null on error", async () => {
+    it("should throw error on database error", async () => {
       modelMocks.list.find = () => ({
-        sort: () => ({
-          catch: (callback) => callback(new Error("Database error")),
-        }),
+        sort: () => Promise.reject(new Error("Database error")),
       });
 
-      const result = await listService.fetchUserLists(mockUser);
-      expect(result).toBeNull();
+      await expect(listService.fetchUserLists(mockUser)).rejects.toThrow(
+        "Database error",
+      );
     });
   });
 
@@ -94,7 +102,7 @@ describe("List Service", () => {
 
     it("should throw error when list name already exists", async () => {
       const listName = "Existing List";
-      const existingList = TestData.createList(listName);
+      const existingList = createList(listName);
 
       // Mock existing list found
       modelMocks.list.find = () => Promise.resolve([existingList]);
@@ -103,31 +111,102 @@ describe("List Service", () => {
         "A list with this name already exists.",
       );
     });
+
+    it("should use user._id when both _id and id are present", async () => {
+      const listName = "Test List";
+      const userWithBothIds = {
+        _id: createObjectId("507f1f77bcf86cd799439011"),
+        id: "different-id-string",
+        email: "test@example.com",
+      };
+
+      // Mock no existing lists
+      modelMocks.list.find = () => Promise.resolve([]);
+
+      // Capture the arguments passed to List.create
+      let createArgs;
+      modelMocks.list.create = (args) => {
+        createArgs = args;
+        return Promise.resolve(mockListData);
+      };
+
+      await listService.createList(listName, userWithBothIds);
+
+      // Verify that user._id was used (not user.id)
+      expect(createArgs.user).toEqual(userWithBothIds._id);
+    });
+
+    it("should use user.id when _id is not present", async () => {
+      const listName = "Test List";
+      const userWithOnlyId = {
+        id: "507f1f77bcf86cd799439011",
+        email: "test@example.com",
+      };
+
+      // Mock no existing lists
+      modelMocks.list.find = () => Promise.resolve([]);
+
+      // Capture the arguments passed to List.create
+      let createArgs;
+      modelMocks.list.create = (args) => {
+        createArgs = args;
+        return Promise.resolve(mockListData);
+      };
+
+      await listService.createList(listName, userWithOnlyId);
+
+      // Verify that user.id was used and converted to ObjectId
+      expect(createArgs.user).toEqual(createObjectId(userWithOnlyId.id));
+    });
+
+    it("should handle user._id being null and fallback to user.id", async () => {
+      const listName = "Test List";
+      const userWithNullId = {
+        _id: null,
+        id: "507f1f77bcf86cd799439011",
+        email: "test@example.com",
+      };
+
+      // Mock no existing lists
+      modelMocks.list.find = () => Promise.resolve([]);
+
+      // Capture the arguments passed to List.create
+      let createArgs;
+      modelMocks.list.create = (args) => {
+        createArgs = args;
+        return Promise.resolve(mockListData);
+      };
+
+      await listService.createList(listName, userWithNullId);
+
+      // Verify that user.id was used when _id is null
+      expect(createArgs.user).toEqual(createObjectId(userWithNullId.id));
+    });
   });
 
   describe("fetchList", () => {
     it("should fetch list by id", async () => {
-      const listId = TestData.createObjectId();
+      const listId = createObjectId();
 
       const result = await listService.fetchList(listId);
       expect(result).toEqual(mockListData);
     });
 
-    it("should return null on error", async () => {
-      modelMocks.list.findOne = () => ({
-        catch: (callback) => callback(new Error("Database error")),
-      });
+    it("should throw error on database error", async () => {
+      modelMocks.list.findOne = () =>
+        Promise.reject(new Error("Database error"));
 
-      const result = await listService.fetchList(TestData.createObjectId());
-      expect(result).toBeNull();
+      await expect(listService.fetchList(createObjectId())).rejects.toThrow(
+        "Database error",
+      );
     });
   });
 
   describe("deleteList", () => {
     it("should return null when authorized", async () => {
-      const listId = TestData.createObjectId();
+      const listId = createObjectId();
       const mockList = {
-        ...TestData.createList(),
+        ...createList(),
         user: mockUser._id,
       };
 
@@ -137,30 +216,39 @@ describe("List Service", () => {
       expect(result).toBeNull();
     });
 
-    it("should return null on authorization error", async () => {
-      const listId = TestData.createObjectId();
-      const unauthorizedUser = TestData.createUnauthorizedUser();
+    it("should throw unauthorized error", async () => {
+      const listId = createObjectId();
+      const unauthorizedUser = createUnauthorizedUser();
       const mockList = {
-        ...TestData.createList(),
+        ...createList(),
         user: mockUser._id, // Different user
       };
 
       modelMocks.list.findOne = () => Promise.resolve(mockList);
 
-      const result = await listService.deleteList(
-        { id: listId },
-        unauthorizedUser,
-      );
-      expect(result).toBeNull(); // Service catches error and returns null
+      await expect(
+        listService.deleteList({ id: listId }, unauthorizedUser),
+      ).rejects.toThrow("Unauthorized");
+    });
+
+    it("should throw error when list is not found", async () => {
+      const listId = createObjectId();
+
+      // Mock that no list is found
+      modelMocks.list.findOne = () => Promise.resolve(null);
+
+      await expect(
+        listService.deleteList({ id: listId }, mockUser),
+      ).rejects.toThrow("List not found");
     });
   });
 
   describe("editList", () => {
     it("should handle edit operation", async () => {
-      const listId = TestData.createObjectId();
+      const listId = createObjectId();
       const updates = { id: listId, name: "Updated List" };
       const mockList = {
-        ...TestData.createList(),
+        ...createList(),
         user: mockUser._id,
       };
 
@@ -170,19 +258,32 @@ describe("List Service", () => {
       expect(result).toEqual(mockListData);
     });
 
-    it("should return null on authorization error", async () => {
-      const listId = TestData.createObjectId();
+    it("should throw unauthorized error", async () => {
+      const listId = createObjectId();
       const updates = { id: listId, name: "Updated List" };
-      const unauthorizedUser = TestData.createUnauthorizedUser();
+      const unauthorizedUser = createUnauthorizedUser();
       const mockList = {
-        ...TestData.createList(),
+        ...createList(),
         user: mockUser._id, // Different user
       };
 
       modelMocks.list.findOne = () => Promise.resolve(mockList);
 
-      const result = await listService.editList(updates, unauthorizedUser);
-      expect(result).toBeNull(); // Service catches error and returns null
+      await expect(
+        listService.editList(updates, unauthorizedUser),
+      ).rejects.toThrow("Unauthorized");
+    });
+
+    it("should throw error when list is not found", async () => {
+      const listId = createObjectId();
+      const updates = { id: listId, name: "Updated List" };
+
+      // Mock getAuthorizedList to return null (list not found)
+      modelMocks.list.findOne = () => Promise.resolve(null);
+
+      await expect(listService.editList(updates, mockUser)).rejects.toThrow(
+        "List not found",
+      );
     });
   });
 
@@ -198,7 +299,7 @@ describe("List Service", () => {
       ];
 
       expectedFunctions.forEach((functionName) => {
-        TestPatterns.testFunctionExists(listService, functionName);
+        testFunctionExists(listService, functionName);
       });
     });
   });
@@ -218,16 +319,19 @@ describe("List Service", () => {
       }
     });
 
-    it("should handle user authorization checks", async () => {
-      const unauthorizedUser = TestData.createUnauthorizedUser();
-      const listId = TestData.createObjectId();
+    it("should throw authorization errors", async () => {
+      const listId = createObjectId();
+      const unauthorizedUser = createUnauthorizedUser();
+      const mockList = {
+        ...createList(),
+        user: mockUser._id, // Different user
+      };
 
-      // The service will catch the authorization error and return null
-      const result = await listService.deleteList(
-        { id: listId },
-        unauthorizedUser,
-      );
-      expect(result).toBeNull();
+      modelMocks.list.findOne = () => Promise.resolve(mockList);
+
+      await expect(
+        listService.deleteList({ id: listId }, unauthorizedUser),
+      ).rejects.toThrow("Unauthorized");
     });
   });
 
@@ -245,9 +349,7 @@ describe("List Service", () => {
       });
 
       it("should throw error when user is not authorized", async () => {
-        const unauthorizedUserId = TestData.createObjectId(
-          "507f1f77bcf86cd799439099",
-        );
+        const unauthorizedUserId = createObjectId("507f1f77bcf86cd799439099");
         const mockList = { ...mockListData, user: mockUser._id };
         modelMocks.list.findOne = () => Promise.resolve(mockList);
 
@@ -260,7 +362,7 @@ describe("List Service", () => {
         modelMocks.list.findOne = () => Promise.resolve(null);
 
         const result = await listService.getAuthorizedList(
-          TestData.createObjectId(),
+          createObjectId(),
           mockUser._id,
         );
         expect(result).toBeNull();
@@ -268,7 +370,7 @@ describe("List Service", () => {
     });
 
     describe("updateMediaProperty", () => {
-      const mockMediaId = TestData.createObjectId();
+      const mockMediaId = createObjectId();
 
       it("should update media property successfully", async () => {
         const mockList = {
@@ -294,7 +396,7 @@ describe("List Service", () => {
         modelMocks.list.findOne = () => Promise.resolve(null);
 
         const result = await listService.updateMediaProperty(
-          TestData.createObjectId(),
+          createObjectId(),
           mockMediaId,
           { isWatched: true },
         );
@@ -307,18 +409,7 @@ describe("List Service", () => {
 
         const result = await listService.updateMediaProperty(
           mockList._id,
-          TestData.createObjectId(),
-          { isWatched: true },
-        );
-        expect(result).toBeNull();
-      });
-
-      it("should handle errors gracefully", async () => {
-        modelMocks.list.findOne = () => Promise.reject(new Error("DB error"));
-
-        const result = await listService.updateMediaProperty(
-          mockListData._id,
-          mockMediaId,
+          createObjectId(),
           { isWatched: true },
         );
         expect(result).toBeNull();

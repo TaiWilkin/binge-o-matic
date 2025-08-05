@@ -1,16 +1,59 @@
-// Import models to register them with mongoose
-import "../../../models/index.js";
-
-import { jest } from "@jest/globals";
 import graphql from "graphql";
+import mongoose from "mongoose";
 
-import ListType from "../../../schema/types/list_type.js";
+import {
+  createList,
+  createMediaItem,
+  createSuccessFetch,
+  createTMDBSearchResponse,
+  MockManager,
+  restoreMockFactories,
+  setupMockFactories,
+  TestSetup,
+} from "../../testUtils.js";
 
 const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLList } = graphql;
 
+// Setup test environment and mocking
+const { originalLogError } = TestSetup.setupTestEnvironment();
+const originalModel = mongoose.model;
+const modelMocks = setupMockFactories(originalModel);
+
+// Create mock manager for easy test customization
+const mockManager = new MockManager(modelMocks);
+
+// Import ListType after mocking
+const ListType = await import("../../../schema/types/list_type.js").then(
+  (m) => m.default,
+);
+
 describe("ListType", () => {
+  // Test data
+  const mockListData = createList();
+  const mockMediaItem = createMediaItem();
+
   beforeEach(() => {
-    jest.clearAllMocks();
+    // Reset to default mocks before each test
+    mockManager.resetAll();
+
+    // Set up default mocks that work for most tests
+    mockManager.setupTest({
+      list: {
+        find: () => Promise.resolve([mockListData]),
+        findOne: () => Promise.resolve(mockListData),
+      },
+      media: {
+        find: () => Promise.resolve([mockMediaItem]),
+        findOne: () => Promise.resolve(mockMediaItem),
+      },
+    });
+  });
+
+  afterAll(() => {
+    // Cleanup
+    mockManager.resetAll();
+    restoreMockFactories(originalModel);
+    TestSetup.restoreTestEnvironment({ originalLogError });
   });
 
   describe("Type Definition", () => {
@@ -80,6 +123,142 @@ describe("ListType", () => {
     it("should have a resolver for media field", () => {
       expect(fields.media.resolve).toBeDefined();
       expect(typeof fields.media.resolve).toBe("function");
+    });
+  });
+
+  describe("Media Field Resolver", () => {
+    let fields;
+    let mediaServiceSpy;
+
+    beforeEach(async () => {
+      fields = ListType.getFields();
+
+      // Set up fetch mock for any external API calls
+      global.fetch = createSuccessFetch(createTMDBSearchResponse());
+
+      // Import and spy on MediaService
+      const MediaServiceModule = await import("../../../services/media.js");
+      mediaServiceSpy = jest.spyOn(MediaServiceModule.default, "getMediaList");
+    });
+
+    afterEach(() => {
+      if (mediaServiceSpy) {
+        mediaServiceSpy.mockRestore();
+      }
+    });
+
+    it("should call MediaService.getMediaList with parentValue.media", async () => {
+      const mockMediaArray = [
+        { item_id: "507f1f77bcf86cd799439013", isWatched: false },
+        { item_id: "507f1f77bcf86cd799439014", isWatched: true },
+      ];
+
+      const mockTransformedMedia = [
+        {
+          id: "507f1f77bcf86cd799439013",
+          title: "Movie 1",
+          media_type: "movie",
+          isWatched: false,
+        },
+        {
+          id: "507f1f77bcf86cd799439014",
+          title: "Movie 2",
+          media_type: "tv",
+          isWatched: true,
+        },
+      ];
+
+      const parentValue = {
+        id: "507f1f77bcf86cd799439012",
+        name: "My List",
+        media: mockMediaArray,
+      };
+
+      mediaServiceSpy.mockResolvedValue(mockTransformedMedia);
+
+      const result = await fields.media.resolve(parentValue);
+
+      expect(mediaServiceSpy).toHaveBeenCalledWith(mockMediaArray);
+      expect(result).toEqual(mockTransformedMedia);
+    });
+
+    it("should handle empty media array", async () => {
+      const parentValue = {
+        id: "507f1f77bcf86cd799439012",
+        name: "Empty List",
+        media: [],
+      };
+
+      mediaServiceSpy.mockResolvedValue([]);
+
+      const result = await fields.media.resolve(parentValue);
+
+      expect(mediaServiceSpy).toHaveBeenCalledWith([]);
+      expect(result).toEqual([]);
+    });
+
+    it("should handle undefined media array", async () => {
+      const parentValue = {
+        id: "507f1f77bcf86cd799439012",
+        name: "List without media",
+        media: undefined,
+      };
+
+      mediaServiceSpy.mockResolvedValue([]);
+
+      const result = await fields.media.resolve(parentValue);
+
+      expect(mediaServiceSpy).toHaveBeenCalledWith(undefined);
+      expect(result).toEqual([]);
+    });
+
+    it("should propagate errors from MediaService.getMediaList", async () => {
+      const mockMediaArray = [
+        { item_id: "507f1f77bcf86cd799439013", isWatched: false },
+      ];
+      const parentValue = {
+        id: "507f1f77bcf86cd799439012",
+        name: "My List",
+        media: mockMediaArray,
+      };
+
+      const mockError = new Error("Database error");
+      mediaServiceSpy.mockRejectedValue(mockError);
+
+      await expect(fields.media.resolve(parentValue)).rejects.toThrow(
+        "Database error",
+      );
+    });
+
+    it("should pass through the exact media array from parentValue", async () => {
+      const specificMediaArray = [
+        {
+          item_id: "507f1f77bcf86cd799439015",
+          isWatched: true,
+          customProperty: "test",
+        },
+      ];
+
+      const parentValue = {
+        id: "507f1f77bcf86cd799439012",
+        name: "My List",
+        media: specificMediaArray,
+      };
+
+      const mockResult = [
+        {
+          id: "507f1f77bcf86cd799439015",
+          title: "Specific Movie",
+          isWatched: true,
+        },
+      ];
+
+      mediaServiceSpy.mockResolvedValue(mockResult);
+
+      const result = await fields.media.resolve(parentValue);
+
+      expect(mediaServiceSpy).toHaveBeenCalledWith(specificMediaArray);
+      expect(result).toEqual(mockResult);
     });
   });
 

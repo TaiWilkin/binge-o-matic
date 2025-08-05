@@ -1,11 +1,12 @@
 import mongoose from "mongoose";
-const { ObjectId } = mongoose.Types;
 
 import {
   compareMedia,
   filterOutDuplicateItems,
   getChildMediaIds,
 } from "../../helpers/media.js";
+
+const { ObjectId } = mongoose.Types;
 
 describe("Media Helpers", () => {
   describe("compareMedia", () => {
