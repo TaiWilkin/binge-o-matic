@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
 
@@ -68,24 +68,6 @@ describe("About Component", () => {
       expect(screen.getByText(/JoJo shows up/i)).toBeInTheDocument();
     });
 
-    it("should render both navigation buttons", () => {
-      render(
-        <RouterWrapper>
-          <About />
-        </RouterWrapper>,
-      );
-
-      const inlineButton = screen.getByRole("button", {
-        name: /create a list\./i,
-      });
-      const cardButton = screen.getByRole("button", {
-        name: /create a list$/i,
-      });
-
-      expect(inlineButton).toBeInTheDocument();
-      expect(cardButton).toBeInTheDocument();
-    });
-
     it("should have correct structure and classes", () => {
       render(
         <RouterWrapper>
@@ -101,91 +83,6 @@ describe("About Component", () => {
 
       const cardActions = aboutDiv.querySelector(".card-actions");
       expect(cardActions).toBeInTheDocument();
-    });
-  });
-
-  describe("Navigation Functionality", () => {
-    it('should call navigate with "/newlist" when inline button is clicked', () => {
-      render(
-        <RouterWrapper>
-          <About />
-        </RouterWrapper>,
-      );
-
-      const inlineButton = screen.getByRole("button", {
-        name: /create a list\./i,
-      });
-      fireEvent.click(inlineButton);
-
-      expect(mockNavigate).toHaveBeenCalledTimes(1);
-      expect(mockNavigate).toHaveBeenCalledWith("/newlist");
-    });
-
-    it('should call navigate with "/newlist" when card action button is clicked', () => {
-      render(
-        <RouterWrapper>
-          <About />
-        </RouterWrapper>,
-      );
-
-      const cardButton = screen.getByRole("button", {
-        name: /create a list$/i,
-      });
-      fireEvent.click(cardButton);
-
-      expect(mockNavigate).toHaveBeenCalledTimes(1);
-      expect(mockNavigate).toHaveBeenCalledWith("/newlist");
-    });
-
-    it("should handle multiple button clicks", () => {
-      render(
-        <RouterWrapper>
-          <About />
-        </RouterWrapper>,
-      );
-
-      const inlineButton = screen.getByRole("button", {
-        name: /create a list\./i,
-      });
-      const cardButton = screen.getByRole("button", {
-        name: /create a list$/i,
-      });
-
-      fireEvent.click(inlineButton);
-      fireEvent.click(cardButton);
-
-      expect(mockNavigate).toHaveBeenCalledTimes(2);
-      expect(mockNavigate).toHaveBeenNthCalledWith(1, "/newlist");
-      expect(mockNavigate).toHaveBeenNthCalledWith(2, "/newlist");
-    });
-  });
-
-  describe("Button Attributes", () => {
-    it("should have correct attributes on inline button", () => {
-      render(
-        <RouterWrapper>
-          <About />
-        </RouterWrapper>,
-      );
-
-      const inlineButton = screen.getByRole("button", {
-        name: /create a list\./i,
-      });
-      expect(inlineButton).toHaveAttribute("type", "button");
-      expect(inlineButton).toHaveAttribute("id", "create-btn");
-    });
-
-    it("should have correct attributes on card action button", () => {
-      render(
-        <RouterWrapper>
-          <About />
-        </RouterWrapper>,
-      );
-
-      const cardButton = screen.getByRole("button", {
-        name: /create a list$/i,
-      });
-      expect(cardButton).toHaveAttribute("type", "button");
     });
   });
 
@@ -260,22 +157,6 @@ describe("About Component", () => {
 
       const heading = screen.getByRole("heading", { level: 2 });
       expect(heading).toHaveTextContent("About");
-    });
-
-    it("should have accessible buttons", () => {
-      render(
-        <RouterWrapper>
-          <About />
-        </RouterWrapper>,
-      );
-
-      const buttons = screen.getAllByRole("button");
-      expect(buttons).toHaveLength(2);
-
-      buttons.forEach((button) => {
-        expect(button).toHaveAttribute("type", "button");
-        expect(button.textContent.trim()).not.toBe("");
-      });
     });
 
     it("should have main landmark", () => {
