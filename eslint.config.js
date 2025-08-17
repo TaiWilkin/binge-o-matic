@@ -8,7 +8,12 @@ export default [
 
   // Test files configuration
   {
-    files: ["**/__tests__/**/*.js"],
+    files: [
+      "**/__tests__/**/*.js",
+      "**/__tests__/**/*.jsx",
+      "**/*.test.js",
+      "**/*.test.jsx",
+    ],
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "module",

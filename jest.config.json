@@ -1,41 +1,41 @@
 {
-  "testEnvironment": "node",
-  "roots": ["<rootDir>/server", "<rootDir>/client"],
-  "testMatch": [
-    "**/__tests__/**/*.test.js",
-    "**/?(*.)+(spec|test).js"
-  ],
-  "testPathIgnorePatterns": [
-    "/node_modules/",
-    "/server/__tests__/setup.js",
-    "/client/node_modules/"
-  ],
-  "setupFilesAfterEnv": [
-    "<rootDir>/server/__tests__/setupJest.js"
-  ],
-  "collectCoverageFrom": [
-    "server/**/*.js",
-    "client/src/**/*.js",
-    "client/src/**/*.jsx",
-    "!server/**/__tests__/**",
-    "!client/**/__tests__/**",
-    "!server/node_modules/**",
-    "!client/node_modules/**"
+  "projects": [
+    {
+      "displayName": "server",
+      "testEnvironment": "node",
+      "testMatch": ["<rootDir>/server/**/*.test.js"],
+      "setupFilesAfterEnv": ["<rootDir>/server/__tests__/setupJest.js"],
+      "transformIgnorePatterns": ["<rootDir>/server/.*\\.js$"],
+      "collectCoverageFrom": [
+        "server/**/*.js",
+        "!server/**/__tests__/**/*.js",
+        "!server/**/*test*.js", 
+        "!server/**/test*.js",
+        "!server/**/*Utils.js",
+        "!server/**/*utils.js",
+        "!**/testUtils.js",
+        "!server/node_modules/**"
+      ]
+    },
+    {
+      "displayName": "client",
+      "testEnvironment": "jsdom",
+      "testMatch": ["<rootDir>/client/**/*.test.js", "<rootDir>/client/**/*.test.jsx"],
+      "setupFilesAfterEnv": ["<rootDir>/client/__tests__/setupTests.js"],
+      "transform": {
+        "^.+\\.(js|jsx)$": "babel-jest"
+      },
+      "collectCoverageFrom": [
+        "client/src/**/*.js",
+        "client/src/**/*.jsx",
+        "!client/**/__tests__/**",
+        "!client/node_modules/**"
+      ]
+    }
   ],
   "coverageDirectory": "coverage",
   "coverageReporters": ["text", "lcov", "html"],
   "verbose": true,
   "forceExit": true,
-  "detectOpenHandles": true,
-  "globals": {
-    "__DEV__": true
-  },
-  "injectGlobals": true,
-  "transform": {
-    "^.+\\.jsx$": "babel-jest",
-    "^.+/client/.*\\.js$": "babel-jest"
-  },
-  "transformIgnorePatterns": [
-    "server/.*\\.js$"
-  ]
+  "detectOpenHandles": true
 }
