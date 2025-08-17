@@ -31,5 +31,11 @@
     "__DEV__": true
   },
   "injectGlobals": true,
-  "transform": {}
+  "transform": {
+    "^.+\\.jsx$": "babel-jest",
+    "^.+/client/.*\\.js$": "babel-jest"
+  },
+  "transformIgnorePatterns": [
+    "server/.*\\.js$"
+  ]
 }

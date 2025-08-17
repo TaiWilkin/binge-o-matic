@@ -32,7 +32,10 @@
     "heroku-postbuild": "cd client && npm install && npm run build"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.28.3",
+    "@babel/preset-react": "^7.27.1",
     "@eslint/js": "^9.32.0",
+    "babel-jest": "^29.7.0",
     "concurrently": "^7.6.0",
     "eslint": "^8.38.0",
     "eslint-plugin-prettier": "^5.5.3",

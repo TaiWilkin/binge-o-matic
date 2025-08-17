@@ -1,5 +1,6 @@
-import { describe, it, expect } from "@jest/globals";
+import { describe, expect, it } from "@jest/globals";
 import { print } from "graphql";
+
 import CurrentUser from "../../src/queries/CurrentUser.js";
 
 describe("CurrentUser Query", () => {
