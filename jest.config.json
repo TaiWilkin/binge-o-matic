@@ -1,21 +1,26 @@
 {
   "testEnvironment": "node",
-  "roots": ["<rootDir>/server"],
+  "roots": ["<rootDir>/server", "<rootDir>/client"],
   "testMatch": [
     "**/__tests__/**/*.test.js",
     "**/?(*.)+(spec|test).js"
   ],
   "testPathIgnorePatterns": [
     "/node_modules/",
-    "/server/__tests__/setup.js"
+    "/server/__tests__/setup.js",
+    "/client/node_modules/"
   ],
   "setupFilesAfterEnv": [
     "<rootDir>/server/__tests__/setupJest.js"
   ],
   "collectCoverageFrom": [
     "server/**/*.js",
+    "client/src/**/*.js",
+    "client/src/**/*.jsx",
     "!server/**/__tests__/**",
-    "!server/node_modules/**"
+    "!client/**/__tests__/**",
+    "!server/node_modules/**",
+    "!client/node_modules/**"
   ],
   "coverageDirectory": "coverage",
   "coverageReporters": ["text", "lcov", "html"],
