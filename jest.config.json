@@ -5,17 +5,7 @@
       "testEnvironment": "node",
       "testMatch": ["<rootDir>/server/**/*.test.js"],
       "setupFilesAfterEnv": ["<rootDir>/server/__tests__/setupJest.js"],
-      "transformIgnorePatterns": ["<rootDir>/server/.*\\.js$"],
-      "collectCoverageFrom": [
-        "server/**/*.js",
-        "!server/**/__tests__/**/*.js",
-        "!server/**/*test*.js", 
-        "!server/**/test*.js",
-        "!server/**/*Utils.js",
-        "!server/**/*utils.js",
-        "!**/testUtils.js",
-        "!server/node_modules/**"
-      ]
+      "transformIgnorePatterns": ["<rootDir>/server/.*\\.js$"]
     },
     {
       "displayName": "client",
@@ -24,14 +14,18 @@
       "setupFilesAfterEnv": ["<rootDir>/client/__tests__/setupTests.js"],
       "transform": {
         "^.+\\.(js|jsx)$": "babel-jest"
-      },
-      "collectCoverageFrom": [
-        "client/src/**/*.js",
-        "client/src/**/*.jsx",
-        "!client/**/__tests__/**",
-        "!client/node_modules/**"
-      ]
+      }
     }
+  ],
+  "collectCoverageFrom": [
+    "client/src/**/*.{js,jsx}",
+    "server/**/*.js",
+    "!**/__tests__/**",
+    "!**/node_modules/**",
+    "!server/**/*test*.js",
+    "!server/**/*Utils.js",
+    "!server/**/*utils.js",
+    "!**/testUtils.js"
   ],
   "coverageDirectory": "coverage",
   "coverageReporters": ["text", "lcov", "html"],
