@@ -1,7 +1,14 @@
 import { MockedProvider } from "@apollo/client/testing";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  act,
+} from "@testing-library/react";
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
+import { GraphQLError } from "graphql";
 
 import DELETE_LIST_MUTATION from "../../src/mutations/DeleteList";
 import EDIT_LIST_MUTATION from "../../src/mutations/EditList";
@@ -42,6 +49,41 @@ const defaultQueryMock = {
     },
   },
 };
+
+// This mock should be called after the mutation completes
+const refetchQueryMock = {
+  request: {
+    query: LIST_QUERY,
+    variables: { id: "123" },
+  },
+  result: {
+    data: {
+      user: { id: "user123" },
+      list: {
+        id: "123",
+        name: "Refetch Test",
+        user: "user123",
+        media: [
+          {
+            id: "media1",
+            media_id: "tmdb123",
+            title: "Test Movie",
+            release_date: "2023-01-01",
+            poster_path: "/test.jpg",
+            media_type: "movie",
+            number: null,
+            isWatched: false,
+            parent_show: null,
+            parent_season: null,
+            episode: null,
+            show_children: [],
+          },
+        ],
+      },
+    },
+  },
+};
+
 // Mock react-router-dom hooks
 const mockNavigate = jest.fn();
 const mockParams = { id: "123" };
@@ -236,40 +278,6 @@ describe("Edit Component", () => {
         },
       };
 
-      // This mock should be called after the mutation completes
-      const refetchQueryMock = {
-        request: {
-          query: LIST_QUERY,
-          variables: { id: "123" },
-        },
-        result: {
-          data: {
-            user: { id: "user123" },
-            list: {
-              id: "123",
-              name: "Refetch Test",
-              user: "user123",
-              media: [
-                {
-                  id: "media1",
-                  media_id: "tmdb123",
-                  title: "Test Movie",
-                  release_date: "2023-01-01",
-                  poster_path: "/test.jpg",
-                  media_type: "movie",
-                  number: null,
-                  isWatched: false,
-                  parent_show: null,
-                  parent_season: null,
-                  episode: null,
-                  show_children: [],
-                },
-              ],
-            },
-          },
-        },
-      };
-
       const mocks = [defaultQueryMock, editListMock, refetchQueryMock];
       renderWithProviders(mocks);
       await waitForComponent();
@@ -287,7 +295,7 @@ describe("Edit Component", () => {
   });
 
   describe("deleteList onCompleted callback", () => {
-    it.skip("should navigate to home and reset store after successful delete", async () => {
+    it("should navigate to home and reset store after successful delete", async () => {
       // Skipped due to Apollo refetch complexity in test environment
       const deleteListMock = {
         request: {
@@ -303,7 +311,7 @@ describe("Edit Component", () => {
         },
       };
 
-      const mocks = [defaultQueryMock, deleteListMock];
+      const mocks = [defaultQueryMock, deleteListMock, refetchQueryMock];
       renderWithProviders(mocks);
       await waitForComponent();
 
@@ -321,7 +329,7 @@ describe("Edit Component", () => {
       expect(true).toBe(true);
     });
 
-    it.skip("should call resetStore on delete completion", async () => {
+    it("should call resetStore on delete completion", async () => {
       // Skipped due to Apollo refetch complexity in test environment
       const deleteListMock = {
         request: {
@@ -337,7 +345,7 @@ describe("Edit Component", () => {
         },
       };
 
-      const mocks = [defaultQueryMock, deleteListMock];
+      const mocks = [defaultQueryMock, deleteListMock, refetchQueryMock];
       renderWithProviders(mocks);
       await waitForComponent();
 
@@ -352,7 +360,7 @@ describe("Edit Component", () => {
       // this test verifies the navigation happens which indicates onCompleted was called
     });
 
-    it.skip("should handle multiple delete attempts gracefully", async () => {
+    it("should handle multiple delete attempts gracefully", async () => {
       // Skipped due to Apollo refetch complexity in test environment
       const deleteListMock = {
         request: {
@@ -368,7 +376,7 @@ describe("Edit Component", () => {
         },
       };
 
-      const mocks = [defaultQueryMock, deleteListMock];
+      const mocks = [defaultQueryMock, deleteListMock, refetchQueryMock];
       renderWithProviders(mocks);
       await waitForComponent();
 
@@ -552,55 +560,73 @@ describe("Edit Component", () => {
       });
     });
 
-    it.skip("should handle editList mutation errors gracefully", async () => {
-      // Skipped - Apollo throws these errors in test environment before component can handle them
-      // In production, these would be handled by Apollo's error link or global error handling
-      const editListErrorMock = {
-        request: {
-          query: EDIT_LIST_MUTATION,
-          variables: { id: "123", name: "Error Test" },
-        },
-        error: new Error("Failed to update list"),
-      };
+    describe("Edit Component › Error Handling", () => {
+      it("should handle editList mutation errors gracefully", async () => {
+        const editListErrorMock = {
+          request: {
+            query: EDIT_LIST_MUTATION,
+            variables: { id: "123", name: "Error Test" },
+          },
+          result: {
+            errors: [new GraphQLError("Failed to update list")],
+          },
+        };
 
-      const mocks = [defaultQueryMock, editListErrorMock];
+        const mocks = [defaultQueryMock, editListErrorMock];
 
-      // Suppress console errors for this test
-      const consoleSpy = jest
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
-      const consoleWarnSpy = jest
-        .spyOn(console, "warn")
-        .mockImplementation(() => {});
+        // Suppress console errors for this test
+        const consoleSpy = jest
+          .spyOn(console, "error")
+          .mockImplementation(() => {});
+        const consoleWarnSpy = jest
+          .spyOn(console, "warn")
+          .mockImplementation(() => {});
 
-      renderWithProviders(mocks);
-      await waitForComponent();
+        render(
+          <MockedProvider
+            mocks={mocks}
+            addTypename={false}
+            defaultOptions={{
+              watchQuery: { errorPolicy: "all" },
+              query: { errorPolicy: "all" },
+              mutate: { errorPolicy: "all" },
+            }}
+          >
+            <BrowserRouter>
+              <Edit />
+            </BrowserRouter>
+          </MockedProvider>,
+        );
 
-      const input = screen.getByPlaceholderText("Enter new title");
-      const submitButton = screen.getByText("SUBMIT");
+        await waitForComponent();
 
-      fireEvent.change(input, { target: { value: "Error Test" } });
-      fireEvent.click(submitButton);
+        const input = screen.getByPlaceholderText("Enter new title");
+        const submitButton = screen.getByText("SUBMIT");
 
-      // The error would be handled by Apollo's error handling
-      // Component should not navigate on error
-      await new Promise((resolve) => setTimeout(resolve, 100));
+        await act(async () => {
+          fireEvent.change(input, { target: { value: "Error Test" } });
+          fireEvent.click(submitButton);
+          // Give Apollo time to resolve mutation
+          await new Promise((resolve) => setTimeout(resolve, 0));
+        });
 
-      expect(mockNavigate).not.toHaveBeenCalled();
+        // Component should not navigate on error
+        expect(mockNavigate).not.toHaveBeenCalled();
 
-      consoleSpy.mockRestore();
-      consoleWarnSpy.mockRestore();
+        consoleSpy.mockRestore();
+        consoleWarnSpy.mockRestore();
+      });
     });
 
-    it.skip("should handle deleteList mutation errors gracefully", async () => {
-      // Skipped - Apollo throws these errors in test environment before component can handle them
-      // In production, these would be handled by Apollo's error link or global error handling
+    it("should handle deleteList mutation errors gracefully", async () => {
       const deleteListErrorMock = {
         request: {
           query: DELETE_LIST_MUTATION,
           variables: { id: "123" },
         },
-        error: new Error("Failed to delete list"),
+        result: {
+          errors: [new GraphQLError("Failed to delete list")],
+        },
       };
 
       const mocks = [defaultQueryMock, deleteListErrorMock];
@@ -613,21 +639,39 @@ describe("Edit Component", () => {
         .spyOn(console, "warn")
         .mockImplementation(() => {});
 
-      renderWithProviders(mocks);
+      render(
+        <MockedProvider
+          mocks={mocks}
+          addTypename={false}
+          defaultOptions={{
+            watchQuery: { errorPolicy: "all" },
+            query: { errorPolicy: "all" },
+            mutate: { errorPolicy: "all" },
+          }}
+        >
+          <BrowserRouter>
+            <Edit />
+          </BrowserRouter>
+        </MockedProvider>,
+      );
+
       await waitForComponent();
 
       const deleteButton = screen.getByText("DELETE");
-      fireEvent.click(deleteButton);
 
-      // The error would be handled by Apollo's error handling
+      await act(async () => {
+        fireEvent.click(deleteButton);
+        // Give Apollo time to resolve mutation
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+
       // Component should not navigate on error
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
       expect(mockNavigate).not.toHaveBeenCalled();
 
       consoleSpy.mockRestore();
       consoleWarnSpy.mockRestore();
     });
+
     it("should handle error objects without message property", async () => {
       const errorWithoutMessageMock = {
         request: {
