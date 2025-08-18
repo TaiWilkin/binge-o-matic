@@ -1,18 +1,17 @@
 import { jest } from "@jest/globals";
-import graphql from "graphql";
 import GraphQLDate from "graphql-date";
 
 import { TestSetup } from "../testUtils.js";
 
 let mutation;
 
-const {
+import {
+  GraphQLBoolean,
+  GraphQLID,
+  GraphQLInt,
   GraphQLObjectType,
   GraphQLString,
-  GraphQLInt,
-  GraphQLID,
-  GraphQLBoolean,
-} = graphql;
+} from "graphql";
 
 describe("GraphQL Mutations Schema", () => {
   // Initialize database once for the entire suite

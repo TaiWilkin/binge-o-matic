@@ -1,9 +1,12 @@
-import graphql from "graphql";
+import {
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLID,
+  GraphQLList,
+} from "graphql";
 
 import MediaService from "../../services/media.js";
 import MediaType from "./media_type.js";
-
-const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLList } = graphql;
 
 const ListType = new GraphQLObjectType({
   name: "ListType",

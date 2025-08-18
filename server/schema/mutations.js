@@ -1,4 +1,3 @@
-import graphql from "graphql";
 import GraphQLDate from "graphql-date";
 
 import AuthService from "../services/auth.js";
@@ -8,13 +7,13 @@ import ListType from "./types/list_type.js";
 import MediaType from "./types/media_type.js";
 import UserType from "./types/user_type.js";
 
-const {
+import {
   GraphQLObjectType,
   GraphQLString,
   GraphQLInt,
   GraphQLID,
   GraphQLBoolean,
-} = graphql;
+} from "graphql";
 
 const mutation = new GraphQLObjectType({
   name: "Mutation",

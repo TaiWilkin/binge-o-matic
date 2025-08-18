@@ -5,7 +5,9 @@
       "testEnvironment": "node",
       "testMatch": ["<rootDir>/server/**/*.test.js"],
       "setupFilesAfterEnv": ["<rootDir>/server/__tests__/setupJest.js"],
-      "transformIgnorePatterns": ["<rootDir>/server/.*\\.js$"]
+      "transform": {
+        "^.+\\.[jt]sx?$": "babel-jest"
+      }
     },
     {
       "displayName": "client",
@@ -13,23 +15,8 @@
       "testMatch": ["<rootDir>/client/**/*.test.js", "<rootDir>/client/**/*.test.jsx"],
       "setupFilesAfterEnv": ["<rootDir>/client/__tests__/setupTests.js"],
       "transform": {
-        "^.+\\.(js|jsx)$": "babel-jest"
+        "^.+\\.[jt]sx?$": "babel-jest"
       }
     }
-  ],
-  "collectCoverageFrom": [
-    "client/src/**/*.{js,jsx}",
-    "server/**/*.js",
-    "!**/__tests__/**",
-    "!**/node_modules/**",
-    "!server/**/*test*.js",
-    "!server/**/*Utils.js",
-    "!server/**/*utils.js",
-    "!**/testUtils.js"
-  ],
-  "coverageDirectory": "coverage",
-  "coverageReporters": ["text", "lcov", "html"],
-  "verbose": true,
-  "forceExit": true,
-  "detectOpenHandles": true
+  ]
 }

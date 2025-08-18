@@ -1,21 +1,25 @@
 // Import models to register them with mongoose
 import "../../models/index.js";
-
 import { jest } from "@jest/globals";
-import graphql from "graphql";
+import {
+  GraphQLSchema,
+  GraphQLString,
+  GraphQLID,
+  GraphQLBoolean,
+  GraphQLInt,
+} from "graphql";
 import GraphQLDate from "graphql-date";
 
-// Import schema components dynamically
-const mutation = await import("../../schema/mutations.js").then(
-  (m) => m.default,
-);
-const schema = await import("../../schema/schema.js").then((m) => m.default);
-const RootQueryType = await import(
-  "../../schema/types/root_query_type.js"
-).then((m) => m.default);
+let mutation;
+let schema;
+let RootQueryType;
 
-const { GraphQLSchema, GraphQLString, GraphQLID, GraphQLBoolean, GraphQLInt } =
-  graphql;
+beforeAll(async () => {
+  mutation = (await import("../../schema/mutations.js")).default;
+  schema = (await import("../../schema/schema.js")).default;
+  RootQueryType = (await import("../../schema/types/root_query_type.js"))
+    .default;
+});
 
 describe("GraphQL Schema", () => {
   beforeEach(() => {

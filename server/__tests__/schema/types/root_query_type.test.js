@@ -1,4 +1,3 @@
-import graphql from "graphql";
 import mongoose from "mongoose";
 
 import {
@@ -13,7 +12,12 @@ import {
   TestSetup,
 } from "../../testUtils.js";
 
-const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLList } = graphql;
+import {
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLID,
+  GraphQLList,
+} from "graphql";
 
 // Setup test environment and mocking
 const { originalLogError } = TestSetup.setupTestEnvironment();
@@ -23,10 +27,13 @@ const modelMocks = setupMockFactories(originalModel);
 // Create mock manager for easy test customization
 const mockManager = new MockManager(modelMocks);
 
-// Import RootQueryType after mocking
-const RootQueryType = await import(
-  "../../../schema/types/root_query_type.js"
-).then((m) => m.default);
+let RootQueryType;
+beforeAll(async () => {
+  // Import RootQueryType after mocking
+  RootQueryType = await import("../../../schema/types/root_query_type.js").then(
+    (m) => m.default,
+  );
+});
 
 describe("RootQueryType", () => {
   // Test data
