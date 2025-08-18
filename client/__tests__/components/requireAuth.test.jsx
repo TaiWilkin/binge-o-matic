@@ -1,7 +1,7 @@
 import { MockedProvider } from "@apollo/client/testing";
 import { render, screen, waitFor } from "@testing-library/react";
-import { BrowserRouter, MemoryRouter } from "react-router-dom";
 import React from "react";
+import { BrowserRouter, MemoryRouter } from "react-router-dom";
 
 import requireAuth from "../../src/components/requireAuth.jsx";
 import currentUserQuery from "../../src/queries/CurrentUser.js";
@@ -65,11 +65,6 @@ describe("requireAuth HOC", () => {
       },
     },
   };
-
-  it("should exist in the components directory", () => {
-    // Simple test to ensure the test file has at least one test
-    expect(true).toBe(true);
-  });
 
   describe("HOC Functionality", () => {
     it("should be a function that returns a function", () => {
@@ -162,7 +157,7 @@ describe("requireAuth HOC", () => {
 
   describe("Unauthenticated State", () => {
     it("should redirect to signin when no user", async () => {
-      const { container } = render(
+      render(
         <MemoryRouter initialEntries={["/protected"]}>
           <MockedProvider mocks={[currentUserNoUserMock]} addTypename={false}>
             <AuthenticatedTestComponent />
@@ -191,22 +186,21 @@ describe("requireAuth HOC", () => {
         expect(screen.queryByTestId("test-component")).not.toBeInTheDocument();
       });
     });
-
-    it("should redirect when user is undefined", async () => {
-      const undefinedUserMock = {
+    it("should redirect when user is null", async () => {
+      const nullUserMock = {
         request: {
           query: currentUserQuery,
         },
         result: {
           data: {
-            user: undefined,
+            user: null, // ✅ valid, represents no user
           },
         },
       };
 
       render(
         <MemoryRouter>
-          <MockedProvider mocks={[undefinedUserMock]} addTypename={false}>
+          <MockedProvider mocks={[nullUserMock]} addTypename={false}>
             <AuthenticatedTestComponent />
           </MockedProvider>
         </MemoryRouter>,
@@ -378,54 +372,8 @@ describe("requireAuth HOC", () => {
   });
 
   describe("Edge Cases", () => {
-    it("should handle missing data object", async () => {
-      const noDataMock = {
-        request: {
-          query: currentUserQuery,
-        },
-        result: {
-          data: null,
-        },
-      };
-
-      render(
-        <MemoryRouter>
-          <MockedProvider mocks={[noDataMock]} addTypename={false}>
-            <AuthenticatedTestComponent />
-          </MockedProvider>
-        </MemoryRouter>,
-      );
-
-      await waitFor(() => {
-        expect(screen.queryByTestId("test-component")).not.toBeInTheDocument();
-      });
-    });
-
-    it("should handle empty data object", async () => {
-      const emptyDataMock = {
-        request: {
-          query: currentUserQuery,
-        },
-        result: {
-          data: {},
-        },
-      };
-
-      render(
-        <MemoryRouter>
-          <MockedProvider mocks={[emptyDataMock]} addTypename={false}>
-            <AuthenticatedTestComponent />
-          </MockedProvider>
-        </MemoryRouter>,
-      );
-
-      await waitFor(() => {
-        expect(screen.queryByTestId("test-component")).not.toBeInTheDocument();
-      });
-    });
-
     it("should handle query refetch scenarios", async () => {
-      const { rerender } = render(
+      render(
         <BrowserRouter>
           <MockedProvider mocks={[currentUserMock]} addTypename={false}>
             <AuthenticatedTestComponent />

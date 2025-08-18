@@ -1,8 +1,10 @@
 import { MockedProvider } from "@apollo/client/testing";
-import QueryHandler from "../../src/components/QueryHandler.jsx";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import USER_QUERY from "../../src/queries/CurrentUser";
+import { render, screen, waitFor } from "@testing-library/react";
 import { GraphQLError } from "graphql";
+import React from "react";
+
+import QueryHandler from "../../src/components/QueryHandler.jsx";
+import USER_QUERY from "../../src/queries/CurrentUser";
 
 // Mock the Errors component
 jest.mock("../../src/components/Errors.jsx", () => {
@@ -37,13 +39,11 @@ const currentUserMock = {
 };
 
 describe("QueryHandler Component", () => {
-  let component;
-
   it("should render its children", async () => {
-    component = render(
+    render(
       <MockedProvider mocks={[currentUserMock]} addTypename={false}>
         <QueryHandler query={USER_QUERY}>
-          {({ loading, error, data }) => {
+          {({ loading, error }) => {
             if (loading) return <p>Loading...</p>;
             if (error) return <p>Error!</p>;
             return <p>hi</p>;
@@ -59,10 +59,10 @@ describe("QueryHandler Component", () => {
   });
 
   it("should show loading state", () => {
-    component = render(
+    render(
       <MockedProvider mocks={[currentUserMock]} addTypename={false}>
         <QueryHandler query={USER_QUERY}>
-          {({ loading, error, data }) => {
+          {({ loading, error }) => {
             if (loading) return <p>Loading...</p>;
             if (error) return <p>Error!</p>;
             return <p>Loaded</p>;
@@ -77,7 +77,7 @@ describe("QueryHandler Component", () => {
   });
 
   it("should pass query data to children function", async () => {
-    component = render(
+    render(
       <MockedProvider mocks={[currentUserMock]} addTypename={false}>
         <QueryHandler query={USER_QUERY}>
           {({ loading, error, data }) => {
@@ -95,10 +95,10 @@ describe("QueryHandler Component", () => {
   });
 
   it("should use custom loader when useCustomLoader is true", () => {
-    component = render(
+    render(
       <MockedProvider mocks={[currentUserMock]} addTypename={false}>
         <QueryHandler query={USER_QUERY} useCustomLoader={true}>
-          {({ loading, error, data }) => {
+          {({ loading, error }) => {
             if (loading) return <p>Custom Loading...</p>;
             if (error) return <p>Error!</p>;
             return <p>Loaded</p>;
@@ -126,7 +126,7 @@ describe("QueryHandler Component", () => {
       },
     };
 
-    component = render(
+    render(
       <MockedProvider mocks={[queryWithVariables]} addTypename={false}>
         <QueryHandler query={USER_QUERY} variables={{ id: "123" }}>
           {({ loading, error, data }) => {
@@ -154,10 +154,10 @@ describe("QueryHandler Component", () => {
         error: new GraphQLError("User not found"),
       };
 
-      component = render(
+      render(
         <MockedProvider mocks={[errorMock]} addTypename={false}>
           <QueryHandler query={USER_QUERY}>
-            {({ loading, error, data }) => {
+            {({ loading, error }) => {
               if (loading) return <p>Loading...</p>;
               if (error) return <p>Error from children!</p>;
               return <p>Success</p>;
@@ -187,10 +187,10 @@ describe("QueryHandler Component", () => {
         error: new Error("Network error: Failed to fetch"),
       };
 
-      component = render(
+      render(
         <MockedProvider mocks={[networkErrorMock]} addTypename={false}>
           <QueryHandler query={USER_QUERY}>
-            {({ loading, error, data }) => {
+            {({ loading, error }) => {
               if (loading) return <p>Loading...</p>;
               if (error) return <p>Children error handler</p>;
               return <p>Success</p>;
@@ -223,10 +223,10 @@ describe("QueryHandler Component", () => {
         error: specificError,
       };
 
-      component = render(
+      render(
         <MockedProvider mocks={[errorMock]} addTypename={false}>
           <QueryHandler query={USER_QUERY}>
-            {({ loading, error, data }) => <p>Should not render</p>}
+            {() => <p>Should not render</p>}
           </QueryHandler>
         </MockedProvider>,
       );
@@ -252,10 +252,10 @@ describe("QueryHandler Component", () => {
         },
       };
 
-      component = render(
+      render(
         <MockedProvider mocks={[multipleErrorsMock]} addTypename={false}>
           <QueryHandler query={USER_QUERY}>
-            {({ loading, error, data }) => <p>Should not render</p>}
+            {() => <p>Should not render</p>}
           </QueryHandler>
         </MockedProvider>,
       );
@@ -275,10 +275,10 @@ describe("QueryHandler Component", () => {
         error: new GraphQLError("Custom loader error"),
       };
 
-      component = render(
+      render(
         <MockedProvider mocks={[errorMock]} addTypename={false}>
           <QueryHandler query={USER_QUERY} useCustomLoader={true}>
-            {({ loading, error, data }) => {
+            {({ loading, error }) => {
               if (loading) return <p>Custom loading...</p>;
               if (error) return <p>Custom error handler</p>;
               return <p>Success</p>;
@@ -308,10 +308,10 @@ describe("QueryHandler Component", () => {
         error: new GraphQLError("Invalid user ID"),
       };
 
-      component = render(
+      render(
         <MockedProvider mocks={[errorWithVariablesMock]} addTypename={false}>
           <QueryHandler query={USER_QUERY} variables={{ id: "invalid-id" }}>
-            {({ loading, error, data }) => <p>Should not render</p>}
+            {() => <p>Should not render</p>}
           </QueryHandler>
         </MockedProvider>,
       );
@@ -330,10 +330,10 @@ describe("QueryHandler Component", () => {
         error: new GraphQLError("Query failed"),
       };
 
-      component = render(
+      render(
         <MockedProvider mocks={[errorMock]} addTypename={false}>
           <QueryHandler query={USER_QUERY}>
-            {({ loading, error, data }) => <p>Should not render</p>}
+            {() => <p>Should not render</p>}
           </QueryHandler>
         </MockedProvider>,
       );
@@ -353,10 +353,10 @@ describe("QueryHandler Component", () => {
         error: new GraphQLError("Cache-first error"),
       };
 
-      component = render(
+      render(
         <MockedProvider mocks={[errorMock]} addTypename={false}>
           <QueryHandler query={USER_QUERY} fetchPolicy="cache-first">
-            {({ loading, error, data }) => <p>Should not render</p>}
+            {() => <p>Should not render</p>}
           </QueryHandler>
         </MockedProvider>,
       );
@@ -379,7 +379,7 @@ describe("QueryHandler Component", () => {
         error: new GraphQLError("Test error"),
       };
 
-      component = render(
+      render(
         <MockedProvider mocks={[errorMock]} addTypename={false}>
           <QueryHandler query={USER_QUERY}>{childrenSpy}</QueryHandler>
         </MockedProvider>,

@@ -6,6 +6,9 @@ import { TextDecoder, TextEncoder } from "util";
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;
 
+// Add setTimeout to global scope for tests
+global.setTimeout = setTimeout;
+
 // Mock window.matchMedia for tests that might use it
 Object.defineProperty(window, "matchMedia", {
   writable: true,

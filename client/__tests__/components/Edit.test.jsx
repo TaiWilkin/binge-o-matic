@@ -1,14 +1,14 @@
 import { MockedProvider } from "@apollo/client/testing";
 import {
+  act,
   fireEvent,
   render,
   screen,
   waitFor,
-  act,
 } from "@testing-library/react";
+import { GraphQLError } from "graphql";
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
-import { GraphQLError } from "graphql";
 
 import DELETE_LIST_MUTATION from "../../src/mutations/DeleteList";
 import EDIT_LIST_MUTATION from "../../src/mutations/EditList";

@@ -36,6 +36,11 @@ export default [
         __dirname: "readonly",
         __filename: "readonly",
         require: "readonly",
+        // Timer functions
+        setTimeout: "readonly",
+        clearTimeout: "readonly",
+        setInterval: "readonly",
+        clearInterval: "readonly",
       },
     },
   },

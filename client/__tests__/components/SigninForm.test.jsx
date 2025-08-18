@@ -142,7 +142,6 @@ describe("SigninForm Component", () => {
     });
 
     it("should configure useMutation with onCompleted callback", () => {
-      const { useMutation } = require("@apollo/client");
       const useMutationSpy = jest.spyOn(
         require("@apollo/client"),
         "useMutation",

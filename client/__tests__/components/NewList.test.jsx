@@ -1,12 +1,12 @@
 import { MockedProvider } from "@apollo/client/testing";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
 
 import NewList from "../../src/components/NewList.jsx";
-import CURRENT_USER from "../../src/queries/CurrentUser.js";
 import CREATE_LIST from "../../src/mutations/CreateList.js";
+import CURRENT_USER from "../../src/queries/CurrentUser.js";
 
 const mockNavigate = jest.fn();
 
