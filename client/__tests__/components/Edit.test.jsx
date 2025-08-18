@@ -2,7 +2,24 @@ import { MockedProvider } from "@apollo/client/testing";
 import { render } from "@testing-library/react";
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
+import LIST_QUERY from "../../src/queries/List";
 
+const mocks = [
+  {
+    request: {
+      query: LIST_QUERY,
+      variables: { id: "123" },
+    },
+    result: {
+      data: {
+        list: {
+          id: "123",
+          name: "My Test List",
+        },
+      },
+    },
+  },
+];
 // Mock react-router-dom hooks
 const mockNavigate = jest.fn();
 const mockParams = { id: "123" };
@@ -132,7 +149,7 @@ import Edit from "../../src/components/Edit.jsx";
 
 // Wrapper component to provide Router context
 const RouterWrapper = ({ children }) => (
-  <MockedProvider addTypename={false}>
+  <MockedProvider addTypename={false} mocks={mocks}>
     <BrowserRouter>{children}</BrowserRouter>
   </MockedProvider>
 );
