@@ -32,6 +32,24 @@ jest.mock("../../src/mutations/Logout", () => ({
         kind: "OperationDefinition",
         operation: "mutation",
         name: { kind: "Name", value: "Logout" },
+        selectionSet: {
+          kind: "SelectionSet",
+          selections: [
+            {
+              kind: "Field",
+              name: { kind: "Name", value: "logout" },
+              selectionSet: {
+                kind: "SelectionSet",
+                selections: [
+                  {
+                    kind: "Field",
+                    name: { kind: "Name", value: "id" },
+                  },
+                ],
+              },
+            },
+          ],
+        },
       },
     ],
   },
@@ -41,6 +59,14 @@ const mockNavigate = jest.fn();
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
   useNavigate: () => mockNavigate,
+}));
+
+// Mock useMutation to test onCompleted directly
+let mockLogout = jest.fn(); // Initialize the mock function
+let mockMutationLoading = false;
+jest.mock("@apollo/client", () => ({
+  ...jest.requireActual("@apollo/client"),
+  useMutation: jest.fn(() => [mockLogout, { loading: mockMutationLoading }]),
 }));
 
 const renderWithProviders = (component) => {
@@ -56,6 +82,8 @@ describe("AuthButton Component", () => {
 
   beforeEach(() => {
     mockNavigate.mockClear();
+    mockLogout = jest.fn(); // Reset the mock function
+    mockMutationLoading = false; // Reset loading state
     mockClient = {
       resetStore: jest.fn(),
     };
@@ -85,7 +113,6 @@ describe("AuthButton Component", () => {
     });
 
     it("should call logout mutation when logout button is clicked", () => {
-      // Test that the logout button can be clicked without errors
       renderWithProviders(
         <AuthButton client={mockClient} user={mockUser} loading={false} />,
       );
@@ -93,23 +120,216 @@ describe("AuthButton Component", () => {
       const logoutButton = screen.getByRole("button", { name: /logout/i });
       fireEvent.click(logoutButton);
 
-      // The mutation should be called (we can't easily test the actual call without more complex setup)
-      expect(logoutButton).toBeInTheDocument();
+      // Verify that the logout function was called
+      expect(mockLogout).toHaveBeenCalled();
     });
 
-    it("should show spinner when mutation is loading", async () => {
-      // This test verifies the loading state behavior without complex Apollo mocking
+    it("should show spinner when mutation is loading", () => {
+      // Set the loading state
+      mockMutationLoading = true;
+
       renderWithProviders(
         <AuthButton client={mockClient} user={mockUser} loading={false} />,
       );
 
-      const logoutButton = screen.getByRole("button", { name: /logout/i });
-      expect(logoutButton).toBeInTheDocument();
+      // Should show spinner when loading (button won't have "logout" text when loading)
+      const logoutButton = screen.getByRole("button");
+      expect(logoutButton).toContainHTML('<div class="spinner"');
 
-      // The actual loading state is handled internally by useMutation
-      // We're testing that the component can handle the mutation call
-      fireEvent.click(logoutButton);
-      expect(logoutButton).toBeInTheDocument();
+      // Ensure it's the right button by checking the parent list item class
+      expect(logoutButton.parentElement).toHaveClass("right");
+    });
+  });
+
+  describe("Logout onCompleted callback", () => {
+    const mockUser = { id: "1", email: "test@test.com" };
+
+    beforeEach(() => {
+      // Reset the mock logout function before each test
+      mockLogout = jest.fn();
+      mockMutationLoading = false;
+
+      // Reset the useMutation mock to default behavior
+      const { useMutation } = require("@apollo/client");
+      useMutation.mockImplementation(() => [
+        mockLogout,
+        { loading: mockMutationLoading },
+      ]);
+    });
+
+    it("should call client.resetStore when logout mutation completes", () => {
+      const mockClientReset = jest.fn();
+      const clientWithReset = {
+        resetStore: mockClientReset,
+      };
+
+      // Mock useMutation to capture the onCompleted callback
+      const { useMutation } = require("@apollo/client");
+      let capturedOnCompleted;
+
+      useMutation.mockImplementation((mutation, options) => {
+        capturedOnCompleted = options.onCompleted;
+        return [mockLogout, { loading: false }];
+      });
+
+      renderWithProviders(
+        <AuthButton client={clientWithReset} user={mockUser} loading={false} />,
+      );
+
+      // Simulate the mutation completing by calling onCompleted directly
+      if (capturedOnCompleted) {
+        capturedOnCompleted();
+      }
+
+      expect(mockClientReset).toHaveBeenCalledTimes(1);
+    });
+
+    it("should navigate to home page when logout mutation completes", () => {
+      const mockClientReset = jest.fn();
+      const clientWithReset = {
+        resetStore: mockClientReset,
+      };
+
+      // Mock useMutation to capture the onCompleted callback
+      const { useMutation } = require("@apollo/client");
+      let capturedOnCompleted;
+
+      useMutation.mockImplementation((mutation, options) => {
+        capturedOnCompleted = options.onCompleted;
+        return [mockLogout, { loading: false }];
+      });
+
+      renderWithProviders(
+        <AuthButton client={clientWithReset} user={mockUser} loading={false} />,
+      );
+
+      // Simulate the mutation completing by calling onCompleted directly
+      if (capturedOnCompleted) {
+        capturedOnCompleted();
+      }
+
+      expect(mockNavigate).toHaveBeenCalledWith("/");
+    });
+
+    it("should call both resetStore and navigate when logout completes", () => {
+      const mockClientReset = jest.fn();
+      const clientWithReset = {
+        resetStore: mockClientReset,
+      };
+
+      // Mock useMutation to capture the onCompleted callback
+      const { useMutation } = require("@apollo/client");
+      let capturedOnCompleted;
+
+      useMutation.mockImplementation((mutation, options) => {
+        capturedOnCompleted = options.onCompleted;
+        return [mockLogout, { loading: false }];
+      });
+
+      renderWithProviders(
+        <AuthButton client={clientWithReset} user={mockUser} loading={false} />,
+      );
+
+      // Simulate the mutation completing by calling onCompleted directly
+      if (capturedOnCompleted) {
+        capturedOnCompleted();
+      }
+
+      // Both functions should be called
+      expect(mockClientReset).toHaveBeenCalledTimes(1);
+      expect(mockNavigate).toHaveBeenCalledWith("/");
+    });
+
+    it("should handle missing client gracefully in onCompleted", () => {
+      // Mock useMutation to capture the onCompleted callback
+      const { useMutation } = require("@apollo/client");
+      let capturedOnCompleted;
+
+      useMutation.mockImplementation((mutation, options) => {
+        capturedOnCompleted = options.onCompleted;
+        return [mockLogout, { loading: false }];
+      });
+
+      renderWithProviders(
+        <AuthButton client={null} user={mockUser} loading={false} />,
+      );
+
+      // Should throw when client is null - this is expected behavior
+      expect(() => {
+        if (capturedOnCompleted) {
+          capturedOnCompleted();
+        }
+      }).toThrow();
+
+      // Navigation would not be called because error occurs first
+      expect(mockNavigate).not.toHaveBeenCalled();
+    });
+
+    it("should handle missing resetStore method gracefully", () => {
+      const clientWithoutReset = {};
+
+      // Mock useMutation to capture the onCompleted callback
+      const { useMutation } = require("@apollo/client");
+      let capturedOnCompleted;
+
+      useMutation.mockImplementation((mutation, options) => {
+        capturedOnCompleted = options.onCompleted;
+        return [mockLogout, { loading: false }];
+      });
+
+      renderWithProviders(
+        <AuthButton
+          client={clientWithoutReset}
+          user={mockUser}
+          loading={false}
+        />,
+      );
+
+      // Should throw when resetStore is missing - this is expected behavior
+      expect(() => {
+        if (capturedOnCompleted) {
+          capturedOnCompleted();
+        }
+      }).toThrow();
+
+      // Navigation would not be called because error occurs first
+      expect(mockNavigate).not.toHaveBeenCalled();
+    });
+
+    it("should verify the exact navigation path", () => {
+      const mockClientReset = jest.fn();
+      const clientWithReset = {
+        resetStore: mockClientReset,
+      };
+
+      // Mock useMutation to capture the onCompleted callback
+      const { useMutation } = require("@apollo/client");
+      let capturedOnCompleted;
+
+      useMutation.mockImplementation((mutation, options) => {
+        capturedOnCompleted = options.onCompleted;
+        return [mockLogout, { loading: false }];
+      });
+
+      renderWithProviders(
+        <AuthButton client={clientWithReset} user={mockUser} loading={false} />,
+      );
+
+      // Simulate the mutation completing
+      if (capturedOnCompleted) {
+        capturedOnCompleted();
+      }
+
+      // Should navigate to root, not other paths
+      expect(mockNavigate).toHaveBeenCalledWith("/");
+      expect(mockNavigate).not.toHaveBeenCalledWith("/signin");
+      expect(mockNavigate).not.toHaveBeenCalledWith("/dashboard");
+      expect(mockNavigate).not.toHaveBeenCalledWith("/login");
+    });
+
+    afterEach(() => {
+      // Restore the original useMutation after each test
+      jest.clearAllMocks();
     });
   });
 
@@ -264,9 +484,10 @@ describe("AuthButton Component", () => {
     });
 
     it("should render without providers", () => {
+      // This test should actually pass since we're mocking useMutation
       expect(() =>
         render(<AuthButton client={mockClient} user={null} loading={false} />),
-      ).toThrow();
+      ).not.toThrow();
     });
   });
 

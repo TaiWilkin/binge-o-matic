@@ -309,6 +309,265 @@ describe("AuthForm Component", () => {
         ).not.toBeInTheDocument();
       });
     });
+
+    describe("onSubmit catch block", () => {
+      it("should handle error with message property", async () => {
+        const user = userEvent.setup();
+        const errorMessage = "Authentication failed";
+        mockOnSubmit.mockRejectedValue(new Error(errorMessage));
+
+        renderWithRouter(
+          <AuthForm title="Sign in" onSubmit={mockOnSubmit} error={null} />,
+        );
+
+        const emailInput = screen.getByLabelText(/email/i);
+        const passwordInput = screen.getByLabelText(/password/i);
+        const submitButton = screen.getByRole("button", { name: "Sign in" });
+
+        await user.type(emailInput, "test@example.com");
+        await user.type(passwordInput, "password123");
+        await user.click(submitButton);
+
+        await waitFor(() => {
+          const errorHeading = screen.getByRole("heading", {
+            name: errorMessage,
+          });
+          expect(errorHeading).toBeInTheDocument();
+          expect(errorHeading).toHaveClass("error");
+        });
+      });
+
+      it("should handle error without message property", async () => {
+        const user = userEvent.setup();
+        // Create an error-like object without a message property
+        const errorWithoutMessage = {
+          code: 500,
+          status: "Internal Server Error",
+        };
+        mockOnSubmit.mockRejectedValue(errorWithoutMessage);
+
+        renderWithRouter(
+          <AuthForm title="Sign in" onSubmit={mockOnSubmit} error={null} />,
+        );
+
+        const emailInput = screen.getByLabelText(/email/i);
+        const passwordInput = screen.getByLabelText(/password/i);
+        const submitButton = screen.getByRole("button", { name: "Sign in" });
+
+        await user.type(emailInput, "test@example.com");
+        await user.type(passwordInput, "password123");
+        await user.click(submitButton);
+
+        await waitFor(() => {
+          const errorHeading = screen.getByRole("heading", {
+            name: "Submission failed",
+          });
+          expect(errorHeading).toBeInTheDocument();
+          expect(errorHeading).toHaveClass("error");
+        });
+      });
+
+      it("should handle error with empty message", async () => {
+        const user = userEvent.setup();
+        const errorWithEmptyMessage = new Error("");
+        mockOnSubmit.mockRejectedValue(errorWithEmptyMessage);
+
+        renderWithRouter(
+          <AuthForm title="Sign in" onSubmit={mockOnSubmit} error={null} />,
+        );
+
+        const emailInput = screen.getByLabelText(/email/i);
+        const passwordInput = screen.getByLabelText(/password/i);
+        const submitButton = screen.getByRole("button", { name: "Sign in" });
+
+        await user.type(emailInput, "test@example.com");
+        await user.type(passwordInput, "password123");
+        await user.click(submitButton);
+
+        await waitFor(() => {
+          const errorHeading = screen.getByRole("heading", {
+            name: "Submission failed",
+          });
+          expect(errorHeading).toBeInTheDocument();
+          expect(errorHeading).toHaveClass("error");
+        });
+      });
+
+      it("should handle GraphQL error format", async () => {
+        const user = userEvent.setup();
+        const graphQLError = {
+          message: "User not found",
+          extensions: { code: "USER_NOT_FOUND" },
+          locations: [{ line: 1, column: 1 }],
+        };
+        mockOnSubmit.mockRejectedValue(graphQLError);
+
+        renderWithRouter(
+          <AuthForm title="Sign in" onSubmit={mockOnSubmit} error={null} />,
+        );
+
+        const emailInput = screen.getByLabelText(/email/i);
+        const passwordInput = screen.getByLabelText(/password/i);
+        const submitButton = screen.getByRole("button", { name: "Sign in" });
+
+        await user.type(emailInput, "test@example.com");
+        await user.type(passwordInput, "password123");
+        await user.click(submitButton);
+
+        await waitFor(() => {
+          const errorHeading = screen.getByRole("heading", {
+            name: "User not found",
+          });
+          expect(errorHeading).toBeInTheDocument();
+          expect(errorHeading).toHaveClass("error");
+        });
+      });
+
+      it("should handle null error", async () => {
+        const user = userEvent.setup();
+        mockOnSubmit.mockRejectedValue(null);
+
+        renderWithRouter(
+          <AuthForm title="Sign in" onSubmit={mockOnSubmit} error={null} />,
+        );
+
+        const emailInput = screen.getByLabelText(/email/i);
+        const passwordInput = screen.getByLabelText(/password/i);
+        const submitButton = screen.getByRole("button", { name: "Sign in" });
+
+        await user.type(emailInput, "test@example.com");
+        await user.type(passwordInput, "password123");
+        await user.click(submitButton);
+
+        await waitFor(() => {
+          const errorHeading = screen.getByRole("heading", {
+            name: "Submission failed",
+          });
+          expect(errorHeading).toBeInTheDocument();
+          expect(errorHeading).toHaveClass("error");
+        });
+      });
+
+      it("should handle undefined error", async () => {
+        const user = userEvent.setup();
+        mockOnSubmit.mockRejectedValue(undefined);
+
+        renderWithRouter(
+          <AuthForm title="Sign in" onSubmit={mockOnSubmit} error={null} />,
+        );
+
+        const emailInput = screen.getByLabelText(/email/i);
+        const passwordInput = screen.getByLabelText(/password/i);
+        const submitButton = screen.getByRole("button", { name: "Sign in" });
+
+        await user.type(emailInput, "test@example.com");
+        await user.type(passwordInput, "password123");
+        await user.click(submitButton);
+
+        await waitFor(() => {
+          const errorHeading = screen.getByRole("heading", {
+            name: "Submission failed",
+          });
+          expect(errorHeading).toBeInTheDocument();
+          expect(errorHeading).toHaveClass("error");
+        });
+      });
+
+      it("should handle string error", async () => {
+        const user = userEvent.setup();
+        mockOnSubmit.mockRejectedValue("Something went wrong");
+
+        renderWithRouter(
+          <AuthForm title="Sign in" onSubmit={mockOnSubmit} error={null} />,
+        );
+
+        const emailInput = screen.getByLabelText(/email/i);
+        const passwordInput = screen.getByLabelText(/password/i);
+        const submitButton = screen.getByRole("button", { name: "Sign in" });
+
+        await user.type(emailInput, "test@example.com");
+        await user.type(passwordInput, "password123");
+        await user.click(submitButton);
+
+        await waitFor(() => {
+          const errorHeading = screen.getByRole("heading", {
+            name: "Submission failed",
+          });
+          expect(errorHeading).toBeInTheDocument();
+          expect(errorHeading).toHaveClass("error");
+        });
+      });
+
+      it("should reset loading state after error", async () => {
+        const user = userEvent.setup();
+        mockOnSubmit.mockRejectedValue(new Error("Test error"));
+
+        renderWithRouter(
+          <AuthForm title="Sign in" onSubmit={mockOnSubmit} error={null} />,
+        );
+
+        const emailInput = screen.getByLabelText(/email/i);
+        const passwordInput = screen.getByLabelText(/password/i);
+        const submitButton = screen.getByRole("button", { name: "Sign in" });
+
+        await user.type(emailInput, "test@example.com");
+        await user.type(passwordInput, "password123");
+
+        // Click submit and verify loading state appears briefly
+        await user.click(submitButton);
+
+        // Should reset loading state after error
+        await waitFor(() => {
+          expect(submitButton).not.toBeDisabled();
+          expect(submitButton).toHaveTextContent("Sign in");
+        });
+
+        // Should also show the error message
+        await waitFor(() => {
+          const errorHeading = screen.getByRole("heading", {
+            name: "Test error",
+          });
+          expect(errorHeading).toBeInTheDocument();
+        });
+      });
+
+      it("should clear previous errors before showing new error", async () => {
+        const user = userEvent.setup();
+        mockOnSubmit
+          .mockRejectedValueOnce(new Error("First error"))
+          .mockRejectedValueOnce(new Error("Second error"));
+
+        renderWithRouter(
+          <AuthForm title="Sign in" onSubmit={mockOnSubmit} error={null} />,
+        );
+
+        const emailInput = screen.getByLabelText(/email/i);
+        const passwordInput = screen.getByLabelText(/password/i);
+        const submitButton = screen.getByRole("button", { name: "Sign in" });
+
+        await user.type(emailInput, "test@example.com");
+        await user.type(passwordInput, "password123");
+
+        // First submission
+        await user.click(submitButton);
+        await waitFor(() => {
+          expect(
+            screen.getByRole("heading", { name: "First error" }),
+          ).toBeInTheDocument();
+        });
+
+        // Second submission should replace the first error
+        await user.click(submitButton);
+        await waitFor(() => {
+          expect(
+            screen.getByRole("heading", { name: "Second error" }),
+          ).toBeInTheDocument();
+          expect(
+            screen.queryByRole("heading", { name: "First error" }),
+          ).not.toBeInTheDocument();
+        });
+      });
+    });
   });
 
   describe("Navigation", () => {

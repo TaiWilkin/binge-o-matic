@@ -87,6 +87,339 @@ describe("NewList Component", () => {
     mockNavigate.mockClear();
   });
 
+  describe("onCompleted callback logic", () => {
+    it("should navigate when createList data is properly structured", async () => {
+      const createListMock = {
+        request: {
+          query: CREATE_LIST,
+          variables: { name: "Valid List" },
+        },
+        result: {
+          data: {
+            createList: {
+              id: "test-123",
+              name: "Valid List",
+            },
+          },
+        },
+      };
+
+      const mocks = [...defaultMocks, createListMock];
+      renderWithProviders(mocks);
+      await waitForComponent();
+
+      const input = screen.getByPlaceholderText("Star Trek");
+      const form = getForm();
+
+      fireEvent.change(input, { target: { value: "Valid List" } });
+      fireEvent.submit(form);
+
+      await waitFor(() => {
+        expect(mockNavigate).toHaveBeenCalledWith("/lists/test-123");
+      });
+    });
+
+    it("should handle navigation with different ID formats", async () => {
+      const createListMock = {
+        request: {
+          query: CREATE_LIST,
+          variables: { name: "UUID List" },
+        },
+        result: {
+          data: {
+            createList: {
+              id: "550e8400-e29b-41d4-a716-446655440000",
+              name: "UUID List",
+            },
+          },
+        },
+      };
+
+      const mocks = [...defaultMocks, createListMock];
+      renderWithProviders(mocks);
+      await waitForComponent();
+
+      const input = screen.getByPlaceholderText("Star Trek");
+      const form = getForm();
+
+      fireEvent.change(input, { target: { value: "UUID List" } });
+      fireEvent.submit(form);
+
+      await waitFor(() => {
+        expect(mockNavigate).toHaveBeenCalledWith(
+          "/lists/550e8400-e29b-41d4-a716-446655440000",
+        );
+      });
+    });
+
+    it("should handle numeric IDs correctly", async () => {
+      const createListMock = {
+        request: {
+          query: CREATE_LIST,
+          variables: { name: "Numeric ID List" },
+        },
+        result: {
+          data: {
+            createList: {
+              id: "12345",
+              name: "Numeric ID List",
+            },
+          },
+        },
+      };
+
+      const mocks = [...defaultMocks, createListMock];
+      renderWithProviders(mocks);
+      await waitForComponent();
+
+      const input = screen.getByPlaceholderText("Star Trek");
+      const form = getForm();
+
+      fireEvent.change(input, { target: { value: "Numeric ID List" } });
+      fireEvent.submit(form);
+
+      await waitFor(() => {
+        expect(mockNavigate).toHaveBeenCalledWith("/lists/12345");
+      });
+    });
+
+    it("should work with additional createList properties", async () => {
+      const createListMock = {
+        request: {
+          query: CREATE_LIST,
+          variables: { name: "Rich List" },
+        },
+        result: {
+          data: {
+            createList: {
+              id: "rich-123",
+              name: "Rich List",
+              description: "A list with extra properties",
+              createdAt: "2023-01-01T00:00:00Z",
+              __typename: "List",
+            },
+          },
+        },
+      };
+
+      const mocks = [...defaultMocks, createListMock];
+      renderWithProviders(mocks);
+      await waitForComponent();
+
+      const input = screen.getByPlaceholderText("Star Trek");
+      const form = getForm();
+
+      fireEvent.change(input, { target: { value: "Rich List" } });
+      fireEvent.submit(form);
+
+      await waitFor(() => {
+        expect(mockNavigate).toHaveBeenCalledWith("/lists/rich-123");
+      });
+    });
+
+    it("should work when createList has minimal data structure", async () => {
+      const createListMock = {
+        request: {
+          query: CREATE_LIST,
+          variables: { name: "Minimal List" },
+        },
+        result: {
+          data: {
+            createList: {
+              id: "minimal",
+            },
+          },
+        },
+      };
+
+      const mocks = [...defaultMocks, createListMock];
+      renderWithProviders(mocks);
+      await waitForComponent();
+
+      const input = screen.getByPlaceholderText("Star Trek");
+      const form = getForm();
+
+      fireEvent.change(input, { target: { value: "Minimal List" } });
+      fireEvent.submit(form);
+
+      await waitFor(() => {
+        expect(mockNavigate).toHaveBeenCalledWith("/lists/minimal");
+      });
+    });
+
+    it("should navigate only after successful mutation, not before", async () => {
+      const createListMock = {
+        request: {
+          query: CREATE_LIST,
+          variables: { name: "Async Test" },
+        },
+        result: {
+          data: {
+            createList: {
+              id: "async-123",
+              name: "Async Test",
+            },
+          },
+        },
+        delay: 100, // Add delay to test timing
+      };
+
+      const mocks = [...defaultMocks, createListMock];
+      renderWithProviders(mocks);
+      await waitForComponent();
+
+      const input = screen.getByPlaceholderText("Star Trek");
+      const form = getForm();
+
+      fireEvent.change(input, { target: { value: "Async Test" } });
+
+      // Navigation should not happen before submission
+      expect(mockNavigate).not.toHaveBeenCalled();
+
+      fireEvent.submit(form);
+
+      // Navigation should not happen immediately after submission
+      expect(mockNavigate).not.toHaveBeenCalled();
+
+      // Navigation should happen after mutation completes
+      await waitFor(() => {
+        expect(mockNavigate).toHaveBeenCalledWith("/lists/async-123");
+      });
+    });
+  });
+
+  describe("onCompleted callback edge cases", () => {
+    it("should handle mutation that returns null createList", async () => {
+      const createListNullMock = {
+        request: {
+          query: CREATE_LIST,
+          variables: { name: "Null Result" },
+        },
+        result: {
+          data: {
+            createList: null,
+          },
+        },
+      };
+
+      const mocks = [...defaultMocks, createListNullMock];
+      renderWithProviders(mocks);
+      await waitForComponent();
+
+      const input = screen.getByPlaceholderText("Star Trek");
+      const form = getForm();
+
+      fireEvent.change(input, { target: { value: "Null Result" } });
+      fireEvent.submit(form);
+
+      // Wait a bit to ensure the mutation would have completed
+      await waitFor(
+        () => {
+          // Should not navigate when createList is null
+          expect(mockNavigate).not.toHaveBeenCalled();
+        },
+        { timeout: 1000 },
+      );
+    });
+
+    it("should handle mutation that returns data without createList property", async () => {
+      const createListMissingMock = {
+        request: {
+          query: CREATE_LIST,
+          variables: { name: "Missing CreateList" },
+        },
+        result: {
+          data: {
+            someOtherProperty: "value",
+          },
+        },
+      };
+
+      const mocks = [...defaultMocks, createListMissingMock];
+      renderWithProviders(mocks);
+      await waitForComponent();
+
+      const input = screen.getByPlaceholderText("Star Trek");
+      const form = getForm();
+
+      fireEvent.change(input, { target: { value: "Missing CreateList" } });
+      fireEvent.submit(form);
+
+      // Wait a bit to ensure the mutation would have completed
+      await waitFor(
+        () => {
+          // Should not navigate when createList property is missing
+          expect(mockNavigate).not.toHaveBeenCalled();
+        },
+        { timeout: 1000 },
+      );
+    });
+
+    it("should handle mutation that returns undefined data", async () => {
+      const createListUndefinedMock = {
+        request: {
+          query: CREATE_LIST,
+          variables: { name: "Undefined Data" },
+        },
+        result: {
+          data: undefined,
+        },
+      };
+
+      const mocks = [...defaultMocks, createListUndefinedMock];
+      renderWithProviders(mocks);
+      await waitForComponent();
+
+      const input = screen.getByPlaceholderText("Star Trek");
+      const form = getForm();
+
+      fireEvent.change(input, { target: { value: "Undefined Data" } });
+      fireEvent.submit(form);
+
+      // Wait a bit to ensure the mutation would have completed
+      await waitFor(
+        () => {
+          // Should not navigate when data is undefined
+          expect(mockNavigate).not.toHaveBeenCalled();
+        },
+        { timeout: 1000 },
+      );
+    });
+
+    it("should verify the conditional logic structure", async () => {
+      // This test ensures the onCompleted callback has the right conditional structure
+      const createListMock = {
+        request: {
+          query: CREATE_LIST,
+          variables: { name: "Conditional Test" },
+        },
+        result: {
+          data: {
+            createList: {
+              id: "conditional-123",
+              name: "Conditional Test",
+            },
+          },
+        },
+      };
+
+      const mocks = [...defaultMocks, createListMock];
+      renderWithProviders(mocks);
+      await waitForComponent();
+
+      const input = screen.getByPlaceholderText("Star Trek");
+      const form = getForm();
+
+      fireEvent.change(input, { target: { value: "Conditional Test" } });
+      fireEvent.submit(form);
+
+      await waitFor(() => {
+        expect(mockNavigate).toHaveBeenCalledWith("/lists/conditional-123");
+        expect(mockNavigate).toHaveBeenCalledTimes(1);
+      });
+    });
+  });
+
   describe("Component Rendering", () => {
     it("should render without errors", async () => {
       renderWithProviders();
