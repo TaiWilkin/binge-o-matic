@@ -1,3 +1,9 @@
+import {
+  GraphQLID,
+  GraphQLList,
+  GraphQLObjectType,
+  GraphQLString,
+} from "graphql";
 import mongoose from "mongoose";
 
 import {
@@ -10,13 +16,6 @@ import {
   setupMockFactories,
   TestSetup,
 } from "../../testUtils.js";
-
-import {
-  GraphQLObjectType,
-  GraphQLString,
-  GraphQLID,
-  GraphQLList,
-} from "graphql";
 
 // Setup test environment and mocking
 const { originalLogError } = TestSetup.setupTestEnvironment();

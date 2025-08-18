@@ -1,8 +1,8 @@
 import {
-  GraphQLObjectType,
-  GraphQLString,
   GraphQLID,
   GraphQLList,
+  GraphQLObjectType,
+  GraphQLString,
 } from "graphql";
 
 import MediaService from "../../services/media.js";

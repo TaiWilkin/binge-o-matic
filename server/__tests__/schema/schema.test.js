@@ -1,12 +1,13 @@
 // Import models to register them with mongoose
 import "../../models/index.js";
+
 import { jest } from "@jest/globals";
 import {
+  GraphQLBoolean,
+  GraphQLID,
+  GraphQLInt,
   GraphQLSchema,
   GraphQLString,
-  GraphQLID,
-  GraphQLBoolean,
-  GraphQLInt,
 } from "graphql";
 import GraphQLDate from "graphql-date";
 

@@ -4,6 +4,23 @@ import React from "react";
 import { MemoryRouter } from "react-router-dom";
 
 import AuthButton from "../../src/components/AuthButton.jsx";
+import LOGOUT_MUTATION from "../../src/mutations/Logout.js";
+
+const mocks = [
+  {
+    request: {
+      query: LOGOUT_MUTATION,
+      variables: {},
+    },
+    result: {
+      data: {
+        logout: {
+          id: "1",
+        },
+      },
+    },
+  },
+];
 
 // Mock the mutations
 jest.mock("../../src/mutations/Logout", () => ({
@@ -26,7 +43,7 @@ jest.mock("react-router-dom", () => ({
   useNavigate: () => mockNavigate,
 }));
 
-const renderWithProviders = (component, mocks = []) => {
+const renderWithProviders = (component) => {
   return render(
     <MockedProvider mocks={mocks} addTypename={false}>
       <MemoryRouter>{component}</MemoryRouter>
@@ -184,7 +201,7 @@ describe("AuthButton Component", () => {
       ).toBeInTheDocument();
 
       rerender(
-        <MockedProvider mocks={[]} addTypename={false}>
+        <MockedProvider addTypename={false}>
           <MemoryRouter>
             <AuthButton
               client={mockClient}

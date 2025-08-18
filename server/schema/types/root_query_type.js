@@ -1,8 +1,8 @@
 import {
-  GraphQLObjectType,
-  GraphQLString,
   GraphQLID,
   GraphQLList,
+  GraphQLObjectType,
+  GraphQLString,
 } from "graphql";
 
 import ListService from "../../services/list.js";

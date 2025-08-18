@@ -35,6 +35,10 @@ describe("GraphQL Mutations Schema", () => {
     await TestSetup.cleanupTest();
   });
 
+  afterAll(async () => {
+    await TestSetup.teardownTest();
+  });
+
   // Helper function to convert GraphQL args array to object
   const argsToObject = (args) => {
     const argsObj = {};

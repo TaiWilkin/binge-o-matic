@@ -44,6 +44,10 @@ describe("Media Model", () => {
     await TestSetup.cleanupTest();
   });
 
+  afterAll(async () => {
+    await TestSetup.teardownTest();
+  });
+
   describe("Schema Definition", () => {
     it("should have all required fields", () => {
       const mediaFields = Media.schema.paths;

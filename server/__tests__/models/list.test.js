@@ -43,6 +43,10 @@ describe("List Model", () => {
     await TestSetup.cleanupTest();
   });
 
+  afterAll(async () => {
+    await TestSetup.teardownTest();
+  });
+
   describe("Schema Definition", () => {
     it("should have required fields", () => {
       const listFields = List.schema.paths;

@@ -1,8 +1,8 @@
 import { MockedProvider } from "@apollo/client/testing";
 import { render, screen } from "@testing-library/react";
+import { fireEvent } from "@testing-library/react";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
-import { fireEvent } from "@testing-library/react";
 
 import SignupForm from "../../src/components/SignupForm.jsx";
 import SIGNUP_MUTATION from "../../src/mutations/Signup.js";

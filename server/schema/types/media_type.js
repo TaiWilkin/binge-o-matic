@@ -1,9 +1,9 @@
 import {
-  GraphQLObjectType,
-  GraphQLString,
+  GraphQLBoolean,
   GraphQLID,
   GraphQLInt,
-  GraphQLBoolean,
+  GraphQLObjectType,
+  GraphQLString,
 } from "graphql";
 import GraphQLDate from "graphql-date";
 

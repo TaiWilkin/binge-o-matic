@@ -1,9 +1,28 @@
 import { MockedProvider } from "@apollo/client/testing";
 import { render, screen } from "@testing-library/react";
+import { fireEvent } from "@testing-library/react";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
 
 import SigninForm from "../../src/components/SigninForm.jsx";
+import LOGIN_MUTATION from "../../src/mutations/Login.js";
+
+const mocks = [
+  {
+    request: {
+      query: LOGIN_MUTATION,
+      variables: { email: "test@test.com", password: "password" },
+    },
+    result: {
+      data: {
+        login: {
+          id: "1",
+          email: "test@test.com",
+        },
+      },
+    },
+  },
+];
 
 // Mock the AuthForm component
 jest.mock("../../src/components/AuthForm.jsx", () => {
@@ -57,7 +76,7 @@ jest.mock("../../src/queries/CurrentUser", () => ({
 
 const renderWithProviders = (component) => {
   return render(
-    <MockedProvider mocks={[]} addTypename={false}>
+    <MockedProvider mocks={mocks} addTypename={false}>
       <MemoryRouter>{component}</MemoryRouter>
     </MockedProvider>,
   );
@@ -110,8 +129,7 @@ describe("SigninForm Component", () => {
       const submitButton = screen.getByText("Submit");
       expect(submitButton).toBeInTheDocument();
 
-      // Verify that the form can receive the mutation function
-      expect(() => submitButton.click()).not.toThrow();
+      fireEvent.click(submitButton);
     });
 
     it("should configure mutation with correct options", () => {
