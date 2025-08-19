@@ -5,6 +5,10 @@
   "main": "index.js",
   "type": "module",
   "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "concurrently": "^7.6.0",
