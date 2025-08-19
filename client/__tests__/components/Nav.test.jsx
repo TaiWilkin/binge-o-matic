@@ -1,9 +1,16 @@
 import { MockedProvider } from "@apollo/client/testing";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
 
 import Nav from "../../src/components/Nav.jsx";
+
+// Mock react-router-dom hooks
+const mockNavigate = jest.fn();
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useNavigate: () => mockNavigate,
+}));
 
 // Mock the Nav query
 jest.mock("../../src/queries/Nav", () => ({
@@ -51,13 +58,17 @@ jest.mock("../../src/components/QueryHandler.jsx", () => {
 });
 
 // Wrapper component to provide Router and Apollo context
-const TestWrapper = ({ children }) => (
-  <MockedProvider mocks={[]} addTypename={false}>
+const TestWrapper = ({ children, mocks = [] }) => (
+  <MockedProvider mocks={mocks} addTypename={false}>
     <BrowserRouter>{children}</BrowserRouter>
   </MockedProvider>
 );
 
 describe("Nav Component", () => {
+  beforeEach(() => {
+    mockNavigate.mockClear();
+  });
+
   describe("Rendering", () => {
     it("should render the <nav> element", () => {
       render(
@@ -113,6 +124,36 @@ describe("Nav Component", () => {
       );
 
       expect(screen.getByText("Mock Auth Button")).toBeInTheDocument();
+    });
+  });
+
+  describe("Button Interactions", () => {
+    it("should navigate to /about when About button is clicked", () => {
+      render(
+        <TestWrapper>
+          <Nav />
+        </TestWrapper>,
+      );
+
+      const aboutButton = screen.getByRole("button", { name: /about/i });
+      fireEvent.click(aboutButton);
+
+      expect(mockNavigate).toHaveBeenCalledWith("/about");
+      expect(mockNavigate).toHaveBeenCalledTimes(1);
+    });
+
+    it("should navigate to /newlist when New List button is clicked", () => {
+      render(
+        <TestWrapper>
+          <Nav />
+        </TestWrapper>,
+      );
+
+      const newListButton = screen.getByRole("button", { name: /new list/i });
+      fireEvent.click(newListButton);
+
+      expect(mockNavigate).toHaveBeenCalledWith("/newlist");
+      expect(mockNavigate).toHaveBeenCalledTimes(1);
     });
   });
 
