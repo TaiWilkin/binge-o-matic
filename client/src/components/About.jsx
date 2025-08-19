@@ -1,8 +1,7 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function About() {
-  const navigate = useNavigate();
   return (
     <main>
       <div className="about">
@@ -35,27 +34,16 @@ function About() {
             through and be surprised when JoJo shows up — meet her in ‘Abby’s
             Ultimate Dance Competition’ at the right time.
           </p>
-
           <p>
             Go now!{" "}
-            <button
-              type="button"
-              id="create-btn"
-              onClick={() => navigate("/newlist")}
-            >
+            <Link to="/newlist" id="create-btn">
               Create a list.
-            </button>
+            </Link>{" "}
             The future of television beckons you.
           </p>
         </div>
         <div className="card-actions">
-          <button
-            type="button"
-            className=""
-            onClick={() => navigate("/newlist")}
-          >
-            CREATE A LIST
-          </button>
+          <Link to="/newlist">CREATE A LIST</Link>
         </div>
       </div>
     </main>

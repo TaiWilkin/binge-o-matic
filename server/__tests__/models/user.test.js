@@ -38,6 +38,10 @@ describe("User Model", () => {
     await TestSetup.cleanupTest();
   });
 
+  afterAll(async () => {
+    await TestSetup.teardownTest();
+  });
+
   describe("Schema Definition", () => {
     it("should have required fields", () => {
       const userFields = User.schema.paths;

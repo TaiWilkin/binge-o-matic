@@ -1,4 +1,10 @@
-import graphql from "graphql";
+import {
+  GraphQLBoolean,
+  GraphQLID,
+  GraphQLInt,
+  GraphQLObjectType,
+  GraphQLString,
+} from "graphql";
 import GraphQLDate from "graphql-date";
 import mongoose from "mongoose";
 
@@ -10,14 +16,6 @@ import {
   TestSetup,
 } from "../../testUtils.js";
 
-const {
-  GraphQLObjectType,
-  GraphQLString,
-  GraphQLID,
-  GraphQLInt,
-  GraphQLBoolean,
-} = graphql;
-
 // Setup test environment and mocking
 const { originalLogError } = TestSetup.setupTestEnvironment();
 const originalModel = mongoose.model;
@@ -27,9 +25,12 @@ const modelMocks = setupMockFactories(originalModel);
 const mockManager = new MockManager(modelMocks);
 
 // Import MediaType after mocking
-const MediaType = await import("../../../schema/types/media_type.js").then(
-  (m) => m.default,
-);
+let MediaType;
+beforeAll(async () => {
+  MediaType = await import("../../../schema/types/media_type.js").then(
+    (m) => m.default,
+  );
+});
 
 describe("MediaType", () => {
   // Test data

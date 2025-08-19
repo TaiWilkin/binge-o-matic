@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { jest } from "@jest/globals";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
@@ -229,6 +230,24 @@ export class TestSetup {
     console.error = originalLogError;
     // Clear all Jest mocks
     jest.clearAllMocks();
+  }
+
+  static async teardownTest() {
+    // Disconnect mongoose if connected
+    if (mongoose.connection.readyState !== 0) {
+      await mongoose.disconnect();
+    }
+
+    // Stop the in-memory Mongo server if running
+    if (this.mongoServer) {
+      await this.mongoServer.stop();
+      this.mongoServer = null;
+      this.isInitialized = false;
+    }
+
+    // Clear mocks just in case
+    jest.clearAllMocks();
+    jest.restoreAllMocks();
   }
 }
 

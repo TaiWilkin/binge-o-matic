@@ -1,13 +1,11 @@
-import graphql from "graphql";
-import GraphQLDate from "graphql-date";
-
-const {
-  GraphQLObjectType,
-  GraphQLString,
+import {
+  GraphQLBoolean,
   GraphQLID,
   GraphQLInt,
-  GraphQLBoolean,
-} = graphql;
+  GraphQLObjectType,
+  GraphQLString,
+} from "graphql";
+import GraphQLDate from "graphql-date";
 
 const MediaType = new GraphQLObjectType({
   name: "MediaType",

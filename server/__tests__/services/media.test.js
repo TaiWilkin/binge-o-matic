@@ -32,17 +32,22 @@ const modelMocks = setupMockFactories(originalModel);
 // Create mock manager for easy test customization
 const mockManager = new MockManager(modelMocks);
 
-// Import service after mocking
-const mediaService = await import("../../services/media.js").then(
-  (m) => m.default,
-);
-const listService = await import("../../services/list.js").then(
-  (m) => m.default,
-);
+let mediaService;
+let listService;
+let tmdb;
+let fetchFromTMDB;
+let getAuthorizedList;
+let updateMediaProperty;
 
-// Import helper functions for testing from their respective services
-const { fetchFromTMDB } = await import("../../services/tmdb.js");
-const { getAuthorizedList, updateMediaProperty } = listService;
+beforeAll(async () => {
+  mediaService = (await import("../../services/media.js")).default;
+  listService = (await import("../../services/list.js")).default;
+  tmdb = await import("../../services/tmdb.js");
+
+  fetchFromTMDB = tmdb.fetchFromTMDB;
+  getAuthorizedList = listService.getAuthorizedList;
+  updateMediaProperty = listService.updateMediaProperty;
+});
 
 describe("Media Service", () => {
   // Test data

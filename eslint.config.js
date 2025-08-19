@@ -8,7 +8,12 @@ export default [
 
   // Test files configuration
   {
-    files: ["**/__tests__/**/*.js"],
+    files: [
+      "**/__tests__/**/*.js",
+      "**/__tests__/**/*.jsx",
+      "**/*.test.js",
+      "**/*.test.jsx",
+    ],
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "module",
@@ -30,6 +35,12 @@ export default [
         Buffer: "readonly",
         __dirname: "readonly",
         __filename: "readonly",
+        require: "readonly",
+        // Timer functions
+        setTimeout: "readonly",
+        clearTimeout: "readonly",
+        setInterval: "readonly",
+        clearInterval: "readonly",
       },
     },
   },

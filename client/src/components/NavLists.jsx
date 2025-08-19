@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 function NavLists({ lists, title }) {
   const navigate = useNavigate();
-  if (!lists.length) return null;
+  if (!lists?.length) return null;
   const options = lists.map((list) => (
     <button
       type="button"

@@ -9,10 +9,10 @@ import {
   setupMockFactories,
 } from "../testUtils.js";
 
-// Import service after mocking
-const authService = await import("../../services/auth.js").then(
-  (m) => m.default,
-);
+let authService;
+beforeAll(async () => {
+  authService = await import("../../services/auth.js").then((m) => m.default);
+});
 
 const User = mongoose.model("user");
 
