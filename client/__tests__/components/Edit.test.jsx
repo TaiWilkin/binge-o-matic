@@ -146,7 +146,7 @@ describe("Edit Component", () => {
         },
       };
 
-      const mocks = [defaultQueryMock, editListMock];
+      const mocks = [defaultQueryMock, editListMock, defaultQueryMock];
       renderWithProviders(mocks);
       await waitForComponent();
 
@@ -160,12 +160,6 @@ describe("Edit Component", () => {
       await waitFor(() => {
         expect(mockNavigate).toHaveBeenCalledWith("/lists/123");
       });
-    });
-
-    it("should navigate to correct list ID from params", async () => {
-      // Skip this test as it requires complex mocking setup
-      // The core functionality is tested in other tests
-      expect(true).toBe(true);
     });
 
     it("should handle edit with empty name", async () => {
@@ -184,7 +178,7 @@ describe("Edit Component", () => {
         },
       };
 
-      const mocks = [defaultQueryMock, editListMock];
+      const mocks = [defaultQueryMock, editListMock, defaultQueryMock];
       renderWithProviders(mocks);
       await waitForComponent();
 
@@ -216,7 +210,7 @@ describe("Edit Component", () => {
         },
       };
 
-      const mocks = [defaultQueryMock, editListMock];
+      const mocks = [defaultQueryMock, editListMock, defaultQueryMock];
       renderWithProviders(mocks);
       await waitForComponent();
 
@@ -247,7 +241,7 @@ describe("Edit Component", () => {
         },
       };
 
-      const mocks = [defaultQueryMock, editListMock];
+      const mocks = [defaultQueryMock, editListMock, defaultQueryMock];
       renderWithProviders(mocks);
       await waitForComponent();
 
@@ -839,7 +833,7 @@ describe("Edit Component", () => {
         },
       };
 
-      const mocks = [defaultQueryMock, editListMock];
+      const mocks = [defaultQueryMock, editListMock, defaultQueryMock];
       renderWithProviders(mocks);
       await waitForComponent();
 
@@ -877,7 +871,7 @@ describe("Edit Component", () => {
         },
       };
 
-      const mocks = [defaultQueryMock, editListMock];
+      const mocks = [defaultQueryMock, editListMock, defaultQueryMock];
       renderWithProviders(mocks);
       await waitForComponent();
 

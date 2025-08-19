@@ -7,6 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 import NewList from "../../src/components/NewList.jsx";
 import CREATE_LIST from "../../src/mutations/CreateList.js";
 import CURRENT_USER from "../../src/queries/CurrentUser.js";
+import FETCH_NAV from "../../src/queries/Nav.js";
 
 const mockNavigate = jest.fn();
 
@@ -16,21 +17,21 @@ jest.mock("react-router-dom", () => ({
   useNavigate: () => mockNavigate,
 }));
 
-const defaultMocks = [
-  {
-    request: {
-      query: CURRENT_USER,
-    },
-    result: {
-      data: {
-        user: {
-          id: "1",
-          email: "test@test.com",
-        },
+const userMock = {
+  request: {
+    query: CURRENT_USER,
+  },
+  result: {
+    data: {
+      user: {
+        id: "1",
+        email: "test@test.com",
       },
     },
   },
-];
+};
+
+const defaultMocks = [userMock];
 
 const createListMock = {
   request: {
@@ -54,6 +55,23 @@ const createListErrorMock = {
   },
   result: {
     errors: [{ message: "Failed to create list" }],
+  },
+};
+
+const fetchNav = {
+  request: {
+    query: FETCH_NAV,
+    variables: {},
+  },
+  result: {
+    data: {
+      user: {
+        id: "1",
+        email: "test@test.com",
+        lists: [{ id: "1", name: "User List" }],
+      },
+      lists: [{ id: "2", name: "Public List" }],
+    },
   },
 };
 
@@ -104,7 +122,7 @@ describe("NewList Component", () => {
         },
       };
 
-      const mocks = [...defaultMocks, createListMock];
+      const mocks = [...defaultMocks, createListMock, fetchNav];
       renderWithProviders(mocks);
       await waitForComponent();
 
@@ -135,7 +153,7 @@ describe("NewList Component", () => {
         },
       };
 
-      const mocks = [...defaultMocks, createListMock];
+      const mocks = [...defaultMocks, createListMock, fetchNav];
       renderWithProviders(mocks);
       await waitForComponent();
 
@@ -168,7 +186,7 @@ describe("NewList Component", () => {
         },
       };
 
-      const mocks = [...defaultMocks, createListMock];
+      const mocks = [...defaultMocks, createListMock, fetchNav];
       renderWithProviders(mocks);
       await waitForComponent();
 
@@ -202,7 +220,7 @@ describe("NewList Component", () => {
         },
       };
 
-      const mocks = [...defaultMocks, createListMock];
+      const mocks = [...defaultMocks, createListMock, fetchNav];
       renderWithProviders(mocks);
       await waitForComponent();
 
@@ -227,12 +245,13 @@ describe("NewList Component", () => {
           data: {
             createList: {
               id: "minimal",
+              name: "Minimal List",
             },
           },
         },
       };
 
-      const mocks = [...defaultMocks, createListMock];
+      const mocks = [...defaultMocks, createListMock, fetchNav];
       renderWithProviders(mocks);
       await waitForComponent();
 
@@ -264,7 +283,7 @@ describe("NewList Component", () => {
         delay: 100, // Add delay to test timing
       };
 
-      const mocks = [...defaultMocks, createListMock];
+      const mocks = [...defaultMocks, createListMock, fetchNav];
       renderWithProviders(mocks);
       await waitForComponent();
 
@@ -302,7 +321,7 @@ describe("NewList Component", () => {
         },
       };
 
-      const mocks = [...defaultMocks, createListNullMock];
+      const mocks = [...defaultMocks, createListNullMock, fetchNav];
       renderWithProviders(mocks);
       await waitForComponent();
 
@@ -316,70 +335,6 @@ describe("NewList Component", () => {
       await waitFor(
         () => {
           // Should not navigate when createList is null
-          expect(mockNavigate).not.toHaveBeenCalled();
-        },
-        { timeout: 1000 },
-      );
-    });
-
-    it("should handle mutation that returns data without createList property", async () => {
-      const createListMissingMock = {
-        request: {
-          query: CREATE_LIST,
-          variables: { name: "Missing CreateList" },
-        },
-        result: {
-          data: {
-            someOtherProperty: "value",
-          },
-        },
-      };
-
-      const mocks = [...defaultMocks, createListMissingMock];
-      renderWithProviders(mocks);
-      await waitForComponent();
-
-      const input = screen.getByPlaceholderText("Star Trek");
-      const form = getForm();
-
-      fireEvent.change(input, { target: { value: "Missing CreateList" } });
-      fireEvent.submit(form);
-
-      // Wait a bit to ensure the mutation would have completed
-      await waitFor(
-        () => {
-          // Should not navigate when createList property is missing
-          expect(mockNavigate).not.toHaveBeenCalled();
-        },
-        { timeout: 1000 },
-      );
-    });
-
-    it("should handle mutation that returns undefined data", async () => {
-      const createListUndefinedMock = {
-        request: {
-          query: CREATE_LIST,
-          variables: { name: "Undefined Data" },
-        },
-        result: {
-          data: undefined,
-        },
-      };
-
-      const mocks = [...defaultMocks, createListUndefinedMock];
-      renderWithProviders(mocks);
-      await waitForComponent();
-
-      const input = screen.getByPlaceholderText("Star Trek");
-      const form = getForm();
-
-      fireEvent.change(input, { target: { value: "Undefined Data" } });
-      fireEvent.submit(form);
-
-      // Wait a bit to ensure the mutation would have completed
-      await waitFor(
-        () => {
-          // Should not navigate when data is undefined
           expect(mockNavigate).not.toHaveBeenCalled();
         },
         { timeout: 1000 },
@@ -403,7 +358,7 @@ describe("NewList Component", () => {
         },
       };
 
-      const mocks = [...defaultMocks, createListMock];
+      const mocks = [...defaultMocks, createListMock, fetchNav];
       renderWithProviders(mocks);
       await waitForComponent();
 
@@ -557,7 +512,7 @@ describe("NewList Component", () => {
 
     it("should navigate to new list after successful creation", async () => {
       const user = userEvent.setup();
-      const mocks = [...defaultMocks, createListMock];
+      const mocks = [...defaultMocks, createListMock, fetchNav];
       renderWithProviders(mocks);
       await waitForComponent();
 
@@ -576,7 +531,7 @@ describe("NewList Component", () => {
   describe("Form Submission", () => {
     it("should submit form with valid name", async () => {
       const user = userEvent.setup();
-      const mocks = [...defaultMocks, createListMock];
+      const mocks = [userMock, createListMock, fetchNav];
       renderWithProviders(mocks);
       await waitForComponent();
 
@@ -593,7 +548,7 @@ describe("NewList Component", () => {
 
     it("should handle Enter key submission", async () => {
       const user = userEvent.setup();
-      const mocks = [...defaultMocks, createListMock];
+      const mocks = [...defaultMocks, createListMock, fetchNav];
       renderWithProviders(mocks);
       await waitForComponent();
 

@@ -26,7 +26,7 @@ async function startServer() {
   try {
     await mongoose.connect(MONGO_URI);
     if (!isProduction()) {
-      console.log("Connected to MongoDB instance."); // eslint-disable-line no-console
+      console.log("Connected to MongoDB instance.");
     }
 
     // Session setup
@@ -69,12 +69,12 @@ async function startServer() {
     // Start the server
     app.listen(process.env.PORT || 3001, () => {
       if (!isProduction()) {
-        console.log("Server is running."); // eslint-disable-line no-console
+        console.log("Server is running.");
       }
     });
   } catch (error) {
     if (!isProduction()) {
-      console.error("Error connecting to MongoDB:", error); // eslint-disable-line no-console
+      console.error("Error connecting to MongoDB:", error);
     }
     process.exit(1);
   }
