@@ -65,7 +65,7 @@ A full-stack web application for organizing and managing your movie and TV show 
    ```env
    MONGO_URI=your_mongodb_connection_string
    SECRET=your_session_secret
-   TMDB_API_KEY=your_tmdb_api_key
+   API_KEY=your_tmdb_api_key
    NODE_ENV=development
    PORT=3001
    ```
@@ -170,7 +170,7 @@ Make sure to set these environment variables in your production environment:
 
 - `MONGO_URI`
 - `SECRET`
-- `TMDB_API_KEY`
+- `API_KEY`
 - `NODE_ENV=production`
 
 ## Contributing
