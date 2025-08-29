@@ -21,9 +21,10 @@ const modelMocks = setupMockFactories(originalModel);
 const mockManager = new MockManager(modelMocks);
 
 // Import service after mocking
-const listService = await import("../../services/list.js").then(
-  (m) => m.default,
-);
+let listService;
+beforeAll(async () => {
+  listService = (await import("../../services/list.js")).default;
+});
 
 describe("List Service", () => {
   // Test data

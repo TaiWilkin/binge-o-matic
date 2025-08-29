@@ -18,7 +18,7 @@ function AuthForm({ error, title, onSubmit }) {
 
     onSubmit({ variables: { email, password } })
       .catch((err) => {
-        setStateError(err.message || "Submission failed");
+        setStateError(err?.message || "Submission failed");
       })
       .finally(() => {
         setLoading(false);

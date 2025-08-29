@@ -1,4 +1,9 @@
-import graphql from "graphql";
+import {
+  GraphQLID,
+  GraphQLList,
+  GraphQLObjectType,
+  GraphQLString,
+} from "graphql";
 import mongoose from "mongoose";
 
 import {
@@ -10,8 +15,6 @@ import {
   TestSetup,
 } from "../../testUtils.js";
 
-const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLList } = graphql;
-
 // Setup test environment and mocking
 const { originalLogError } = TestSetup.setupTestEnvironment();
 const originalModel = mongoose.model;
@@ -21,9 +24,12 @@ const modelMocks = setupMockFactories(originalModel);
 const mockManager = new MockManager(modelMocks);
 
 // Import UserType after mocking
-const UserType = await import("../../../schema/types/user_type.js").then(
-  (m) => m.default,
-);
+let UserType;
+beforeAll(async () => {
+  UserType = await import("../../../schema/types/user_type.js").then(
+    (m) => m.default,
+  );
+});
 
 describe("UserType", () => {
   // Test data
