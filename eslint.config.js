@@ -6,6 +6,20 @@ import simpleImportSort from "eslint-plugin-simple-import-sort";
 export default [
   js.configs.recommended,
 
+  // Global ignores - these apply to all configs
+  {
+    ignores: [
+      "**/dist/**",
+      "**/build/**",
+      "**/coverage/**",
+      "**/node_modules/**",
+      "**/*.min.js",
+      "**/*.bundle.js",
+      ".DS_Store",
+      "*.log",
+    ],
+  },
+
   // Test files configuration
   {
     files: [

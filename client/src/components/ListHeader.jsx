@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import requireAuth from "./requireAuth";
 
 function ListHeader({ name }) {
   return (
@@ -23,4 +22,4 @@ function ListHeader({ name }) {
   );
 }
 
-export default requireAuth(ListHeader);
+export default ListHeader;

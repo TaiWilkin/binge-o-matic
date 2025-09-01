@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import listQuery from "../queries/List";
 import mediaQuery from "../queries/Media";
@@ -13,7 +13,6 @@ function SearchMovies() {
   const [media, setMedia] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate();
   const { id } = useParams();
 
   const onSubmit = (e, client) => {
