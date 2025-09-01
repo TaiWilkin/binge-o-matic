@@ -27,13 +27,11 @@
     "start": "concurrently \"npm run server\" \"npm run client\"",
     "server": "node server.js",
     "client": "node start-client.js",
-    "dev": "echo \"This command has been deprecated. Use 'npm start'\" && exit 1",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "heroku-postbuild": "cd client && npm install && npm run build"
+    "test:coverage": "jest --coverage"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.28.3",
@@ -43,17 +41,14 @@
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
     "babel-jest": "^29.7.0",
-    "concurrently": "^7.6.0",
     "eslint": "^9.34.0",
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-simple-import-sort": "^12.1.1",
-    "identity-obj-proxy": "^3.0.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "mongodb-memory-server": "^10.1.4",
-    "prettier": "^3.5.3",
-    "text-encoding": "^0.7.0"
+    "prettier": "^3.5.3"
   },
   "author": "",
   "license": "ISC",
