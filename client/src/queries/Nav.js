@@ -4,11 +4,6 @@ export default gql`
   {
     user {
       id
-      email
-      lists {
-        id
-        name
-      }
     }
     lists {
       id

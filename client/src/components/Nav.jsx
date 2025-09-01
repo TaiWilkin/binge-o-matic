@@ -8,31 +8,40 @@ import QueryHandler from "./QueryHandler";
 
 function Nav() {
   return (
-    <QueryHandler query={query} pollInterval={500} useCustomLoader>
-      {({ data, client, loading }) => (
-        <nav>
-          <ul className="nav">
-            <li>
-              <Link to="/about">About</Link>
-            </li>
-            {data?.lists && (
-              <NavLists lists={data.lists} title="User-Managed Lists" />
-            )}
-            {!!data?.user && (
-              <NavLists lists={data.user.lists} title="My Lists" />
-            )}
-            {!!data?.user && (
-              <li>
-                <Link to="/newlist" className="right">
-                  New List
-                </Link>
-              </li>
-            )}
-            <AuthButton user={data?.user} client={client} loading={loading} />
-          </ul>
-        </nav>
-      )}
-    </QueryHandler>
+    <>
+      <nav>
+        <ul className="nav">
+          <li>
+            <Link to="/about">About</Link>
+          </li>
+          <QueryHandler query={query} pollInterval={500} useCustomLoader>
+            {({ data, client, loading }) =>
+              data?.user ? (
+                <>
+                  <NavLists userId={data?.user?.id} title="Lists" excludeUser />
+                  <NavLists userId={data?.user?.id} title="My Lists" />
+                  <li>
+                    <Link to="/newlist" className="right">
+                      New List
+                    </Link>
+                  </li>
+                  <AuthButton
+                    user={data.user}
+                    client={client}
+                    loading={loading}
+                  />
+                </>
+              ) : (
+                <>
+                  <NavLists title="Lists" excludeUser />
+                  <AuthButton client={client} loading={loading} />
+                </>
+              )
+            }
+          </QueryHandler>
+        </ul>
+      </nav>
+    </>
   );
 }
 
