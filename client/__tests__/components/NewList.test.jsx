@@ -7,7 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 import NewList from "../../src/components/NewList.jsx";
 import CREATE_LIST from "../../src/mutations/CreateList.js";
 import CURRENT_USER from "../../src/queries/CurrentUser.js";
-import FETCH_NAV from "../../src/queries/Nav.js";
+import FETCH_LISTS from "../../src/queries/Lists.js";
 
 const mockNavigate = jest.fn();
 
@@ -60,17 +60,15 @@ const createListErrorMock = {
 
 const fetchNav = {
   request: {
-    query: FETCH_NAV,
+    query: FETCH_LISTS,
     variables: {},
   },
   result: {
     data: {
-      user: {
-        id: "1",
-        email: "test@test.com",
-        lists: [{ id: "1", name: "User List" }],
-      },
-      lists: [{ id: "2", name: "Public List" }],
+      lists: [
+        { id: "1", name: "User List", user: "1" },
+        { id: "2", name: "Public List", user: "2" },
+      ],
     },
   },
 };
