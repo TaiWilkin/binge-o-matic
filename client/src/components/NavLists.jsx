@@ -1,19 +1,11 @@
+import { useLazyQuery } from "@apollo/client";
 import React from "react";
 import { Link } from "react-router-dom";
-import { gql, useLazyQuery } from "@apollo/client";
 
-const GET_LISTS = gql`
-  query GetLists {
-    lists {
-      id
-      name
-      user
-    }
-  }
-`;
+import query from "../queries/Lists";
 
 function NavLists({ title, userId, excludeUser }) {
-  const [loadLists, { called, loading, data, error }] = useLazyQuery(GET_LISTS);
+  const [loadLists, { called, loading, data, error }] = useLazyQuery(query);
   return (
     <li
       className="dropdown"
