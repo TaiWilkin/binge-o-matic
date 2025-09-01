@@ -60,15 +60,18 @@ async function addToList(media, user) {
 }
 
 async function getMediaList(mediaIds) {
+  const idToItem = new Map();
+  mediaIds.forEach((el) => idToItem.set(el.item_id.toString(), el));
+
   const ms = await Media.find({
-    _id: {
-      $in: mediaIds.map((el) => convertToObjectId(el.item_id)),
-    },
-  });
-  // find all media whose _id equals the item_id (MLab id) of the item
+    _id: { $in: mediaIds.map((el) => convertToObjectId(el.item_id)) },
+  }).select(
+    "title media_id release_date poster_path media_type number parent_show parent_season episode",
+  );
+
   return ms
     .map((m) => {
-      const mediaItem = mediaIds.find((el) => areIdsEqual(el.item_id, m._id));
+      const mediaItem = idToItem.get(m._id.toString());
       return {
         isWatched: mediaItem.isWatched,
         title: m.title,

@@ -9,14 +9,13 @@ import { buildContext } from "graphql-passport";
 import mongoose from "mongoose";
 import passport from "passport";
 
+import { isProduction } from "./server/helpers/index.js";
 import schema from "./server/schema/schema.js";
-
-export const isProduction = () => process.env.NODE_ENV === "production";
 
 // Create a new Express application
 const app = express();
 
-if (process.env.NODE_ENV === "production") {
+if (isProduction()) {
   app.use(express.static("client/build"));
 }
 

@@ -152,7 +152,9 @@ export class MockManager {
         ),
       },
       media: {
-        find: jest.fn(() => Promise.resolve(mediaData)),
+        find: jest.fn(() => ({
+          select: jest.fn(() => Promise.resolve(mediaData)),
+        })),
       },
     };
   }
@@ -453,7 +455,9 @@ export function createListModel() {
 
 export function createMediaModel() {
   return {
-    find: jest.fn(() => Promise.resolve([])),
+    find: jest.fn(() => ({
+      select: jest.fn(() => Promise.resolve([])),
+    })),
     findOne: jest.fn(() => Promise.resolve(null)),
     findOneAndUpdate: jest.fn(() => Promise.resolve({})),
   };

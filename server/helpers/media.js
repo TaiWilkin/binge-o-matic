@@ -8,18 +8,10 @@ const mediaTypes = {
 };
 
 export const compareMedia = (a, b) => {
-  if (a.release_date < b.release_date) {
-    return -1;
-  }
-  if (a.release_date > b.release_date) {
-    return 1;
-  }
-  if (mediaTypes[a.media_type] < mediaTypes[b.media_type]) {
-    return -1;
-  }
-  if (mediaTypes[a.media_type] > mediaTypes[b.media_type]) {
-    return 1;
-  }
+  if (a.release_date < b.release_date) return -1;
+  if (a.release_date > b.release_date) return 1;
+  if (mediaTypes[a.media_type] < mediaTypes[b.media_type]) return -1;
+  if (mediaTypes[a.media_type] > mediaTypes[b.media_type]) return 1;
   return a.title.localeCompare(b.title);
 };
 

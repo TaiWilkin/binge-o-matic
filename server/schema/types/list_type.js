@@ -5,6 +5,7 @@ import {
   GraphQLString,
 } from "graphql";
 
+import { timedResolver } from "../../helpers/timedResolver.js";
 import MediaService from "../../services/media.js";
 import MediaType from "./media_type.js";
 
@@ -16,9 +17,9 @@ const ListType = new GraphQLObjectType({
     user: { type: GraphQLID },
     media: {
       type: new GraphQLList(MediaType),
-      resolve(parentValue) {
+      resolve: timedResolver(async (parentValue) => {
         return MediaService.getMediaList(parentValue.media);
-      },
+      }),
     },
   }),
 });

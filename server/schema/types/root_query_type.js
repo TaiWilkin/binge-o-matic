@@ -5,6 +5,7 @@ import {
   GraphQLString,
 } from "graphql";
 
+import { timedResolver } from "../../helpers/timedResolver.js";
 import ListService from "../../services/list.js";
 import MediaService from "../../services/media.js";
 import ListType from "./list_type.js";
@@ -16,33 +17,31 @@ const RootQueryType = new GraphQLObjectType({
   fields: () => ({
     user: {
       type: UserType,
-      resolve(_parentValue, _args, context) {
-        return context.user;
-      },
+      resolve: timedResolver((_parentValue, _args, { user }) => user),
     },
     lists: {
       type: new GraphQLList(ListType),
-      resolve() {
+      resolve: timedResolver(() => {
         return ListService.fetchAllLists();
-      },
+      }),
     },
     list: {
       type: ListType,
       args: {
         id: { type: GraphQLID },
       },
-      resolve(_parentValue, args) {
+      resolve: timedResolver((_parentValue, args) => {
         return ListService.fetchList(args.id);
-      },
+      }),
     },
     media: {
       type: new GraphQLList(MediaType),
       args: {
         searchQuery: { type: GraphQLString },
       },
-      resolve(_parentValue, { searchQuery }) {
+      resolve: timedResolver((_parentValue, { searchQuery }) => {
         return MediaService.searchMedia(searchQuery);
-      },
+      }),
     },
   }),
 });

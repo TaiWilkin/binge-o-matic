@@ -67,7 +67,9 @@ describe("Media Service", () => {
           Promise.resolve({ ...mockListData, media: [...mockListData.media] }),
       },
       media: {
-        find: () => Promise.resolve([mockMediaItem]),
+        find: () => ({
+          select: () => Promise.resolve([mockMediaItem]),
+        }),
         findOne: () => Promise.resolve(mockMediaItem),
         findOneAndUpdate: () => Promise.resolve(mockMediaItem),
       },
@@ -263,7 +265,9 @@ describe("Media Service", () => {
         },
       ];
 
-      modelMocks.media.find = () => Promise.resolve(mockMultipleMedia);
+      modelMocks.media.find = () => ({
+        select: () => Promise.resolve(mockMultipleMedia),
+      });
 
       const mediaIds = [
         {
@@ -308,7 +312,9 @@ describe("Media Service", () => {
         },
       ];
 
-      modelMocks.media.find = () => Promise.resolve(mockMultipleMedia);
+      modelMocks.media.find = () => ({
+        select: () => Promise.resolve(mockMultipleMedia),
+      });
 
       const mediaIds = [
         {
@@ -366,7 +372,9 @@ describe("Media Service", () => {
         },
       ];
 
-      modelMocks.media.find = () => Promise.resolve(mockMultipleMedia);
+      modelMocks.media.find = () => ({
+        select: () => Promise.resolve(mockMultipleMedia),
+      });
 
       const mediaIds = [
         {
