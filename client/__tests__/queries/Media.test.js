@@ -1,4 +1,4 @@
-import gql from "graphql-tag";
+import { gql } from "@apollo/client";
 
 import MediaQuery from "../../src/queries/Media.js";
 

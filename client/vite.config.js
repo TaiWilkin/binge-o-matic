@@ -4,6 +4,12 @@ import { defineConfig } from "vite";
 export default defineConfig({
   plugins: [react()],
   base: "/",
+  optimizeDeps: {
+    exclude: ["graphql"],
+  },
+  ssr: {
+    external: ["graphql"],
+  },
   server: {
     proxy: {
       "/graphql": {
