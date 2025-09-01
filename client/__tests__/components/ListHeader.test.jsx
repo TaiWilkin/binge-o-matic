@@ -1,11 +1,17 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
+import { MemoryRouter } from "react-router-dom";
 
 import ListHeader from "../../src/components/ListHeader.jsx";
 
 describe("ListHeader Component", () => {
   const mockPush = jest.fn();
+
+  // Helper function to render component with Router context
+  const renderWithRouter = (component) => {
+    return render(<MemoryRouter>{component}</MemoryRouter>);
+  };
 
   beforeEach(() => {
     mockPush.mockClear();
@@ -13,7 +19,7 @@ describe("ListHeader Component", () => {
 
   describe("Rendering", () => {
     it("should render with name prop", () => {
-      render(<ListHeader name="Test List" push={mockPush} />);
+      renderWithRouter(<ListHeader name="Test List" push={mockPush} />);
 
       const heading = screen.getByRole("heading", { level: 2 });
       expect(heading).toBeInTheDocument();
@@ -21,7 +27,7 @@ describe("ListHeader Component", () => {
     });
 
     it("should render the disclaimer text", () => {
-      render(<ListHeader name="Test List" push={mockPush} />);
+      renderWithRouter(<ListHeader name="Test List" push={mockPush} />);
 
       const disclaimer = screen.getByText(
         "This is a user-managed list and may not be complete.",
@@ -30,17 +36,16 @@ describe("ListHeader Component", () => {
       expect(disclaimer.tagName).toBe("P");
     });
 
-    it("should render CREATE LIST button", () => {
-      render(<ListHeader name="Test List" push={mockPush} />);
+    it("should render CREATE LIST link", () => {
+      renderWithRouter(<ListHeader name="Test List" push={mockPush} />);
 
-      const button = screen.getByRole("button", { name: "CREATE LIST" });
-      expect(button).toBeInTheDocument();
-      expect(button).toHaveAttribute("type", "button");
-      expect(button).toHaveClass("edit-btn");
+      const link = screen.getByRole("link", { name: "CREATE LIST" });
+      expect(link).toBeInTheDocument();
+      expect(link).toHaveAttribute("href", "/newlist");
     });
 
     it("should render with correct HTML structure", () => {
-      const { container } = render(
+      const { container } = renderWithRouter(
         <ListHeader name="Test List" push={mockPush} />,
       );
 
@@ -48,23 +53,23 @@ describe("ListHeader Component", () => {
       const headerInfo = container.querySelector(".header-info");
       const heading = container.querySelector("h2");
       const paragraph = container.querySelector("p");
-      const button = container.querySelector(".edit-btn");
+      const link = container.querySelector(".edit-link");
 
       expect(header).toBeInTheDocument();
       expect(headerInfo).toBeInTheDocument();
       expect(heading).toBeInTheDocument();
       expect(paragraph).toBeInTheDocument();
-      expect(button).toBeInTheDocument();
+      expect(link).toBeInTheDocument();
 
       // Check hierarchy
       expect(header).toContainElement(headerInfo);
-      expect(header).toContainElement(button);
+      expect(header).toContainElement(link);
       expect(headerInfo).toContainElement(heading);
       expect(headerInfo).toContainElement(paragraph);
     });
 
     it("should apply inline styles to header-info", () => {
-      const { container } = render(
+      const { container } = renderWithRouter(
         <ListHeader name="Test List" push={mockPush} />,
       );
 
@@ -79,7 +84,7 @@ describe("ListHeader Component", () => {
 
   describe("Name prop handling", () => {
     it("should render empty string name", () => {
-      render(<ListHeader name="" push={mockPush} />);
+      renderWithRouter(<ListHeader name="" push={mockPush} />);
 
       const heading = screen.getByRole("heading", { level: 2 });
       expect(heading).toBeInTheDocument();
@@ -87,7 +92,7 @@ describe("ListHeader Component", () => {
     });
 
     it("should render null name", () => {
-      render(<ListHeader name={null} push={mockPush} />);
+      renderWithRouter(<ListHeader name={null} push={mockPush} />);
 
       const heading = screen.getByRole("heading", { level: 2 });
       expect(heading).toBeInTheDocument();
@@ -95,7 +100,7 @@ describe("ListHeader Component", () => {
     });
 
     it("should render undefined name", () => {
-      render(<ListHeader name={undefined} push={mockPush} />);
+      renderWithRouter(<ListHeader name={undefined} push={mockPush} />);
 
       const heading = screen.getByRole("heading", { level: 2 });
       expect(heading).toBeInTheDocument();
@@ -103,7 +108,7 @@ describe("ListHeader Component", () => {
     });
 
     it("should render numeric name", () => {
-      render(<ListHeader name={123} push={mockPush} />);
+      renderWithRouter(<ListHeader name={123} push={mockPush} />);
 
       const heading = screen.getByRole("heading", { level: 2 });
       expect(heading).toBeInTheDocument();
@@ -112,7 +117,7 @@ describe("ListHeader Component", () => {
 
     it("should render long name", () => {
       const longName = "A".repeat(100);
-      render(<ListHeader name={longName} push={mockPush} />);
+      renderWithRouter(<ListHeader name={longName} push={mockPush} />);
 
       const heading = screen.getByRole("heading", { level: 2 });
       expect(heading).toBeInTheDocument();
@@ -121,7 +126,7 @@ describe("ListHeader Component", () => {
 
     it("should render name with special characters", () => {
       const specialName = "List with special chars: !@#$%^&*() 中文 🚀";
-      render(<ListHeader name={specialName} push={mockPush} />);
+      renderWithRouter(<ListHeader name={specialName} push={mockPush} />);
 
       const heading = screen.getByRole("heading", { level: 2 });
       expect(heading).toBeInTheDocument();
@@ -130,7 +135,7 @@ describe("ListHeader Component", () => {
 
     it("should handle HTML-like content in name", () => {
       const htmlName = "<script>alert('xss')</script>";
-      render(<ListHeader name={htmlName} push={mockPush} />);
+      renderWithRouter(<ListHeader name={htmlName} push={mockPush} />);
 
       const heading = screen.getByRole("heading", { level: 2 });
       expect(heading).toBeInTheDocument();
@@ -138,61 +143,54 @@ describe("ListHeader Component", () => {
     });
   });
 
-  describe("Button functionality", () => {
-    it("should call push with /newlist when button is clicked", async () => {
-      const user = userEvent.setup();
-      render(<ListHeader name="Test List" push={mockPush} />);
+  describe("Link functionality", () => {
+    it("should render CREATE LIST link with correct href", () => {
+      renderWithRouter(<ListHeader name="Test List" push={mockPush} />);
 
-      const button = screen.getByRole("button", { name: "CREATE LIST" });
-      await user.click(button);
-
-      expect(mockPush).toHaveBeenCalledTimes(1);
-      expect(mockPush).toHaveBeenCalledWith("/newlist");
+      const link = screen.getByRole("link", { name: "CREATE LIST" });
+      expect(link).toBeInTheDocument();
+      expect(link).toHaveAttribute("href", "/newlist");
     });
 
-    it("should call push multiple times on multiple clicks", async () => {
-      const user = userEvent.setup();
-      render(<ListHeader name="Test List" push={mockPush} />);
+    it("should not depend on push prop for navigation", () => {
+      // Since we're using Link, navigation is handled by React Router, not the push prop
+      renderWithRouter(<ListHeader name="Test List" />);
 
-      const button = screen.getByRole("button", { name: "CREATE LIST" });
-
-      await user.click(button);
-      await user.click(button);
-      await user.click(button);
-
-      expect(mockPush).toHaveBeenCalledTimes(3);
-      expect(mockPush).toHaveBeenNthCalledWith(1, "/newlist");
-      expect(mockPush).toHaveBeenNthCalledWith(2, "/newlist");
-      expect(mockPush).toHaveBeenNthCalledWith(3, "/newlist");
+      const link = screen.getByRole("link", { name: "CREATE LIST" });
+      expect(link).toBeInTheDocument();
+      expect(link).toHaveAttribute("href", "/newlist");
     });
 
     it("should handle missing push prop gracefully", () => {
-      expect(() => render(<ListHeader name="Test List" />)).not.toThrow();
+      expect(() =>
+        renderWithRouter(<ListHeader name="Test List" />),
+      ).not.toThrow();
     });
 
     it("should not crash when push is null", () => {
       expect(() =>
-        render(<ListHeader name="Test List" push={null} />),
+        renderWithRouter(<ListHeader name="Test List" push={null} />),
       ).not.toThrow();
     });
 
     it("should handle push being undefined", () => {
       // Component should render without crashing even with undefined push
       expect(() =>
-        render(<ListHeader name="Test List" push={undefined} />),
+        renderWithRouter(<ListHeader name="Test List" push={undefined} />),
       ).not.toThrow();
 
-      const button = screen.getByRole("button", { name: "CREATE LIST" });
-      expect(button).toBeInTheDocument();
+      const link = screen.getByRole("link", { name: "CREATE LIST" });
+      expect(link).toBeInTheDocument();
+      expect(link).toHaveAttribute("href", "/newlist");
 
-      // Note: Clicking the button would throw, but this tests that rendering works
+      // Note: Navigation is handled by React Router, not the push prop
     });
   });
 
   describe("Component behavior", () => {
     it("should render without crashing", () => {
       expect(() =>
-        render(<ListHeader name="Test" push={mockPush} />),
+        renderWithRouter(<ListHeader name="Test" push={mockPush} />),
       ).not.toThrow();
     });
 
@@ -207,43 +205,55 @@ describe("ListHeader Component", () => {
     });
 
     it("should handle prop changes correctly", () => {
-      const { rerender } = render(
+      const { rerender } = renderWithRouter(
         <ListHeader name="Original Name" push={mockPush} />,
       );
 
       let heading = screen.getByRole("heading", { level: 2 });
       expect(heading).toHaveTextContent("Original Name");
 
-      rerender(<ListHeader name="Updated Name" push={mockPush} />);
+      rerender(
+        <MemoryRouter>
+          <ListHeader name="Updated Name" push={mockPush} />
+        </MemoryRouter>,
+      );
 
       heading = screen.getByRole("heading", { level: 2 });
       expect(heading).toHaveTextContent("Updated Name");
     });
 
-    it("should handle push function changes", async () => {
-      const user = userEvent.setup();
+    it("should handle push function changes", () => {
+      // Since we're using Link now, the push prop is not used for navigation
+      // This test verifies that the component renders correctly regardless of push prop changes
       const newPush = jest.fn();
 
-      const { rerender } = render(<ListHeader name="Test" push={mockPush} />);
+      const { rerender } = renderWithRouter(
+        <ListHeader name="Test" push={mockPush} />,
+      );
 
-      const button = screen.getByRole("button", { name: "CREATE LIST" });
-      await user.click(button);
+      const link = screen.getByRole("link", { name: "CREATE LIST" });
+      expect(link).toBeInTheDocument();
+      expect(link).toHaveAttribute("href", "/newlist");
 
-      expect(mockPush).toHaveBeenCalledTimes(1);
-      expect(newPush).not.toHaveBeenCalled();
+      // Rerender with different push function
+      rerender(
+        <MemoryRouter>
+          <ListHeader name="Test" push={newPush} />
+        </MemoryRouter>,
+      );
 
-      rerender(<ListHeader name="Test" push={newPush} />);
-
-      await user.click(button);
-
-      expect(mockPush).toHaveBeenCalledTimes(1); // Still 1
-      expect(newPush).toHaveBeenCalledTimes(1);
+      // Link should still work the same way
+      const linkAfterRerender = screen.getByRole("link", {
+        name: "CREATE LIST",
+      });
+      expect(linkAfterRerender).toBeInTheDocument();
+      expect(linkAfterRerender).toHaveAttribute("href", "/newlist");
     });
 
     it("should not have side effects during render", () => {
       const consoleSpy = jest.spyOn(console, "log").mockImplementation();
 
-      render(<ListHeader name="Test" push={mockPush} />);
+      renderWithRouter(<ListHeader name="Test" push={mockPush} />);
 
       expect(consoleSpy).not.toHaveBeenCalled();
 
@@ -253,22 +263,22 @@ describe("ListHeader Component", () => {
 
   describe("Accessibility", () => {
     it("should have proper heading hierarchy", () => {
-      render(<ListHeader name="Test List" push={mockPush} />);
+      renderWithRouter(<ListHeader name="Test List" push={mockPush} />);
 
       const heading = screen.getByRole("heading", { level: 2 });
       expect(heading).toBeInTheDocument();
     });
 
-    it("should have accessible button", () => {
-      render(<ListHeader name="Test List" push={mockPush} />);
+    it("should have accessible link", () => {
+      renderWithRouter(<ListHeader name="Test List" push={mockPush} />);
 
-      const button = screen.getByRole("button", { name: "CREATE LIST" });
-      expect(button).toBeInTheDocument();
-      expect(button).toHaveAttribute("type", "button");
+      const link = screen.getByRole("link", { name: "CREATE LIST" });
+      expect(link).toBeInTheDocument();
+      expect(link).toHaveAttribute("href", "/newlist");
     });
 
     it("should have readable text content", () => {
-      render(<ListHeader name="My List" push={mockPush} />);
+      renderWithRouter(<ListHeader name="My List" push={mockPush} />);
 
       // Check that all text is accessible
       expect(screen.getByText("My List")).toBeInTheDocument();
@@ -282,26 +292,30 @@ describe("ListHeader Component", () => {
 
     it("should maintain focus management", async () => {
       const user = userEvent.setup();
-      render(<ListHeader name="Test" push={mockPush} />);
+      renderWithRouter(<ListHeader name="Test" push={mockPush} />);
 
-      const button = screen.getByRole("button", { name: "CREATE LIST" });
+      const link = screen.getByRole("link", { name: "CREATE LIST" });
 
       await user.tab();
-      expect(button).toHaveFocus();
+      expect(link).toHaveFocus();
     });
   });
 
   describe("CSS and styling", () => {
     it("should have correct CSS classes", () => {
-      const { container } = render(<ListHeader name="Test" push={mockPush} />);
+      const { container } = renderWithRouter(
+        <ListHeader name="Test" push={mockPush} />,
+      );
 
       expect(container.querySelector(".header")).toBeInTheDocument();
       expect(container.querySelector(".header-info")).toBeInTheDocument();
-      expect(container.querySelector(".edit-btn")).toBeInTheDocument();
+      expect(container.querySelector(".edit-link")).toBeInTheDocument();
     });
 
     it("should apply flex styling correctly", () => {
-      const { container } = render(<ListHeader name="Test" push={mockPush} />);
+      const { container } = renderWithRouter(
+        <ListHeader name="Test" push={mockPush} />,
+      );
 
       const headerInfo = container.querySelector(".header-info");
       const computedStyle = window.getComputedStyle(headerInfo);
@@ -321,20 +335,30 @@ describe("ListHeader Component", () => {
         </div>
       );
 
-      render(<TestWrapper />);
+      render(
+        <MemoryRouter>
+          <TestWrapper />
+        </MemoryRouter>,
+      );
 
       expect(screen.getByText("Integration Test")).toBeInTheDocument();
       expect(screen.getByText("Additional content")).toBeInTheDocument();
       expect(
-        screen.getByRole("button", { name: "CREATE LIST" }),
+        screen.getByRole("link", { name: "CREATE LIST" }),
       ).toBeInTheDocument();
     });
 
     it("should handle rapid state changes", () => {
-      const { rerender } = render(<ListHeader name="List 1" push={mockPush} />);
+      const { rerender } = renderWithRouter(
+        <ListHeader name="List 1" push={mockPush} />,
+      );
 
       for (let i = 2; i <= 10; i++) {
-        rerender(<ListHeader name={`List ${i}`} push={mockPush} />);
+        rerender(
+          <MemoryRouter>
+            <ListHeader name={`List ${i}`} push={mockPush} />
+          </MemoryRouter>,
+        );
       }
 
       const heading = screen.getByRole("heading", { level: 2 });
