@@ -12,8 +12,6 @@
   "dependencies": {
     "@apollo/client": "^3.13.8",
     "@vitejs/plugin-react": "^4.7.0",
-    "graphql": "^16.11.0",
-    "graphql-tag": "^2.8.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.3",
