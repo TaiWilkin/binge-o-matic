@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import Errors from "./Errors";
 
@@ -8,8 +8,6 @@ function AuthForm({ error, title, onSubmit }) {
   const [password, setPassword] = useState("");
   const [stateError, setStateError] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -29,13 +27,9 @@ function AuthForm({ error, title, onSubmit }) {
     <main>
       <div className="subheader">
         <h2>{title}</h2>
-        <button
-          type="button"
-          className="edit-btn"
-          onClick={() => navigate("/")}
-        >
+        <Link to="/" className="edit-link">
           Cancel
-        </button>
+        </Link>
         <h3 className="error">{stateError}</h3>
         <Link to={title === "Sign in" ? "/signup" : "/signin"}>
           {title === "Sign in" ? "Sign up" : "Sign in"}

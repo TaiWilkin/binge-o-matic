@@ -1,5 +1,5 @@
 import { MockedProvider } from "@apollo/client/testing";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
 
@@ -81,26 +81,28 @@ describe("Nav Component", () => {
       expect(navElement).toBeInTheDocument();
     });
 
-    it("should render About button", () => {
+    it("should render About link", () => {
       render(
         <TestWrapper>
           <Nav />
         </TestWrapper>,
       );
 
-      const aboutButton = screen.getByRole("button", { name: /about/i });
-      expect(aboutButton).toBeInTheDocument();
+      const aboutLink = screen.getByRole("link", { name: /about/i });
+      expect(aboutLink).toBeInTheDocument();
+      expect(aboutLink).toHaveAttribute("href", "/about");
     });
 
-    it("should render New List button when user is logged in", () => {
+    it("should render New List link when user is logged in", () => {
       render(
         <TestWrapper>
           <Nav />
         </TestWrapper>,
       );
 
-      const newListButton = screen.getByRole("button", { name: /new list/i });
-      expect(newListButton).toBeInTheDocument();
+      const newListLink = screen.getByRole("link", { name: /new list/i });
+      expect(newListLink).toBeInTheDocument();
+      expect(newListLink).toHaveAttribute("href", "/newlist");
     });
 
     it("should render nav lists sections", () => {
@@ -127,33 +129,27 @@ describe("Nav Component", () => {
     });
   });
 
-  describe("Button Interactions", () => {
-    it("should navigate to /about when About button is clicked", () => {
+  describe("Link Navigation", () => {
+    it("should have correct href for About link", () => {
       render(
         <TestWrapper>
           <Nav />
         </TestWrapper>,
       );
 
-      const aboutButton = screen.getByRole("button", { name: /about/i });
-      fireEvent.click(aboutButton);
-
-      expect(mockNavigate).toHaveBeenCalledWith("/about");
-      expect(mockNavigate).toHaveBeenCalledTimes(1);
+      const aboutLink = screen.getByRole("link", { name: /about/i });
+      expect(aboutLink).toHaveAttribute("href", "/about");
     });
 
-    it("should navigate to /newlist when New List button is clicked", () => {
+    it("should have correct href for New List link", () => {
       render(
         <TestWrapper>
           <Nav />
         </TestWrapper>,
       );
 
-      const newListButton = screen.getByRole("button", { name: /new list/i });
-      fireEvent.click(newListButton);
-
-      expect(mockNavigate).toHaveBeenCalledWith("/newlist");
-      expect(mockNavigate).toHaveBeenCalledTimes(1);
+      const newListLink = screen.getByRole("link", { name: /new list/i });
+      expect(newListLink).toHaveAttribute("href", "/newlist");
     });
   });
 

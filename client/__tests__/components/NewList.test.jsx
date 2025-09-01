@@ -394,9 +394,7 @@ describe("NewList Component", () => {
       expect(
         screen.getByRole("button", { name: "CREATE" }),
       ).toBeInTheDocument();
-      expect(
-        screen.getByRole("button", { name: "CANCEL" }),
-      ).toBeInTheDocument();
+      expect(screen.getByRole("link", { name: "CANCEL" })).toBeInTheDocument();
     });
 
     it("should have correct form attributes", async () => {
@@ -410,8 +408,8 @@ describe("NewList Component", () => {
       const createButton = screen.getByRole("button", { name: "CREATE" });
       expect(createButton).toHaveAttribute("type", "submit");
 
-      const cancelButton = screen.getByRole("button", { name: "CANCEL" });
-      expect(cancelButton).toHaveAttribute("type", "button");
+      const cancelLink = screen.getByRole("link", { name: "CANCEL" });
+      expect(cancelLink).toHaveAttribute("href", "/");
     });
   });
 
@@ -499,15 +497,12 @@ describe("NewList Component", () => {
   });
 
   describe("Navigation", () => {
-    it("should navigate home when cancel is clicked", async () => {
-      const user = userEvent.setup();
+    it("should have cancel link pointing to home", async () => {
       renderWithProviders();
       await waitForComponent();
 
-      const cancelButton = screen.getByRole("button", { name: "CANCEL" });
-      await user.click(cancelButton);
-
-      expect(mockNavigate).toHaveBeenCalledWith("/");
+      const cancelLink = screen.getByRole("link", { name: "CANCEL" });
+      expect(cancelLink).toHaveAttribute("href", "/");
     });
 
     it("should navigate to new list after successful creation", async () => {
@@ -608,7 +603,8 @@ describe("NewList Component", () => {
       expect(screen.getByRole("main")).toBeInTheDocument();
       expect(getForm()).toBeInTheDocument();
       expect(screen.getByRole("textbox")).toBeInTheDocument();
-      expect(screen.getAllByRole("button")).toHaveLength(2);
+      expect(screen.getAllByRole("button")).toHaveLength(1); // Only CREATE button
+      expect(screen.getAllByRole("link")).toHaveLength(1); // Only CANCEL link
     });
 
     it("should have proper heading structure", async () => {
@@ -634,9 +630,7 @@ describe("NewList Component", () => {
       expect(
         screen.getByRole("button", { name: "CREATE" }),
       ).toBeInTheDocument();
-      expect(
-        screen.getByRole("button", { name: "CANCEL" }),
-      ).toBeInTheDocument();
+      expect(screen.getByRole("link", { name: "CANCEL" })).toBeInTheDocument();
     });
 
     it("should have proper input placeholder", async () => {

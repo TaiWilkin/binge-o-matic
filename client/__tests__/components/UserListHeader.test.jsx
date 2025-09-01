@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
+import { MemoryRouter } from "react-router-dom";
 
 import UserListHeader from "../../src/components/UserListHeader.jsx";
 
@@ -11,6 +12,11 @@ describe("UserListHeader Component", () => {
     hideWatched: false,
     id: "123",
     name: "Test List",
+  };
+
+  // Helper function to render component with Router context
+  const renderWithRouter = (component) => {
+    return render(<MemoryRouter>{component}</MemoryRouter>);
   };
 
   beforeEach(() => {
@@ -24,49 +30,53 @@ describe("UserListHeader Component", () => {
   describe("Component Rendering", () => {
     it("should render without errors", () => {
       expect(() => {
-        render(<UserListHeader {...defaultProps} />);
+        renderWithRouter(<UserListHeader {...defaultProps} />);
       }).not.toThrow();
     });
 
     it("should display the list name", () => {
-      render(<UserListHeader {...defaultProps} />);
+      renderWithRouter(<UserListHeader {...defaultProps} />);
       expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(
         "Test List",
       );
     });
 
     it("should render all required buttons", () => {
-      render(<UserListHeader {...defaultProps} />);
+      renderWithRouter(<UserListHeader {...defaultProps} />);
 
       expect(
         screen.getByRole("button", { name: /hide watched/i }),
       ).toBeInTheDocument();
       expect(
-        screen.getByRole("button", { name: /edit list/i }),
+        screen.getByRole("link", { name: /edit list/i }),
       ).toBeInTheDocument();
       expect(
-        screen.getByRole("button", { name: /add items/i }),
+        screen.getByRole("link", { name: /add items/i }),
       ).toBeInTheDocument();
     });
 
     it("should have correct CSS classes", () => {
-      const { container } = render(<UserListHeader {...defaultProps} />);
+      const { container } = renderWithRouter(
+        <UserListHeader {...defaultProps} />,
+      );
 
       expect(container.querySelector(".header")).toBeInTheDocument();
-      expect(container.querySelectorAll(".edit-btn")).toHaveLength(3);
+      expect(container.querySelectorAll(".list-header-link")).toHaveLength(2); // EDIT LIST and ADD ITEMS links
     });
   });
 
   describe("Toggle Watched Button", () => {
     it("should show 'HIDE WATCHED' when hideWatched is false", () => {
-      render(<UserListHeader {...defaultProps} hideWatched={false} />);
+      renderWithRouter(
+        <UserListHeader {...defaultProps} hideWatched={false} />,
+      );
       expect(
         screen.getByRole("button", { name: "HIDE WATCHED" }),
       ).toBeInTheDocument();
     });
 
     it("should show 'SHOW WATCHED' when hideWatched is true", () => {
-      render(<UserListHeader {...defaultProps} hideWatched={true} />);
+      renderWithRouter(<UserListHeader {...defaultProps} hideWatched={true} />);
       expect(
         screen.getByRole("button", { name: "SHOW WATCHED" }),
       ).toBeInTheDocument();
@@ -76,7 +86,9 @@ describe("UserListHeader Component", () => {
       const user = userEvent.setup();
       const mockToggle = jest.fn();
 
-      render(<UserListHeader {...defaultProps} onToggleWatched={mockToggle} />);
+      renderWithRouter(
+        <UserListHeader {...defaultProps} onToggleWatched={mockToggle} />,
+      );
 
       const toggleButton = screen.getByRole("button", {
         name: /hide watched/i,
@@ -89,7 +101,9 @@ describe("UserListHeader Component", () => {
     it("should call onToggleWatched when clicked with fireEvent", () => {
       const mockToggle = jest.fn();
 
-      render(<UserListHeader {...defaultProps} onToggleWatched={mockToggle} />);
+      renderWithRouter(
+        <UserListHeader {...defaultProps} onToggleWatched={mockToggle} />,
+      );
 
       const toggleButton = screen.getByRole("button", {
         name: /hide watched/i,
@@ -100,81 +114,70 @@ describe("UserListHeader Component", () => {
     });
   });
 
-  describe("Edit List Button", () => {
-    it("should call push with correct edit route when clicked", async () => {
-      const user = userEvent.setup();
-      const mockPush = jest.fn();
+  describe("Edit List Link", () => {
+    it("should render EDIT LIST link with correct href", () => {
+      renderWithRouter(<UserListHeader {...defaultProps} id="456" />);
 
-      render(<UserListHeader {...defaultProps} push={mockPush} id="456" />);
-
-      const editButton = screen.getByRole("button", { name: "EDIT LIST" });
-      await user.click(editButton);
-
-      expect(mockPush).toHaveBeenCalledWith("/lists/456/edit");
+      const editLink = screen.getByRole("link", { name: "EDIT LIST" });
+      expect(editLink).toBeInTheDocument();
+      expect(editLink).toHaveAttribute("href", "/lists/456/edit");
     });
 
-    it("should have correct button text", () => {
-      render(<UserListHeader {...defaultProps} />);
+    it("should have correct link text", () => {
+      renderWithRouter(<UserListHeader {...defaultProps} />);
       expect(
-        screen.getByRole("button", { name: "EDIT LIST" }),
+        screen.getByRole("link", { name: "EDIT LIST" }),
       ).toBeInTheDocument();
     });
   });
 
-  describe("Add Items Button", () => {
-    it("should call push with correct search route when clicked", async () => {
-      const user = userEvent.setup();
-      const mockPush = jest.fn();
+  describe("Add Items Link", () => {
+    it("should render ADD ITEMS link with correct href", () => {
+      renderWithRouter(<UserListHeader {...defaultProps} id="789" />);
 
-      render(<UserListHeader {...defaultProps} push={mockPush} id="789" />);
-
-      const addButton = screen.getByRole("button", { name: "ADD ITEMS" });
-      await user.click(addButton);
-
-      expect(mockPush).toHaveBeenCalledWith("/lists/789/search");
+      const addLink = screen.getByRole("link", { name: "ADD ITEMS" });
+      expect(addLink).toBeInTheDocument();
+      expect(addLink).toHaveAttribute("href", "/lists/789/search");
     });
 
-    it("should have correct button text", () => {
-      render(<UserListHeader {...defaultProps} />);
+    it("should have correct link text", () => {
+      renderWithRouter(<UserListHeader {...defaultProps} />);
       expect(
-        screen.getByRole("button", { name: "ADD ITEMS" }),
+        screen.getByRole("link", { name: "ADD ITEMS" }),
       ).toBeInTheDocument();
     });
   });
 
   describe("Component Integration", () => {
     it("should handle different list names", () => {
-      render(<UserListHeader {...defaultProps} name="My Favorite Movies" />);
+      renderWithRouter(
+        <UserListHeader {...defaultProps} name="My Favorite Movies" />,
+      );
       expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(
         "My Favorite Movies",
       );
     });
 
     it("should handle empty list name", () => {
-      render(<UserListHeader {...defaultProps} name="" />);
+      renderWithRouter(<UserListHeader {...defaultProps} name="" />);
       expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent("");
     });
 
-    it("should handle different list IDs in navigation", async () => {
-      const user = userEvent.setup();
-      const mockPush = jest.fn();
+    it("should handle different list IDs in navigation", () => {
+      renderWithRouter(<UserListHeader {...defaultProps} id="custom-123" />);
 
-      render(
-        <UserListHeader {...defaultProps} push={mockPush} id="custom-123" />,
-      );
+      const editLink = screen.getByRole("link", { name: "EDIT LIST" });
+      expect(editLink).toHaveAttribute("href", "/lists/custom-123/edit");
 
-      await user.click(screen.getByRole("button", { name: "EDIT LIST" }));
-      expect(mockPush).toHaveBeenCalledWith("/lists/custom-123/edit");
-
-      await user.click(screen.getByRole("button", { name: "ADD ITEMS" }));
-      expect(mockPush).toHaveBeenCalledWith("/lists/custom-123/search");
+      const addLink = screen.getByRole("link", { name: "ADD ITEMS" });
+      expect(addLink).toHaveAttribute("href", "/lists/custom-123/search");
     });
 
     it("should toggle watched state correctly", async () => {
       const user = userEvent.setup();
       const mockToggle = jest.fn();
 
-      const { rerender } = render(
+      const { rerender } = renderWithRouter(
         <UserListHeader
           {...defaultProps}
           onToggleWatched={mockToggle}
@@ -193,11 +196,13 @@ describe("UserListHeader Component", () => {
 
       // Simulate state change
       rerender(
-        <UserListHeader
-          {...defaultProps}
-          onToggleWatched={mockToggle}
-          hideWatched={true}
-        />,
+        <MemoryRouter>
+          <UserListHeader
+            {...defaultProps}
+            onToggleWatched={mockToggle}
+            hideWatched={true}
+          />
+        </MemoryRouter>,
       );
 
       expect(
@@ -208,14 +213,15 @@ describe("UserListHeader Component", () => {
 
   describe("Accessibility", () => {
     it("should have proper semantic elements", () => {
-      render(<UserListHeader {...defaultProps} />);
+      renderWithRouter(<UserListHeader {...defaultProps} />);
 
       expect(screen.getByRole("heading", { level: 2 })).toBeInTheDocument();
-      expect(screen.getAllByRole("button")).toHaveLength(3);
+      expect(screen.getAllByRole("button")).toHaveLength(1); // Only HIDE/SHOW WATCHED button
+      expect(screen.getAllByRole("link")).toHaveLength(2); // EDIT LIST and ADD ITEMS links
     });
 
     it("should have accessible button labels", () => {
-      render(<UserListHeader {...defaultProps} />);
+      renderWithRouter(<UserListHeader {...defaultProps} />);
 
       const buttons = screen.getAllByRole("button");
       buttons.forEach((button) => {
@@ -225,19 +231,21 @@ describe("UserListHeader Component", () => {
     });
 
     it("should maintain focus order", () => {
-      render(<UserListHeader {...defaultProps} />);
+      renderWithRouter(<UserListHeader {...defaultProps} />);
 
       const buttons = screen.getAllByRole("button");
+      const links = screen.getAllByRole("link");
+
       expect(buttons[0]).toHaveTextContent("HIDE WATCHED");
-      expect(buttons[1]).toHaveTextContent("EDIT LIST");
-      expect(buttons[2]).toHaveTextContent("ADD ITEMS");
+      expect(links[0]).toHaveTextContent("EDIT LIST");
+      expect(links[1]).toHaveTextContent("ADD ITEMS");
     });
   });
 
   describe("Edge Cases", () => {
     it("should handle missing props gracefully", () => {
       expect(() => {
-        render(<UserListHeader />);
+        renderWithRouter(<UserListHeader />);
       }).not.toThrow();
     });
 
@@ -251,12 +259,12 @@ describe("UserListHeader Component", () => {
       };
 
       expect(() => {
-        render(<UserListHeader {...propsWithNulls} />);
+        renderWithRouter(<UserListHeader {...propsWithNulls} />);
       }).not.toThrow();
     });
 
     it("should handle special characters in list name", () => {
-      render(
+      renderWithRouter(
         <UserListHeader
           {...defaultProps}
           name="List with & special <> characters"
@@ -269,7 +277,7 @@ describe("UserListHeader Component", () => {
 
     it("should handle very long list names", () => {
       const longName = "A".repeat(100);
-      render(<UserListHeader {...defaultProps} name={longName} />);
+      renderWithRouter(<UserListHeader {...defaultProps} name={longName} />);
       expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(
         longName,
       );

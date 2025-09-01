@@ -334,25 +334,23 @@ describe("AuthButton Component", () => {
   });
 
   describe("When user is not logged in", () => {
-    it("should render login button", () => {
+    it("should render login link", () => {
       renderWithProviders(
         <AuthButton client={mockClient} user={null} loading={false} />,
       );
 
-      const loginButton = screen.getByRole("button", { name: /login/i });
-      expect(loginButton).toBeInTheDocument();
-      expect(loginButton).toHaveAttribute("type", "button");
+      const loginLink = screen.getByRole("link", { name: /login/i });
+      expect(loginLink).toBeInTheDocument();
+      expect(loginLink).toHaveAttribute("href", "/signin");
     });
 
-    it("should navigate to signin when login button is clicked", () => {
+    it("should have signin link pointing to correct path", () => {
       renderWithProviders(
         <AuthButton client={mockClient} user={null} loading={false} />,
       );
 
-      const loginButton = screen.getByRole("button", { name: /login/i });
-      fireEvent.click(loginButton);
-
-      expect(mockNavigate).toHaveBeenCalledWith("/signin");
+      const loginLink = screen.getByRole("link", { name: /login/i });
+      expect(loginLink).toHaveAttribute("href", "/signin");
     });
 
     it("should render as list item with right class", () => {
@@ -416,9 +414,7 @@ describe("AuthButton Component", () => {
         <AuthButton client={mockClient} user={null} loading={false} />,
       );
 
-      expect(
-        screen.getByRole("button", { name: /login/i }),
-      ).toBeInTheDocument();
+      expect(screen.getByRole("link", { name: /login/i })).toBeInTheDocument();
 
       rerender(
         <MockedProvider addTypename={false}>
@@ -452,8 +448,8 @@ describe("AuthButton Component", () => {
         <AuthButton client={mockClient} user={undefined} loading={false} />,
       );
 
-      const loginButton = screen.getByRole("button", { name: /login/i });
-      expect(loginButton).toBeInTheDocument();
+      const loginLink = screen.getByRole("link", { name: /login/i });
+      expect(loginLink).toBeInTheDocument();
     });
 
     it("should handle boolean loading prop correctly", () => {
@@ -484,32 +480,32 @@ describe("AuthButton Component", () => {
     });
 
     it("should render without providers", () => {
-      // This test should actually pass since we're mocking useMutation
+      // This test now fails because Link components require Router context
       expect(() =>
         render(<AuthButton client={mockClient} user={null} loading={false} />),
-      ).not.toThrow();
+      ).toThrow();
     });
   });
 
   describe("Accessibility", () => {
-    it("should have proper button semantics", () => {
+    it("should have proper link semantics when not logged in", () => {
       renderWithProviders(
         <AuthButton client={mockClient} user={null} loading={false} />,
       );
 
-      const button = screen.getByRole("button");
-      expect(button).toBeInTheDocument();
-      expect(button).toHaveAttribute("type", "button");
+      const link = screen.getByRole("link");
+      expect(link).toBeInTheDocument();
+      expect(link).toHaveAttribute("href", "/signin");
     });
 
-    it("should be keyboard accessible", () => {
+    it("should be keyboard accessible when not logged in", () => {
       renderWithProviders(
         <AuthButton client={mockClient} user={null} loading={false} />,
       );
 
-      const button = screen.getByRole("button");
-      button.focus();
-      expect(button).toHaveFocus();
+      const link = screen.getByRole("link");
+      link.focus();
+      expect(link).toHaveFocus();
     });
 
     it("should have accessible loading state", () => {

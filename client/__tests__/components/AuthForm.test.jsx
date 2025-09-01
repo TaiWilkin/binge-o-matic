@@ -83,14 +83,14 @@ describe("AuthForm Component", () => {
       expect(submitButton).toHaveAttribute("type", "submit");
     });
 
-    it("should render cancel button", () => {
+    it("should render cancel link", () => {
       renderWithRouter(
         <AuthForm title="Sign in" onSubmit={mockOnSubmit} error={null} />,
       );
 
-      const cancelButton = screen.getByRole("button", { name: /cancel/i });
-      expect(cancelButton).toBeInTheDocument();
-      expect(cancelButton).toHaveAttribute("type", "button");
+      const cancelLink = screen.getByRole("link", { name: /cancel/i });
+      expect(cancelLink).toBeInTheDocument();
+      expect(cancelLink).toHaveAttribute("href", "/");
     });
   });
 
@@ -571,16 +571,13 @@ describe("AuthForm Component", () => {
   });
 
   describe("Navigation", () => {
-    it("should navigate to home when cancel button is clicked", async () => {
-      const user = userEvent.setup();
+    it("should have cancel link pointing to home", () => {
       renderWithRouter(
         <AuthForm title="Sign in" onSubmit={mockOnSubmit} error={null} />,
       );
 
-      const cancelButton = screen.getByRole("button", { name: /cancel/i });
-      await user.click(cancelButton);
-
-      expect(mockNavigate).toHaveBeenCalledWith("/");
+      const cancelLink = screen.getByRole("link", { name: /cancel/i });
+      expect(cancelLink).toHaveAttribute("href", "/");
     });
   });
 
@@ -685,12 +682,14 @@ describe("AuthForm Component", () => {
       const emailInput = screen.getByLabelText(/email/i);
       const passwordInput = screen.getByLabelText(/password/i);
       const submitButton = screen.getByRole("button", { name: "Sign in" });
+      const cancelLink = screen.getByRole("link", { name: /cancel/i });
+      const signupLink = screen.getByRole("link", { name: /sign up/i });
 
       await user.tab();
-      expect(screen.getByRole("button", { name: /cancel/i })).toHaveFocus();
+      expect(cancelLink).toHaveFocus();
 
       await user.tab();
-      expect(screen.getByRole("link")).toHaveFocus();
+      expect(signupLink).toHaveFocus();
 
       await user.tab();
       expect(emailInput).toHaveFocus();

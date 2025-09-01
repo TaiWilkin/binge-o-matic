@@ -748,14 +748,13 @@ describe("Edit Component", () => {
       expect(screen.getByText("RETURN TO LIST")).toBeInTheDocument();
     });
 
-    it("should handle return to list button", async () => {
+    it("should have return to list link", async () => {
       renderWithProviders();
       await waitForComponent();
 
-      const returnButton = screen.getByText("RETURN TO LIST");
-      fireEvent.click(returnButton);
-
-      expect(mockNavigate).toHaveBeenCalledWith("/lists/123");
+      const returnLink = screen.getByText("RETURN TO LIST");
+      expect(returnLink).toBeInTheDocument();
+      expect(returnLink).toHaveAttribute("href", "/lists/123");
     });
   });
 

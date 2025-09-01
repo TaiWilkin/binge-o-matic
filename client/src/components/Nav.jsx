@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import query from "../queries/Nav";
 import AuthButton from "./AuthButton";
@@ -7,16 +7,13 @@ import NavLists from "./NavLists";
 import QueryHandler from "./QueryHandler";
 
 function Nav() {
-  const navigate = useNavigate();
   return (
     <QueryHandler query={query} pollInterval={500} useCustomLoader>
       {({ data, client, loading }) => (
         <nav>
           <ul className="nav">
             <li>
-              <button type="button" onClick={() => navigate("/about")}>
-                About
-              </button>
+              <Link to="/about">About</Link>
             </li>
             {data?.lists && (
               <NavLists lists={data.lists} title="User-Managed Lists" />
@@ -26,9 +23,9 @@ function Nav() {
             )}
             {!!data?.user && (
               <li>
-                <button type="button" onClick={() => navigate("/newlist")}>
+                <Link to="/newlist" className="right">
                   New List
-                </button>
+                </Link>
               </li>
             )}
             <AuthButton user={data?.user} client={client} loading={loading} />

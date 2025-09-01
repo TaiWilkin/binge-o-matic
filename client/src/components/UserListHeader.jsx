@@ -1,26 +1,21 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
-function UserListHeader({ push, onToggleWatched, hideWatched, id, name }) {
+function UserListHeader({ onToggleWatched, hideWatched, id, name }) {
   return (
     <div className="header">
       <h2>{name}</h2>
-      <button type="button" className="edit-btn" onClick={onToggleWatched}>
-        {hideWatched ? "SHOW WATCHED" : "HIDE WATCHED"}
-      </button>
-      <button
-        type="button"
-        className="edit-btn"
-        onClick={() => push(`/lists/${id}/edit`)}
-      >
-        EDIT LIST
-      </button>
-      <button
-        type="button"
-        className="edit-btn"
-        onClick={() => push(`/lists/${id}/search`)}
-      >
-        ADD ITEMS
-      </button>
+      <div>
+        <button type="button" onClick={onToggleWatched}>
+          {hideWatched ? "SHOW WATCHED" : "HIDE WATCHED"}
+        </button>
+        <Link to={`/lists/${id}/edit`} className="list-header-link">
+          EDIT LIST
+        </Link>
+        <Link to={`/lists/${id}/search`} className="list-header-link">
+          ADD ITEMS
+        </Link>
+      </div>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import listQuery from "../queries/List";
 import mediaQuery from "../queries/Media";
@@ -13,7 +13,6 @@ function SearchMovies() {
   const [media, setMedia] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate();
   const { id } = useParams();
 
   const onSubmit = (e, client) => {
@@ -59,13 +58,9 @@ function SearchMovies() {
           <main>
             <div className="subheader">
               <h2>Adding items to {data.list.name}</h2>
-              <button
-                type="button"
-                className="edit-btn"
-                onClick={() => navigate(`/lists/${data.list.id}`)}
-              >
+              <Link to={`/lists/${data.list.id}`} className="edit-link">
                 RETURN TO LIST
-              </button>
+              </Link>
               <form className="search" onSubmit={(e) => onSubmit(e, client)}>
                 <input
                   type="text"

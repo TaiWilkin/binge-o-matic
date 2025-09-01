@@ -1,15 +1,8 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
 
 import NavLists from "../../src/components/NavLists.jsx";
-
-// Mock react-router-dom hooks
-const mockNavigate = jest.fn();
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useNavigate: () => mockNavigate,
-}));
 
 // Wrapper component to provide Router context
 const RouterWrapper = ({ children }) => (
@@ -17,10 +10,6 @@ const RouterWrapper = ({ children }) => (
 );
 
 describe("NavLists Component", () => {
-  beforeEach(() => {
-    mockNavigate.mockClear();
-  });
-
   const mockLists = [
     { id: "1", name: "My First List" },
     { id: "2", name: "My Second List" },
@@ -67,20 +56,21 @@ describe("NavLists Component", () => {
       expect(titleButton).toBeInTheDocument();
       expect(titleButton).toHaveClass("dropbtn");
 
-      // Check that a button is rendered for each list item
-      const listButtons = screen.getAllByRole("button");
-      // Should have title button + one button per list item
-      expect(listButtons).toHaveLength(mockLists.length + 1);
+      // Check that a link is rendered for each list item
+      const listLinks = screen.getAllByRole("link");
+      // Should have one link per list item
+      expect(listLinks).toHaveLength(mockLists.length);
 
-      // Check that each list has its own button with correct text
+      // Check that each list has its own link with correct text and href
       mockLists.forEach((list) => {
-        const listButton = screen.getByRole("button", { name: list.name });
-        expect(listButton).toBeInTheDocument();
-        expect(listButton).toHaveClass("dropdown-btn");
+        const listLink = screen.getByRole("link", { name: list.name });
+        expect(listLink).toBeInTheDocument();
+        expect(listLink).toHaveClass("dropdown-btn");
+        expect(listLink).toHaveAttribute("href", `/lists/${list.id}`);
       });
     });
 
-    it("should render correct number of buttons for different list sizes", () => {
+    it("should render correct number of elements for different list sizes", () => {
       const singleList = [{ id: "1", name: "Single List" }];
 
       const { rerender } = render(
@@ -89,8 +79,9 @@ describe("NavLists Component", () => {
         </RouterWrapper>,
       );
 
-      // Should have title button + 1 list button
-      expect(screen.getAllByRole("button")).toHaveLength(2);
+      // Should have 1 title button + 1 list link
+      expect(screen.getAllByRole("button")).toHaveLength(1); // Only the title button
+      expect(screen.getAllByRole("link")).toHaveLength(1); // Only one list link
 
       // Rerender with more lists
       rerender(
@@ -99,47 +90,42 @@ describe("NavLists Component", () => {
         </RouterWrapper>,
       );
 
-      // Should have title button + 3 list buttons
-      expect(screen.getAllByRole("button")).toHaveLength(4);
+      // Should have 1 title button + 3 list links
+      expect(screen.getAllByRole("button")).toHaveLength(1); // Only the title button
+      expect(screen.getAllByRole("link")).toHaveLength(3); // Three list links
     });
   });
 
-  describe("Button Interactions", () => {
-    it("should navigate to correct list URL when list button is clicked", () => {
+  describe("Link Navigation", () => {
+    it("should render correct link URLs for list navigation", () => {
       render(
         <RouterWrapper>
           <NavLists lists={mockLists} title="My Lists" />
         </RouterWrapper>,
       );
 
-      // Click on the first list button
-      const firstListButton = screen.getByRole("button", {
+      // Check that the first list link has the correct href
+      const firstListLink = screen.getByRole("link", {
         name: "My First List",
       });
-      fireEvent.click(firstListButton);
-
-      expect(mockNavigate).toHaveBeenCalledWith("/lists/1");
-      expect(mockNavigate).toHaveBeenCalledTimes(1);
+      expect(firstListLink).toHaveAttribute("href", "/lists/1");
     });
 
-    it("should navigate to correct URL for different list items", () => {
+    it("should render correct URL for different list items", () => {
       render(
         <RouterWrapper>
           <NavLists lists={mockLists} title="My Lists" />
         </RouterWrapper>,
       );
 
-      // Test each list button
-      mockLists.forEach((list, index) => {
-        const listButton = screen.getByRole("button", { name: list.name });
-        fireEvent.click(listButton);
-
-        expect(mockNavigate).toHaveBeenCalledWith(`/lists/${list.id}`);
-        expect(mockNavigate).toHaveBeenCalledTimes(index + 1);
+      // Test each list link has correct href
+      mockLists.forEach((list) => {
+        const listLink = screen.getByRole("link", { name: list.name });
+        expect(listLink).toHaveAttribute("href", `/lists/${list.id}`);
       });
     });
 
-    it("should not navigate when title button is clicked", () => {
+    it("should not have navigation properties on title button", () => {
       render(
         <RouterWrapper>
           <NavLists lists={mockLists} title="My Lists" />
@@ -147,10 +133,10 @@ describe("NavLists Component", () => {
       );
 
       const titleButton = screen.getByRole("button", { name: "My Lists" });
-      fireEvent.click(titleButton);
 
-      // Title button should not trigger navigation
-      expect(mockNavigate).not.toHaveBeenCalled();
+      // Title button should be a button, not a link
+      expect(titleButton.tagName).toBe("BUTTON");
+      expect(titleButton).not.toHaveAttribute("href");
     });
   });
 

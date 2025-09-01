@@ -1,6 +1,7 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
-function ListHeader({ name, push }) {
+function ListHeader({ name }) {
   return (
     <div className="header">
       <div
@@ -14,13 +15,9 @@ function ListHeader({ name, push }) {
         <h2>{name}</h2>
         <p>This is a user-managed list and may not be complete.</p>
       </div>
-      <button
-        type="button"
-        className="edit-btn"
-        onClick={() => push("/newlist")}
-      >
+      <Link to="/newlist" className="edit-link">
         CREATE LIST
-      </button>
+      </Link>
     </div>
   );
 }
