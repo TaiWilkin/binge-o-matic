@@ -10,9 +10,7 @@ function NavLists({ lists, title }) {
   ));
   return (
     <li className="dropdown">
-      <Link to="#" className="dropbtn">
-        {title}
-      </Link>
+      <button className="dropbtn">{title}</button>
       <div className="dropdown-content">{options}</div>
     </li>
   );
