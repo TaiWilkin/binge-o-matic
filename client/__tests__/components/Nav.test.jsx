@@ -13,7 +13,7 @@ jest.mock("react-router-dom", () => ({
 }));
 
 // Mock the Nav query
-jest.mock("../../src/queries/Nav", () => ({
+jest.mock("../../src/queries/Lists", () => ({
   __esModule: true,
   default: {
     kind: "Document",
@@ -114,7 +114,7 @@ describe("Nav Component", () => {
 
       const navLists = screen.getAllByTestId("nav-lists");
       expect(navLists).toHaveLength(2);
-      expect(navLists[0]).toHaveTextContent("User-Managed Lists");
+      expect(navLists[0]).toHaveTextContent("Lists");
       expect(navLists[1]).toHaveTextContent("My Lists");
     });
 
