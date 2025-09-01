@@ -59,13 +59,9 @@ function SearchMovies() {
           <main>
             <div className="subheader">
               <h2>Adding items to {data.list.name}</h2>
-              <button
-                type="button"
-                className="edit-btn"
-                onClick={() => navigate(`/lists/${data.list.id}`)}
-              >
+              <Link to={`/lists/${data.list.id}`} className="edit-link">
                 RETURN TO LIST
-              </button>
+              </Link>
               <form className="search" onSubmit={(e) => onSubmit(e, client)}>
                 <input
                   type="text"

@@ -31,6 +31,9 @@ button.right {
   float: right;
   margin: 20px;
 }
+a.right {
+  float: right;
+}
 h3 {
   text-align: center;
   font-family: "Raleway", sans-serif;
@@ -76,6 +79,7 @@ ul.nav {
   float: left;
 }
 .nav li button,
+.nav li a,
 .dropbtn,
 .subheader {
   display: block;
@@ -86,6 +90,7 @@ ul.nav {
   text-decoration: none;
 }
 .nav li button:hover,
+.nav li a:hover,
 .dropdown:hover .dropbtn {
   color: #fff;
 }
@@ -184,7 +189,8 @@ ul.watchlist {
   float: left;
 }
 .watchlist button,
-.subheader button {
+.subheader button,
+.subheader a {
   color: #009688;
   line-height: 1.8;
   font-size: 16px;
@@ -266,9 +272,8 @@ form.login {
   display: block;
   margin: auto;
 }
-.edit-btn {
+.edit-link {
   margin: 25px 20px 25px 0;
-  display: inline-block;
   float: right;
 }
 .subheader h2,
@@ -335,6 +340,9 @@ li.watched {
   width: 90%;
   border-bottom: 2px solid #e1e1e1;
   margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .about {
   font-family: "Raleway", sans-serif;
@@ -375,11 +383,22 @@ li.watched {
 #create-btn,
 .card-actions button,
 .card-actions a,
-.header button {
+.header button,
+.header a {
   color: #009688;
   line-height: 1.8;
   font-size: 16px;
   background-color: Transparent;
+}
+.list-header-link {
+  color: #009688;
+  line-height: 1.8;
+  font-size: 16px;
+  background-color: Transparent;
+  text-decoration: none;
+  float: right;
+  padding: 10px;
+  font-family: "Raleway", sans-serif;
 }
 #create-btn:hover,
 .card-actions button:hover,

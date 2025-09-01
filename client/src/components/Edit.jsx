@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@apollo/client";
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 
 import deleteListMutation from "../mutations/DeleteList";
 import editListMutation from "../mutations/EditList";
@@ -56,13 +56,9 @@ function Edit() {
     <main>
       <div className="subheader">
         <h2>Editing {data.list.name}</h2>
-        <button
-          type="button"
-          className="right"
-          onClick={() => navigate(`/lists/${id}`)}
-        >
+        <Link to={`/lists/${id}`} className="right">
           RETURN TO LIST
-        </button>
+        </Link>
 
         <h3 className="simple-header">Change Title</h3>
         <form className="search" onSubmit={handleSubmit}>

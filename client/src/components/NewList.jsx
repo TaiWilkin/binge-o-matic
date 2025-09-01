@@ -1,6 +1,6 @@
 import { useMutation } from "@apollo/client";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 import mutation from "../mutations/CreateList";
 import query from "../queries/Nav";
@@ -40,13 +40,9 @@ function NewList() {
     <main>
       <div className="subheader">
         <h2>New List</h2>
-        <button
-          type="button"
-          className="edit-btn"
-          onClick={() => navigate("/")}
-        >
+        <Link to="/" className="edit-link">
           CANCEL
-        </button>
+        </Link>
         <h3>Choose Title</h3>
         <h3 className="error">{errorMsg}</h3>
         <form className="search" onSubmit={addList}>

@@ -1,24 +1,18 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function NavLists({ lists, title }) {
-  const navigate = useNavigate();
   if (!lists?.length) return null;
   const options = lists.map((list) => (
-    <button
-      type="button"
-      onClick={() => navigate(`/lists/${list.id}`)}
-      key={list.id}
-      className="dropdown-btn"
-    >
+    <Link to={`/lists/${list.id}`} key={list.id} className="dropdown-btn">
       {list.name}
-    </button>
+    </Link>
   ));
   return (
     <li className="dropdown">
-      <button type="button" className="dropbtn">
+      <Link to="#" className="dropbtn">
         {title}
-      </button>
+      </Link>
       <div className="dropdown-content">{options}</div>
     </li>
   );

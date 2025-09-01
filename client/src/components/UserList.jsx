@@ -40,7 +40,6 @@ function UserList() {
   const renderHeader = (list, isOwner) => {
     return isOwner ? (
       <UserListHeader
-        push={navigate}
         onToggleWatched={() => setHideWatched((prev) => !prev)}
         hideWatched={hideWatched}
         id={id}

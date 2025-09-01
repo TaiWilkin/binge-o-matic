@@ -1,6 +1,6 @@
 import { useMutation } from "@apollo/client";
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 import mutation from "../mutations/Logout";
 
@@ -37,9 +37,7 @@ function AuthButton({ client, user, loading }) {
 
   return (
     <li className="right">
-      <button type="button" onClick={() => navigate("/signin")}>
-        Login
-      </button>
+      <Link to="/signin">Login</Link>
     </li>
   );
 }

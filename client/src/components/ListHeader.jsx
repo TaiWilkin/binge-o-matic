@@ -1,6 +1,8 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import requireAuth from "./requireAuth";
 
-function ListHeader({ name, push }) {
+function ListHeader({ name }) {
   return (
     <div className="header">
       <div
@@ -14,15 +16,11 @@ function ListHeader({ name, push }) {
         <h2>{name}</h2>
         <p>This is a user-managed list and may not be complete.</p>
       </div>
-      <button
-        type="button"
-        className="edit-btn"
-        onClick={() => push("/newlist")}
-      >
+      <Link to="/newlist" className="edit-link">
         CREATE LIST
-      </button>
+      </Link>
     </div>
   );
 }
 
-export default ListHeader;
+export default requireAuth(ListHeader);
