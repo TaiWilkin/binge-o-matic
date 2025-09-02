@@ -120,14 +120,21 @@ export class MockManager {
         id: parentId,
         media_id: "12345",
         title: "Parent TV Show",
-        media_type: "tv",
+        media_type: 1, // 1 = tv in numeric enum
       },
       ...children.map((child) => ({
         _id: child.id,
         id: child.id,
         media_id: child.media_id || `child-${child.id}`,
         title: child.title || `Child ${child.id}`,
-        media_type: child.media_type || "season",
+        media_type:
+          child.media_type === "season"
+            ? 2
+            : child.media_type === "episode"
+              ? 3
+              : child.media_type === "tv"
+                ? 1
+                : 0, // Convert to numeric
         parent_show: child.parent_show || parentId,
         parent_season: child.parent_season,
       })),
@@ -153,7 +160,9 @@ export class MockManager {
       },
       media: {
         find: jest.fn(() => ({
-          select: jest.fn(() => Promise.resolve(mediaData)),
+          select: jest.fn(() => ({
+            sort: jest.fn(() => Promise.resolve(mediaData)),
+          })),
         })),
       },
     };
@@ -308,7 +317,7 @@ export function createMediaItem(
     title: "Test Movie",
     release_date: new Date("2023-01-01"),
     poster_path: "/test.jpg",
-    media_type: "movie",
+    media_type: 0, // Use numeric value for database (0 = movie)
   };
 }
 
@@ -454,12 +463,27 @@ export function createListModel() {
 }
 
 export function createMediaModel() {
+  const defaultMediaItem = {
+    _id: createObjectId("507f1f77bcf86cd799439013"),
+    media_id: "12345",
+    title: "Test Movie",
+    release_date: new Date("2023-01-01"),
+    poster_path: "/test.jpg",
+    media_type: 0, // Use numeric value for database
+    number: 1,
+    parent_show: null,
+    parent_season: null,
+    episode: null,
+  };
+
   return {
     find: jest.fn(() => ({
-      select: jest.fn(() => Promise.resolve([])),
+      select: jest.fn(() => ({
+        sort: jest.fn(() => Promise.resolve([defaultMediaItem])),
+      })),
     })),
-    findOne: jest.fn(() => Promise.resolve(null)),
-    findOneAndUpdate: jest.fn(() => Promise.resolve({})),
+    findOne: jest.fn(() => Promise.resolve(defaultMediaItem)),
+    findOneAndUpdate: jest.fn(() => Promise.resolve(defaultMediaItem)),
   };
 }
 

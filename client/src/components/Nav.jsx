@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import query from "../queries/Lists";
+import query from "../queries/CurrentUser";
 import AuthButton from "./AuthButton";
 import NavLists from "./NavLists";
 import QueryHandler from "./QueryHandler";

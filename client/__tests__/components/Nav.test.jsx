@@ -153,6 +153,58 @@ describe("Nav Component", () => {
     });
   });
 
+  describe("User Authentication State (Line 19: data?.user ?)", () => {
+    it("should render logged-in user UI when data.user exists", () => {
+      render(
+        <TestWrapper>
+          <Nav />
+        </TestWrapper>,
+      );
+
+      // Should show both "Lists" and "My Lists" when logged in
+      const navLists = screen.getAllByTestId("nav-lists");
+      expect(navLists).toHaveLength(2);
+      expect(navLists[0]).toHaveTextContent("Lists");
+      expect(navLists[1]).toHaveTextContent("My Lists");
+
+      // Should show "New List" link when logged in
+      expect(screen.getByRole("link", { name: /new list/i })).toBeInTheDocument();
+    });
+
+    it("should render logged-out user UI when no user data", () => {
+      // Temporarily override the QueryHandler mock for this test
+      const originalQueryHandler = require("../../src/components/QueryHandler.jsx");
+      
+      // Mock QueryHandler to return no user data for this test
+      jest.doMock("../../src/components/QueryHandler.jsx", () => {
+        return function MockQueryHandlerNoUser({ children }) {
+          const mockData = {
+            user: null, // No user data
+          };
+          return children({ data: mockData, client: {}, loading: false });
+        };
+      });
+
+      // Clear module cache and re-import
+      jest.resetModules();
+      const NavComponentNoUser = require("../../src/components/Nav.jsx").default;
+      
+      render(
+        <TestWrapper>
+          <NavComponentNoUser />
+        </TestWrapper>,
+      );
+
+      // Should only show "Lists" when logged out (not "My Lists")
+      const navLists = screen.getAllByTestId("nav-lists");
+      expect(navLists).toHaveLength(1);
+      expect(navLists[0]).toHaveTextContent("Lists");
+
+      // Should NOT show "New List" link when logged out
+      expect(screen.queryByRole("link", { name: /new list/i })).not.toBeInTheDocument();
+    });
+  });
+
   describe("Component Integration", () => {
     it("should render without Router context error", () => {
       expect(() => {

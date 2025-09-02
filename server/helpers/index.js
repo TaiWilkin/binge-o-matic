@@ -6,6 +6,8 @@ export {
   compareMedia,
   filterOutDuplicateItems,
   getChildMediaIds,
+  MediaTypeEnum,
+  mediaTypes,
 } from "./media.js";
 
 export const isProduction = () => process.env.NODE_ENV === "production";

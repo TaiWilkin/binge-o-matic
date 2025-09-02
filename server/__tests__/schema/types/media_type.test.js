@@ -116,13 +116,17 @@ describe("MediaType", () => {
       expect(fields.id.resolve).toBeUndefined();
       expect(fields.title.resolve).toBeUndefined();
       expect(fields.release_date.resolve).toBeUndefined();
-      expect(fields.media_type.resolve).toBeUndefined();
       expect(fields.poster_path.resolve).toBeUndefined();
       expect(fields.media_id.resolve).toBeUndefined();
       expect(fields.number.resolve).toBeUndefined();
       expect(fields.isWatched.resolve).toBeUndefined();
       expect(fields.show_children.resolve).toBeUndefined();
       expect(fields.episode.resolve).toBeUndefined();
+    });
+
+    it("should have resolver for media_type field", () => {
+      expect(fields.media_type.resolve).toBeDefined();
+      expect(typeof fields.media_type.resolve).toBe("function");
     });
 
     it("should have resolvers for parent fields", () => {

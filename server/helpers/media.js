@@ -1,10 +1,17 @@
 import { areIdsEqual } from "./database.js";
 
-const mediaTypes = {
+export const mediaTypes = {
   movie: 0,
   tv: 1,
   season: 2,
   episode: 3,
+};
+
+export const MediaTypeEnum = {
+  [mediaTypes.movie]: "movie",
+  [mediaTypes.tv]: "tv",
+  [mediaTypes.season]: "season",
+  [mediaTypes.episode]: "episode",
 };
 
 export const compareMedia = (a, b) => {
