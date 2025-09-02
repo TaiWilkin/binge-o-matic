@@ -38,6 +38,20 @@ describe("Media Helpers", () => {
       expect(compareMedia(season, episode)).toBe(-1);
     });
 
+    it("should return 1 when first media type is higher than second (line 21)", () => {
+      const date = new Date("2023-01-01");
+      const tv = { release_date: date, media_type: "tv", title: "A" };
+      const movie = { release_date: date, media_type: "movie", title: "A" };
+      const episode = { release_date: date, media_type: "episode", title: "A" };
+      const season = { release_date: date, media_type: "season", title: "A" };
+
+      // Test cases where first media type value is higher than second
+      expect(compareMedia(tv, movie)).toBe(1); // tv (1) > movie (0)
+      expect(compareMedia(season, tv)).toBe(1); // season (2) > tv (1)
+      expect(compareMedia(episode, season)).toBe(1); // episode (3) > season (2)
+      expect(compareMedia(episode, movie)).toBe(1); // episode (3) > movie (0)
+    });
+
     it("should sort by title when release date and type are equal", () => {
       const date = new Date("2023-01-01");
       const mediaA = {

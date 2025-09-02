@@ -129,6 +129,80 @@ describe("MediaType", () => {
       expect(typeof fields.media_type.resolve).toBe("function");
     });
 
+    describe("media_type resolver", () => {
+      it("should convert numeric media_type 0 to 'movie' (line 21)", () => {
+        const mockParentValue = {
+          id: "media123",
+          title: "The Matrix",
+          media_type: 0,
+        };
+
+        const result = fields.media_type.resolve(mockParentValue);
+
+        expect(result).toBe("movie");
+      });
+
+      it("should convert numeric media_type 1 to 'tv' (line 21)", () => {
+        const mockParentValue = {
+          id: "media123",
+          title: "Breaking Bad",
+          media_type: 1,
+        };
+
+        const result = fields.media_type.resolve(mockParentValue);
+
+        expect(result).toBe("tv");
+      });
+
+      it("should convert numeric media_type 2 to 'season' (line 21)", () => {
+        const mockParentValue = {
+          id: "media123",
+          title: "Season 1",
+          media_type: 2,
+        };
+
+        const result = fields.media_type.resolve(mockParentValue);
+
+        expect(result).toBe("season");
+      });
+
+      it("should convert numeric media_type 3 to 'episode' (line 21)", () => {
+        const mockParentValue = {
+          id: "media123",
+          title: "Pilot",
+          media_type: 3,
+        };
+
+        const result = fields.media_type.resolve(mockParentValue);
+
+        expect(result).toBe("episode");
+      });
+
+      it("should handle undefined media_type (line 21)", () => {
+        const mockParentValue = {
+          id: "media123",
+          title: "Unknown",
+          media_type: undefined,
+        };
+
+        const result = fields.media_type.resolve(mockParentValue);
+
+        expect(result).toBeUndefined();
+      });
+
+      it("should handle invalid media_type value (line 21)", () => {
+        const mockParentValue = {
+          id: "media123",
+          title: "Unknown",
+          media_type: 999,
+        };
+
+        const result = fields.media_type.resolve(mockParentValue);
+
+        expect(result).toBeUndefined();
+      });
+    });
+
     it("should have resolvers for parent fields", () => {
       expect(fields.parent_show.resolve).toBeDefined();
       expect(fields.parent_season.resolve).toBeDefined();

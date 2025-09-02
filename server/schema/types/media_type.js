@@ -7,7 +7,7 @@ import {
 } from "graphql";
 import GraphQLDate from "graphql-date";
 
-import { MediaTypeEnum } from "../../helpers";
+import { MediaTypeEnum } from "../../helpers/index.js";
 
 const MediaType = new GraphQLObjectType({
   name: "MediaType",
