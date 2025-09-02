@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
 
@@ -107,40 +107,48 @@ describe("Root Component", () => {
     });
 
     describe("/signin path", () => {
-      it("should render SigninForm component on /signin path", () => {
+      it("should render SigninForm component on /signin path", async () => {
         renderWithRouter(["/signin"]);
 
-        const signinComponent = screen.getByTestId("mock-signin-form");
+        const signinComponent = await waitFor(() =>
+          screen.getByTestId("mock-signin-form"),
+        );
         expect(signinComponent).toBeInTheDocument();
         expect(signinComponent).toHaveTextContent("SigninForm Component");
       });
     });
 
     describe("/signup path", () => {
-      it("should render SignupForm component on /signup path", () => {
+      it("should render SignupForm component on /signup path", async () => {
         renderWithRouter(["/signup"]);
 
-        const signupComponent = screen.getByTestId("mock-signup-form");
+        const signupComponent = await waitFor(() =>
+          screen.getByTestId("mock-signup-form"),
+        );
         expect(signupComponent).toBeInTheDocument();
         expect(signupComponent).toHaveTextContent("SignupForm Component");
       });
     });
 
     describe("/newlist path", () => {
-      it("should render NewList component on /newlist path", () => {
+      it("should render NewList component on /newlist path", async () => {
         renderWithRouter(["/newlist"]);
 
-        const newListComponent = screen.getByTestId("mock-new-list");
+        const newListComponent = await waitFor(() =>
+          screen.getByTestId("mock-new-list"),
+        );
         expect(newListComponent).toBeInTheDocument();
         expect(newListComponent).toHaveTextContent("NewList Component");
       });
     });
 
     describe("/lists/:id/edit path", () => {
-      it("should render Edit component on /lists/:id/edit path", () => {
+      it("should render Edit component on /lists/:id/edit path", async () => {
         renderWithRouter(["/lists/123/edit"]);
 
-        const editComponent = screen.getByTestId("mock-edit");
+        const editComponent = await waitFor(() =>
+          screen.getByTestId("mock-edit"),
+        );
         expect(editComponent).toBeInTheDocument();
         expect(editComponent).toHaveTextContent("Edit Component");
       });
@@ -154,10 +162,12 @@ describe("Root Component", () => {
     });
 
     describe("/lists/:id/search path", () => {
-      it("should render SearchMovies component on /lists/:id/search path", () => {
+      it("should render SearchMovies component on /lists/:id/search path", async () => {
         renderWithRouter(["/lists/123/search"]);
 
-        const searchComponent = screen.getByTestId("mock-search-movies");
+        const searchComponent = await waitFor(() =>
+          screen.getByTestId("mock-search-movies"),
+        );
         expect(searchComponent).toBeInTheDocument();
         expect(searchComponent).toHaveTextContent("SearchMovies Component");
       });
@@ -171,10 +181,12 @@ describe("Root Component", () => {
     });
 
     describe("/lists/:id path", () => {
-      it("should render UserList component on /lists/:id path", () => {
+      it("should render UserList component on /lists/:id path", async () => {
         renderWithRouter(["/lists/123"]);
 
-        const userListComponent = screen.getByTestId("mock-user-list");
+        const userListComponent = await waitFor(() =>
+          screen.getByTestId("mock-user-list"),
+        );
         expect(userListComponent).toBeInTheDocument();
         expect(userListComponent).toHaveTextContent("UserList Component");
       });
