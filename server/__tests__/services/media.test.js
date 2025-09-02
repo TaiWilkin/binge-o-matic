@@ -67,7 +67,11 @@ describe("Media Service", () => {
           Promise.resolve({ ...mockListData, media: [...mockListData.media] }),
       },
       media: {
-        find: () => Promise.resolve([mockMediaItem]),
+        find: () => ({
+          select: () => ({
+            sort: () => Promise.resolve([mockMediaItem]),
+          }),
+        }),
         findOne: () => Promise.resolve(mockMediaItem),
         findOneAndUpdate: () => Promise.resolve(mockMediaItem),
       },
@@ -254,16 +258,20 @@ describe("Media Service", () => {
 
     it("should sort media by release date and type", async () => {
       const mockMultipleMedia = [
-        createMediaItem("12345", "507f1f77bcf86cd799439013"),
         {
           ...createMediaItem("67890", "507f1f77bcf86cd799439014"),
           title: "TV Show 2022",
           release_date: new Date("2022-01-01"),
-          media_type: "tv",
+          media_type: 1, // 1 = tv in numeric enum
         },
+        createMediaItem("12345", "507f1f77bcf86cd799439013"), // Later date, comes second
       ];
 
-      modelMocks.media.find = () => Promise.resolve(mockMultipleMedia);
+      modelMocks.media.find = () => ({
+        select: () => ({
+          sort: () => Promise.resolve(mockMultipleMedia),
+        }),
+      });
 
       const mediaIds = [
         {
@@ -289,26 +297,30 @@ describe("Media Service", () => {
       const sameDate = new Date("2023-01-01");
       const mockMultipleMedia = [
         {
-          ...createMediaItem("12345", "507f1f77bcf86cd799439013"),
-          title: "Zebra Movie", // Should come last alphabetically
-          release_date: sameDate,
-          media_type: "movie",
-        },
-        {
           ...createMediaItem("67890", "507f1f77bcf86cd799439014"),
           title: "Apple Movie", // Should come first alphabetically
           release_date: sameDate,
-          media_type: "movie",
+          media_type: 0, // 0 = movie in numeric enum
         },
         {
           ...createMediaItem("54321", "507f1f77bcf86cd799439015"),
           title: "Beta Movie", // Should come in middle alphabetically
           release_date: sameDate,
-          media_type: "movie",
+          media_type: 0, // 0 = movie in numeric enum
+        },
+        {
+          ...createMediaItem("12345", "507f1f77bcf86cd799439013"),
+          title: "Zebra Movie", // Should come last alphabetically
+          release_date: sameDate,
+          media_type: 0, // 0 = movie in numeric enum
         },
       ];
 
-      modelMocks.media.find = () => Promise.resolve(mockMultipleMedia);
+      modelMocks.media.find = () => ({
+        select: () => ({
+          sort: () => Promise.resolve(mockMultipleMedia),
+        }),
+      });
 
       const mediaIds = [
         {
@@ -341,32 +353,36 @@ describe("Media Service", () => {
       const sameDate = new Date("2023-01-01");
       const mockMultipleMedia = [
         {
-          ...createMediaItem("12345", "507f1f77bcf86cd799439013"),
-          title: "Test Episode", // episode = 3 (highest priority number)
-          release_date: sameDate,
-          media_type: "episode",
-        },
-        {
           ...createMediaItem("67890", "507f1f77bcf86cd799439014"),
           title: "Test Movie", // movie = 0 (lowest priority number, should come first)
           release_date: sameDate,
-          media_type: "movie",
-        },
-        {
-          ...createMediaItem("54321", "507f1f77bcf86cd799439015"),
-          title: "Test Season", // season = 2
-          release_date: sameDate,
-          media_type: "season",
+          media_type: 0, // 0 = movie in numeric enum
         },
         {
           ...createMediaItem("98765", "507f1f77bcf86cd799439016"),
           title: "Test TV Show", // tv = 1
           release_date: sameDate,
-          media_type: "tv",
+          media_type: 1, // 1 = tv in numeric enum
+        },
+        {
+          ...createMediaItem("54321", "507f1f77bcf86cd799439015"),
+          title: "Test Season", // season = 2
+          release_date: sameDate,
+          media_type: 2, // 2 = season in numeric enum
+        },
+        {
+          ...createMediaItem("12345", "507f1f77bcf86cd799439013"),
+          title: "Test Episode", // episode = 3 (highest priority number)
+          release_date: sameDate,
+          media_type: 3, // 3 = episode in numeric enum
         },
       ];
 
-      modelMocks.media.find = () => Promise.resolve(mockMultipleMedia);
+      modelMocks.media.find = () => ({
+        select: () => ({
+          sort: () => Promise.resolve(mockMultipleMedia),
+        }),
+      });
 
       const mediaIds = [
         {

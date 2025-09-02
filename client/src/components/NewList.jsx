@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import mutation from "../mutations/CreateList";
-import query from "../queries/Nav";
+import query from "../queries/Lists";
 import Errors from "./Errors";
 import requireAuth from "./requireAuth";
 

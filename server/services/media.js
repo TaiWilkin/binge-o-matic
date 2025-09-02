@@ -1,11 +1,14 @@
 import mongoose from "mongoose";
 
-import { areIdsEqual, convertToObjectId } from "../helpers/index.js";
 import {
+  areIdsEqual,
   compareMedia,
+  convertToObjectId,
   filterOutDuplicateItems,
   getChildMediaIds,
-} from "../helpers/media.js";
+  MediaTypeEnum,
+  mediaTypes,
+} from "../helpers/index.js";
 import listService from "./list.js";
 import { fetchSeasonFromTMDB, fetchShowFromTMDB, searchTMDB } from "./tmdb.js";
 
@@ -24,6 +27,8 @@ async function searchMedia(searchQuery) {
       } else {
         updatedMedia.release_date = new Date(media.release_date);
       }
+      // Keep media_type as string for API response
+      // Conversion to number happens in addToList when saving to database
       return updatedMedia;
     })
     .filter((media) => !!media)
@@ -42,7 +47,7 @@ async function addToList(media, user) {
         title: media.title,
         release_date: media.release_date,
         poster_path: media.poster_path,
-        media_type: media.media_type,
+        media_type: mediaTypes[media.media_type], // Convert string to number for database
       },
     },
     { new: true, upsert: true },
@@ -60,31 +65,38 @@ async function addToList(media, user) {
 }
 
 async function getMediaList(mediaIds) {
-  const ms = await Media.find({
-    _id: {
-      $in: mediaIds.map((el) => convertToObjectId(el.item_id)),
-    },
+  const idToItem = new Map();
+  const objectIds = [];
+  mediaIds.forEach((el) => {
+    idToItem.set(el.item_id.toString(), el);
+    objectIds.push(convertToObjectId(el.item_id));
   });
-  // find all media whose _id equals the item_id (MLab id) of the item
-  return ms
-    .map((m) => {
-      const mediaItem = mediaIds.find((el) => areIdsEqual(el.item_id, m._id));
-      return {
-        isWatched: mediaItem.isWatched,
-        title: m.title,
-        media_id: m.media_id,
-        release_date: m.release_date,
-        poster_path: m.poster_path,
-        media_type: m.media_type,
-        number: m.number,
-        parent_show: m.parent_show,
-        parent_season: m.parent_season,
-        episode: m.episode,
-        id: m._id,
-        show_children: mediaItem.show_children,
-      };
-    })
-    .sort(compareMedia);
+
+  const ms = await Media.find({
+    _id: { $in: objectIds },
+  })
+    .select(
+      "title media_id release_date poster_path media_type number parent_show parent_season episode",
+    )
+    .sort({ release_date: 1, media_type: 1, title: 1 });
+
+  return ms.map((m) => {
+    const mediaItem = idToItem.get(m._id.toString());
+    return {
+      isWatched: mediaItem.isWatched,
+      title: m.title,
+      media_id: m.media_id,
+      release_date: m.release_date,
+      poster_path: m.poster_path,
+      media_type: MediaTypeEnum[m.media_type], // Convert number back to string for API
+      number: m.number,
+      parent_show: m.parent_show,
+      parent_season: m.parent_season,
+      episode: m.episode,
+      id: m._id,
+      show_children: mediaItem.show_children,
+    };
+  });
 }
 
 async function removeFromList({ id, list }, user) {
@@ -125,7 +137,7 @@ async function addSeasons({ id, media_id, list }) {
     media_id: season.id,
     release_date: season.air_date,
     poster_path: season.poster_path,
-    media_type: "season",
+    media_type: mediaTypes.season, // Convert to number for database
     parent_show: id,
     number: season.season_number,
   }));
@@ -169,7 +181,7 @@ async function addEpisodes({ id, season_number, show_id, list }) {
     episode: episode.name,
     release_date: episode.air_date,
     poster_path: episode.still_path,
-    media_type: "episode",
+    media_type: mediaTypes.episode, // Convert to number for database
     parent_season: convertToObjectId(id),
     parent_show: show._id,
     number: episode.episode_number,

@@ -6,7 +6,10 @@ const MediaSchema = new Schema({
   name: String,
   title: String,
   release_date: Date,
-  media_type: String,
+  media_type: {
+    type: Number,
+    enum: [0, 1, 2, 3],
+  },
   poster_path: String,
   media_id: String,
   number: { type: Number, default: 1 },

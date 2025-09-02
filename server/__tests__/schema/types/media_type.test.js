@@ -125,6 +125,11 @@ describe("MediaType", () => {
       expect(fields.episode.resolve).toBeUndefined();
     });
 
+    it("should NOT have resolver for media_type field", () => {
+      expect(fields.media_type.resolve).toBeUndefined();
+      expect(fields.media_type.type).toBe(GraphQLString);
+    });
+
     it("should have resolvers for parent fields", () => {
       expect(fields.parent_show.resolve).toBeDefined();
       expect(fields.parent_season.resolve).toBeDefined();

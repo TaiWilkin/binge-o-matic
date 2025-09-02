@@ -262,18 +262,20 @@ describe("UserType", () => {
       expect(listServiceSpy).toHaveBeenCalledTimes(1);
     });
 
-    it("should handle missing req object", () => {
-      // Test edge case where req might be undefined/null
-      // This would cause an error as expected since req.user would throw
-      expect(() => fields.lists.resolve({}, {}, undefined)).toThrow(TypeError);
+    it("should handle missing context object", async () => {
+      // Test edge case where context might be undefined/null
+      // This would cause an error as expected since context.user would throw
+      await expect(fields.lists.resolve({}, {}, undefined)).rejects.toThrow(
+        TypeError,
+      );
     });
 
-    it("should handle req object without user property", async () => {
-      const mockRequest = {}; // req object exists but no user property
+    it("should handle context object without user property", async () => {
+      const mockContext = {}; // context object exists but no user property
 
       listServiceSpy.mockResolvedValue([]);
 
-      const result = await fields.lists.resolve({}, {}, mockRequest);
+      const result = await fields.lists.resolve({}, {}, mockContext);
 
       expect(listServiceSpy).toHaveBeenCalledWith(undefined);
       expect(result).toEqual([]);

@@ -167,19 +167,19 @@ describe("RootQueryType", () => {
     });
 
     describe("user resolver", () => {
-      it("should return context.user", () => {
+      it("should return context.user", async () => {
         const mockUser = { id: "user123", email: "test@example.com" };
         const mockContext = { user: mockUser };
 
-        const result = fields.user.resolve(null, null, mockContext);
+        const result = await fields.user.resolve(null, null, mockContext);
 
         expect(result).toBe(mockUser);
       });
 
-      it("should handle undefined context.user", () => {
+      it("should handle undefined context.user", async () => {
         const mockContext = { user: undefined };
 
-        const result = fields.user.resolve(null, null, mockContext);
+        const result = await fields.user.resolve(null, null, mockContext);
 
         expect(result).toBeUndefined();
       });

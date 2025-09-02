@@ -28,7 +28,7 @@ export async function updateMediaProperty(listId, itemId, propertyUpdates) {
 }
 
 export async function fetchAllLists() {
-  return await List.find().sort({ name: "desc" });
+  return await List.find({}, { name: 1, user: 1 }).sort({ name: -1 });
 }
 
 export async function fetchUserLists(user) {

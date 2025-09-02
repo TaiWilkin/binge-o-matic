@@ -5,6 +5,7 @@ import {
   GraphQLString,
 } from "graphql";
 
+import { timedResolver } from "../../helpers/timedResolver.js";
 import ListService from "../../services/list.js";
 import ListType from "./list_type.js";
 
@@ -15,9 +16,9 @@ const UserType = new GraphQLObjectType({
     email: { type: GraphQLString },
     lists: {
       type: new GraphQLList(ListType),
-      resolve(_parentValue, _args, req) {
-        return ListService.fetchUserLists(req.user);
-      },
+      resolve: timedResolver(async (_parentValue, _args, context) => {
+        return ListService.fetchUserLists(context.user);
+      }),
     },
   }),
 });

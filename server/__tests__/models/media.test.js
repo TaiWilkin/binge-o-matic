@@ -1,3 +1,4 @@
+import { mediaTypes } from "../../helpers/index.js";
 import { TestSetup } from "../testUtils.js";
 
 describe("Media Model", () => {
@@ -30,7 +31,7 @@ describe("Media Model", () => {
       name: "Test Movie",
       title: "Test Movie Title",
       release_date: new Date("2023-01-01"),
-      media_type: "movie",
+      media_type: mediaTypes.movie,
       poster_path: "/test-poster.jpg",
       media_id: "12345",
       number: 1,
@@ -70,7 +71,7 @@ describe("Media Model", () => {
       expect(mediaFields.name.instance).toBe("String");
       expect(mediaFields.title.instance).toBe("String");
       expect(mediaFields.release_date.instance).toBe("Date");
-      expect(mediaFields.media_type.instance).toBe("String");
+      expect(mediaFields.media_type.instance).toBe("Number");
       expect(mediaFields.poster_path.instance).toBe("String");
       expect(mediaFields.media_id.instance).toBe("String");
       expect(mediaFields.number.instance).toBe("Number");
@@ -101,7 +102,7 @@ describe("Media Model", () => {
         name: "Breaking Bad",
         title: "Breaking Bad - Season 1",
         release_date: new Date("2008-01-20"),
-        media_type: "tv",
+        media_type: mediaTypes.tv,
         poster_path: "/breaking-bad-poster.jpg",
         media_id: "1396",
         number: 1,
@@ -290,7 +291,7 @@ describe("Media Model", () => {
       const seasonId = new mongoose.Types.ObjectId();
       const episode = new Media({
         name: "Episode 1",
-        media_type: "episode",
+        media_type: mediaTypes.episode,
         parent_season: seasonId,
       });
 
@@ -301,7 +302,7 @@ describe("Media Model", () => {
       const showId = new mongoose.Types.ObjectId();
       const season = new Media({
         name: "Season 1",
-        media_type: "season",
+        media_type: mediaTypes.season,
         parent_show: showId,
       });
 
@@ -314,7 +315,7 @@ describe("Media Model", () => {
 
       const episode = new Media({
         name: "Episode Title",
-        media_type: "episode",
+        media_type: mediaTypes.episode,
         parent_season: seasonId,
         parent_show: showId,
         number: 1,
@@ -332,41 +333,41 @@ describe("Media Model", () => {
     it("should handle movie media type", () => {
       const movie = new Media({
         name: "Test Movie",
-        media_type: "movie",
+        media_type: mediaTypes.movie,
         media_id: "123",
       });
 
-      expect(movie.media_type).toBe("movie");
+      expect(movie.media_type).toBe(mediaTypes.movie);
     });
 
     it("should handle tv media type", () => {
       const tv = new Media({
         name: "Test TV Show",
-        media_type: "tv",
+        media_type: mediaTypes.tv,
         media_id: "456",
       });
 
-      expect(tv.media_type).toBe("tv");
+      expect(tv.media_type).toBe(mediaTypes.tv);
     });
 
     it("should handle episode media type", () => {
       const episode = new Media({
         name: "Test Episode",
-        media_type: "episode",
+        media_type: mediaTypes.episode,
         media_id: "789",
       });
 
-      expect(episode.media_type).toBe("episode");
+      expect(episode.media_type).toBe(mediaTypes.episode);
     });
 
     it("should handle season media type", () => {
       const season = new Media({
         name: "Test Season",
-        media_type: "season",
+        media_type: mediaTypes.season,
         media_id: "999",
       });
 
-      expect(season.media_type).toBe("season");
+      expect(season.media_type).toBe(mediaTypes.season);
     });
   });
 
