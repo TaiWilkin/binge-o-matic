@@ -66,10 +66,14 @@ async function addToList(media, user) {
 
 async function getMediaList(mediaIds) {
   const idToItem = new Map();
-  mediaIds.forEach((el) => idToItem.set(el.item_id.toString(), el));
+  const objectIds = [];
+  mediaIds.forEach((el) => {
+    idToItem.set(el.item_id.toString(), el);
+    objectIds.push(convertToObjectId(el.item_id));
+  });
 
   const ms = await Media.find({
-    _id: { $in: mediaIds.map((el) => convertToObjectId(el.item_id)) },
+    _id: { $in: objectIds },
   })
     .select(
       "title media_id release_date poster_path media_type number parent_show parent_season episode",
