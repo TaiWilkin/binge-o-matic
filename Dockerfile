@@ -1,6 +1,6 @@
 FROM debian:bullseye as builder
 
-ARG NODE_VERSION=18.11.0
+ARG NODE_VERSION=20.19.0
 ARG YARN_VERSION=1.22.5
 
 RUN apt-get update; apt install -y curl
