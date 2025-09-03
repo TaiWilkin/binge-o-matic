@@ -60,7 +60,7 @@ const GET_LISTS_ERROR_MOCK = {
 
 // Wrapper component to provide Router context and Apollo client
 const TestWrapper = ({ children, mocks = [GET_LISTS_MOCK] }) => (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <BrowserRouter>{children}</BrowserRouter>
   </MockedProvider>
 );

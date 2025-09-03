@@ -9,6 +9,9 @@
     "client",
     "server"
   ],
+  "engines": {
+    "node": ">=20.9.0 <23.0.0"
+  },
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "concurrently": "^7.6.0",
@@ -16,7 +19,7 @@
     "dotenv": "^16.5.0",
     "express": "^4.16.3",
     "express-session": "^1.15.6",
-    "graphql": "^0.13.2",
+    "graphql": "^16.9.0",
     "graphql-date": "^1.0.3",
     "graphql-http": "^1.22.4",
     "graphql-passport": "^0.6.8",
@@ -34,19 +37,21 @@
     "test:coverage": "jest --coverage"
   },
   "devDependencies": {
+    "@babel/core": "^7.28.3",
     "@babel/preset-env": "^7.28.3",
     "@babel/preset-react": "^7.27.1",
     "@eslint/js": "^9.34.0",
+    "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.7.0",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
-    "babel-jest": "^29.7.0",
+    "babel-jest": "^30.0.0",
     "eslint": "^9.34.0",
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-simple-import-sort": "^12.1.1",
-    "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0",
+    "jest": "^30.0.0",
+    "jest-environment-jsdom": "^30.0.0",
     "mongodb-memory-server": "^10.1.4",
     "prettier": "^3.5.3"
   },

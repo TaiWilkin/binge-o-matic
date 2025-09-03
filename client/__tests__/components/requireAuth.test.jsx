@@ -77,7 +77,7 @@ describe("requireAuth HOC", () => {
       expect(() => {
         render(
           <BrowserRouter>
-            <MockedProvider mocks={[currentUserMock]} addTypename={false}>
+            <MockedProvider mocks={[currentUserMock]}>
               <WrappedComponent />
             </MockedProvider>
           </BrowserRouter>,
@@ -98,7 +98,7 @@ describe("requireAuth HOC", () => {
     it("should show loading message when query is loading", () => {
       render(
         <BrowserRouter>
-          <MockedProvider mocks={[currentUserLoadingMock]} addTypename={false}>
+          <MockedProvider mocks={[currentUserLoadingMock]}>
             <AuthenticatedTestComponent />
           </MockedProvider>
         </BrowserRouter>,
@@ -110,7 +110,7 @@ describe("requireAuth HOC", () => {
     it("should not render wrapped component during loading", () => {
       render(
         <BrowserRouter>
-          <MockedProvider mocks={[currentUserLoadingMock]} addTypename={false}>
+          <MockedProvider mocks={[currentUserLoadingMock]}>
             <AuthenticatedTestComponent />
           </MockedProvider>
         </BrowserRouter>,
@@ -124,7 +124,7 @@ describe("requireAuth HOC", () => {
     it("should render Errors component when query has error", async () => {
       render(
         <BrowserRouter>
-          <MockedProvider mocks={[currentUserErrorMock]} addTypename={false}>
+          <MockedProvider mocks={[currentUserErrorMock]}>
             <AuthenticatedTestComponent />
           </MockedProvider>
         </BrowserRouter>,
@@ -141,7 +141,7 @@ describe("requireAuth HOC", () => {
     it("should not render wrapped component when there is an error", async () => {
       render(
         <BrowserRouter>
-          <MockedProvider mocks={[currentUserErrorMock]} addTypename={false}>
+          <MockedProvider mocks={[currentUserErrorMock]}>
             <AuthenticatedTestComponent />
           </MockedProvider>
         </BrowserRouter>,
@@ -159,7 +159,7 @@ describe("requireAuth HOC", () => {
     it("should redirect to signin when no user", async () => {
       render(
         <MemoryRouter initialEntries={["/protected"]}>
-          <MockedProvider mocks={[currentUserNoUserMock]} addTypename={false}>
+          <MockedProvider mocks={[currentUserNoUserMock]}>
             <AuthenticatedTestComponent />
           </MockedProvider>
         </MemoryRouter>,
@@ -176,7 +176,7 @@ describe("requireAuth HOC", () => {
     it("should not render wrapped component when user is null", async () => {
       render(
         <MemoryRouter>
-          <MockedProvider mocks={[currentUserNoUserMock]} addTypename={false}>
+          <MockedProvider mocks={[currentUserNoUserMock]}>
             <AuthenticatedTestComponent />
           </MockedProvider>
         </MemoryRouter>,
@@ -200,7 +200,7 @@ describe("requireAuth HOC", () => {
 
       render(
         <MemoryRouter>
-          <MockedProvider mocks={[nullUserMock]} addTypename={false}>
+          <MockedProvider mocks={[nullUserMock]}>
             <AuthenticatedTestComponent />
           </MockedProvider>
         </MemoryRouter>,
@@ -216,7 +216,7 @@ describe("requireAuth HOC", () => {
     it("should render wrapped component when user exists", async () => {
       render(
         <BrowserRouter>
-          <MockedProvider mocks={[currentUserMock]} addTypename={false}>
+          <MockedProvider mocks={[currentUserMock]}>
             <AuthenticatedTestComponent />
           </MockedProvider>
         </BrowserRouter>,
@@ -230,7 +230,7 @@ describe("requireAuth HOC", () => {
     it("should pass user data to wrapped component", async () => {
       render(
         <BrowserRouter>
-          <MockedProvider mocks={[currentUserMock]} addTypename={false}>
+          <MockedProvider mocks={[currentUserMock]}>
             <AuthenticatedTestComponent />
           </MockedProvider>
         </BrowserRouter>,
@@ -246,7 +246,7 @@ describe("requireAuth HOC", () => {
     it("should pass through additional props to wrapped component", async () => {
       render(
         <BrowserRouter>
-          <MockedProvider mocks={[currentUserMock]} addTypename={false}>
+          <MockedProvider mocks={[currentUserMock]}>
             <AuthenticatedTestComponent extraProp="test-value" />
           </MockedProvider>
         </BrowserRouter>,
@@ -276,7 +276,7 @@ describe("requireAuth HOC", () => {
 
       render(
         <BrowserRouter>
-          <MockedProvider mocks={[differentUserMock]} addTypename={false}>
+          <MockedProvider mocks={[differentUserMock]}>
             <AuthenticatedTestComponent />
           </MockedProvider>
         </BrowserRouter>,
@@ -306,7 +306,7 @@ describe("requireAuth HOC", () => {
 
       render(
         <BrowserRouter>
-          <MockedProvider mocks={[currentUserMock]} addTypename={false}>
+          <MockedProvider mocks={[currentUserMock]}>
             <AuthenticatedClass />
           </MockedProvider>
         </BrowserRouter>,
@@ -329,7 +329,7 @@ describe("requireAuth HOC", () => {
 
       render(
         <BrowserRouter>
-          <MockedProvider mocks={[currentUserMock]} addTypename={false}>
+          <MockedProvider mocks={[currentUserMock]}>
             <AuthenticatedFunctional />
           </MockedProvider>
         </BrowserRouter>,
@@ -355,7 +355,7 @@ describe("requireAuth HOC", () => {
 
       render(
         <BrowserRouter>
-          <MockedProvider mocks={[currentUserMock]} addTypename={false}>
+          <MockedProvider mocks={[currentUserMock]}>
             <AuthenticatedInteractive onClick={mockClick} />
           </MockedProvider>
         </BrowserRouter>,
@@ -375,7 +375,7 @@ describe("requireAuth HOC", () => {
     it("should handle query refetch scenarios", async () => {
       render(
         <BrowserRouter>
-          <MockedProvider mocks={[currentUserMock]} addTypename={false}>
+          <MockedProvider mocks={[currentUserMock]}>
             <AuthenticatedTestComponent />
           </MockedProvider>
         </BrowserRouter>,

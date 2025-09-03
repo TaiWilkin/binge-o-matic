@@ -8,15 +8,26 @@ import { createHandler } from "graphql-http/lib/use/express";
 import { buildContext } from "graphql-passport";
 import mongoose from "mongoose";
 import passport from "passport";
+import path from "path";
+import { fileURLToPath } from "url";
 
 import { isProduction } from "./server/helpers/index.js";
 import schema from "./server/schema/schema.js";
+
+// Get __dirname equivalent for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Create a new Express application
 const app = express();
 
 if (isProduction()) {
-  app.use(express.static("client/build"));
+  app.use(express.static("client/dist"));
+
+  // Handle React Router - send all non-API requests to React app
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "client/dist", "index.html"));
+  });
 }
 
 const { MONGO_URI } = process.env;

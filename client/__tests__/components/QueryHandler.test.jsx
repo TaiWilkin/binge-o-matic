@@ -41,7 +41,7 @@ const currentUserMock = {
 describe("QueryHandler Component", () => {
   it("should render its children", async () => {
     render(
-      <MockedProvider mocks={[currentUserMock]} addTypename={false}>
+      <MockedProvider mocks={[currentUserMock]}>
         <QueryHandler query={USER_QUERY}>
           {({ loading, error }) => {
             if (loading) return <p>Loading...</p>;
@@ -60,7 +60,7 @@ describe("QueryHandler Component", () => {
 
   it("should show loading state", () => {
     render(
-      <MockedProvider mocks={[currentUserMock]} addTypename={false}>
+      <MockedProvider mocks={[currentUserMock]}>
         <QueryHandler query={USER_QUERY}>
           {({ loading, error }) => {
             if (loading) return <p>Loading...</p>;
@@ -78,7 +78,7 @@ describe("QueryHandler Component", () => {
 
   it("should pass query data to children function", async () => {
     render(
-      <MockedProvider mocks={[currentUserMock]} addTypename={false}>
+      <MockedProvider mocks={[currentUserMock]}>
         <QueryHandler query={USER_QUERY}>
           {({ loading, error, data }) => {
             if (loading) return <p>Loading...</p>;
@@ -96,7 +96,7 @@ describe("QueryHandler Component", () => {
 
   it("should use custom loader when useCustomLoader is true", () => {
     render(
-      <MockedProvider mocks={[currentUserMock]} addTypename={false}>
+      <MockedProvider mocks={[currentUserMock]}>
         <QueryHandler query={USER_QUERY} useCustomLoader={true}>
           {({ loading, error }) => {
             if (loading) return <p>Custom Loading...</p>;
@@ -127,7 +127,7 @@ describe("QueryHandler Component", () => {
     };
 
     render(
-      <MockedProvider mocks={[queryWithVariables]} addTypename={false}>
+      <MockedProvider mocks={[queryWithVariables]}>
         <QueryHandler query={USER_QUERY} variables={{ id: "123" }}>
           {({ loading, error, data }) => {
             if (loading) return <p>Loading...</p>;
@@ -155,7 +155,7 @@ describe("QueryHandler Component", () => {
       };
 
       render(
-        <MockedProvider mocks={[errorMock]} addTypename={false}>
+        <MockedProvider mocks={[errorMock]}>
           <QueryHandler query={USER_QUERY}>
             {({ loading, error }) => {
               if (loading) return <p>Loading...</p>;
@@ -188,7 +188,7 @@ describe("QueryHandler Component", () => {
       };
 
       render(
-        <MockedProvider mocks={[networkErrorMock]} addTypename={false}>
+        <MockedProvider mocks={[networkErrorMock]}>
           <QueryHandler query={USER_QUERY}>
             {({ loading, error }) => {
               if (loading) return <p>Loading...</p>;
@@ -224,7 +224,7 @@ describe("QueryHandler Component", () => {
       };
 
       render(
-        <MockedProvider mocks={[errorMock]} addTypename={false}>
+        <MockedProvider mocks={[errorMock]}>
           <QueryHandler query={USER_QUERY}>
             {() => <p>Should not render</p>}
           </QueryHandler>
@@ -253,7 +253,7 @@ describe("QueryHandler Component", () => {
       };
 
       render(
-        <MockedProvider mocks={[multipleErrorsMock]} addTypename={false}>
+        <MockedProvider mocks={[multipleErrorsMock]}>
           <QueryHandler query={USER_QUERY}>
             {() => <p>Should not render</p>}
           </QueryHandler>
@@ -276,7 +276,7 @@ describe("QueryHandler Component", () => {
       };
 
       render(
-        <MockedProvider mocks={[errorMock]} addTypename={false}>
+        <MockedProvider mocks={[errorMock]}>
           <QueryHandler query={USER_QUERY} useCustomLoader={true}>
             {({ loading, error }) => {
               if (loading) return <p>Custom loading...</p>;
@@ -309,7 +309,7 @@ describe("QueryHandler Component", () => {
       };
 
       render(
-        <MockedProvider mocks={[errorWithVariablesMock]} addTypename={false}>
+        <MockedProvider mocks={[errorWithVariablesMock]}>
           <QueryHandler query={USER_QUERY} variables={{ id: "invalid-id" }}>
             {() => <p>Should not render</p>}
           </QueryHandler>
@@ -331,7 +331,7 @@ describe("QueryHandler Component", () => {
       };
 
       render(
-        <MockedProvider mocks={[errorMock]} addTypename={false}>
+        <MockedProvider mocks={[errorMock]}>
           <QueryHandler query={USER_QUERY}>
             {() => <p>Should not render</p>}
           </QueryHandler>
@@ -354,7 +354,7 @@ describe("QueryHandler Component", () => {
       };
 
       render(
-        <MockedProvider mocks={[errorMock]} addTypename={false}>
+        <MockedProvider mocks={[errorMock]}>
           <QueryHandler query={USER_QUERY} fetchPolicy="cache-first">
             {() => <p>Should not render</p>}
           </QueryHandler>
@@ -380,7 +380,7 @@ describe("QueryHandler Component", () => {
       };
 
       render(
-        <MockedProvider mocks={[errorMock]} addTypename={false}>
+        <MockedProvider mocks={[errorMock]}>
           <QueryHandler query={USER_QUERY}>{childrenSpy}</QueryHandler>
         </MockedProvider>,
       );

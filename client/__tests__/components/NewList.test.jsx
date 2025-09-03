@@ -80,7 +80,7 @@ const RouterWrapper = ({ children }) => (
 
 const renderWithProviders = (mocks = defaultMocks) => {
   return render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <RouterWrapper>
         <NewList />
       </RouterWrapper>
