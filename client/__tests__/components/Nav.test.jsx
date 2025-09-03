@@ -54,7 +54,7 @@ const createUserLoggedOutMock = () => ({
 
 // Wrapper component to provide Router and Apollo context
 const TestWrapper = ({ children, mocks = [] }) => (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <BrowserRouter>{children}</BrowserRouter>
   </MockedProvider>
 );

@@ -91,7 +91,7 @@ jest.mock("../../src/queries/CurrentUser", () => ({
 
 const renderWithProviders = (component) => {
   return render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <MemoryRouter>{component}</MemoryRouter>
     </MockedProvider>,
   );
@@ -382,7 +382,7 @@ describe("SignupForm Component", () => {
       ];
 
       render(
-        <MockedProvider mocks={mocks} addTypename={false}>
+        <MockedProvider mocks={mocks}>
           <MemoryRouter>
             <SignupForm />
           </MemoryRouter>
@@ -412,7 +412,7 @@ describe("SignupForm Component", () => {
       expect(authForm).toBeInTheDocument();
 
       rerender(
-        <MockedProvider mocks={[]} addTypename={false}>
+        <MockedProvider mocks={[]}>
           <MemoryRouter>
             <SignupForm />
           </MemoryRouter>
@@ -449,7 +449,7 @@ describe("SignupForm Component", () => {
   describe("Integration with Dependencies", () => {
     it("should work with different router states", () => {
       render(
-        <MockedProvider mocks={[]} addTypename={false}>
+        <MockedProvider mocks={[]}>
           <MemoryRouter initialEntries={["/signup"]}>
             <SignupForm />
           </MemoryRouter>
@@ -469,7 +469,7 @@ describe("SignupForm Component", () => {
 
     it("should maintain component state across provider updates", () => {
       const { rerender } = render(
-        <MockedProvider mocks={[]} addTypename={false}>
+        <MockedProvider mocks={[]}>
           <MemoryRouter>
             <SignupForm />
           </MemoryRouter>
@@ -479,7 +479,7 @@ describe("SignupForm Component", () => {
       expect(screen.getByTestId("mock-auth-form")).toBeInTheDocument();
 
       rerender(
-        <MockedProvider mocks={[]} addTypename={false}>
+        <MockedProvider mocks={[]}>
           <MemoryRouter>
             <SignupForm />
           </MemoryRouter>

@@ -1,4 +1,8 @@
 {
+  "extensionsToTreatAsEsm": [".jsx"],
+  "globals": {
+    "__DEV__": true
+  },
   "projects": [
     {
       "displayName": "server",

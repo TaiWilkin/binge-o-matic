@@ -109,7 +109,7 @@ import Edit from "../../src/components/Edit.jsx";
 // Helper function to render with providers
 const renderWithProviders = (mocks = [defaultQueryMock]) => {
   return render(
-    <MockedProvider addTypename={false} mocks={mocks}>
+    <MockedProvider mocks={mocks}>
       <BrowserRouter>
         <Edit />
       </BrowserRouter>
@@ -579,7 +579,6 @@ describe("Edit Component", () => {
         render(
           <MockedProvider
             mocks={mocks}
-            addTypename={false}
             defaultOptions={{
               watchQuery: { errorPolicy: "all" },
               query: { errorPolicy: "all" },
@@ -636,7 +635,6 @@ describe("Edit Component", () => {
       render(
         <MockedProvider
           mocks={mocks}
-          addTypename={false}
           defaultOptions={{
             watchQuery: { errorPolicy: "all" },
             query: { errorPolicy: "all" },

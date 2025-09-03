@@ -71,7 +71,7 @@ jest.mock("@apollo/client", () => ({
 
 const renderWithProviders = (component) => {
   return render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={mocks}>
       <MemoryRouter>{component}</MemoryRouter>
     </MockedProvider>,
   );
@@ -417,7 +417,7 @@ describe("AuthButton Component", () => {
       expect(screen.getByRole("link", { name: /login/i })).toBeInTheDocument();
 
       rerender(
-        <MockedProvider addTypename={false}>
+        <MockedProvider>
           <MemoryRouter>
             <AuthButton
               client={mockClient}
