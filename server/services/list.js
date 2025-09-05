@@ -16,15 +16,25 @@ export async function getAuthorizedList(listId, userId) {
 
 // Helper function to update a media item property in a list
 export async function updateMediaProperty(listId, itemId, propertyUpdates) {
-  const list = await List.findOne({ _id: convertToObjectId(listId) });
-  if (!list) return null;
+  try {
+    const list = await List.findOne({ _id: convertToObjectId(listId) });
+    if (!list) return null;
 
-  const updatedList = { ...list };
-  const index = list.media.findIndex((el) => areIdsEqual(el.item_id, itemId));
-  if (index === -1) return null;
+    const updatedList = { ...list, media: list.media.slice() };
+    const index = updatedList.media.findIndex((el) =>
+      areIdsEqual(el.item_id, itemId),
+    );
+    if (index === -1) return null;
 
-  Object.assign(updatedList.media[index], propertyUpdates);
-  return List.findOneAndUpdate({ _id: convertToObjectId(listId) }, updatedList);
+    Object.assign(updatedList.media[index], propertyUpdates);
+    return List.findOneAndUpdate(
+      { _id: convertToObjectId(listId) },
+      updatedList,
+    );
+  } catch (error) {
+    console.error("Error updating media property:", error);
+    throw error;
+  }
 }
 
 export async function fetchAllLists() {

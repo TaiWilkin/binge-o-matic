@@ -1,0 +1,49 @@
+.eye {
+  position: relative;
+  top: 10px;
+  width: 40px;
+  height: 40px;
+}
+
+h1 {
+  margin: 0;
+  background-color: var(--primary-teal);
+  padding: 24px 0px;
+  font-weight: 400;
+  font-size: var(--font-size-xl);
+  line-height: var(--spacing-lg);
+  font-family: var(--font-heading);
+  text-align: center;
+}
+
+.wrapper {
+  margin-bottom: -150px;
+  min-height: 100%;
+}
+
+footer {
+  background-color: var(--footer-bg);
+  padding: var(--spacing-sm);
+  color: var(--footer-text);
+}
+footer a {
+  color: var(--footer-link);
+  font-weight: normal;
+  font-size: var(--font-size-sm);
+  text-decoration: none;
+}
+footer img {
+  vertical-align: middle;
+  padding: var(--spacing-sm);
+  width: 70px;
+}
+.footer,
+.push {
+  height: 150px;
+}
+@media screen and (max-width: 600px) {
+  .footer,
+  .push {
+    height: 200px;
+  }
+}

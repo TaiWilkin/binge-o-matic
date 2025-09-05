@@ -13,11 +13,11 @@ function NavLists({ title, userId, excludeUser }) {
         if (!called) loadLists(); // only fetch the first time
       }}
     >
-      <button className="dropbtn">{title}</button>
+      <button className="btn-nav">{title}</button>
       <div className="dropdown-content">
-        {loading && <span className="dropdown-btn dropbtn">Loading...</span>}
+        {loading && <span className="btn-nav">Loading...</span>}
         {error && (
-          <span className="dropdown-btn dropbtn" style={{ color: "red" }}>
+          <span className="btn-nav" style={{ color: "red" }}>
             Error loading lists
           </span>
         )}
@@ -27,11 +27,7 @@ function NavLists({ title, userId, excludeUser }) {
             return list.user === userId;
           })
           .map((list) => (
-            <Link
-              to={`/lists/${list.id}`}
-              key={list.id}
-              className="dropdown-btn"
-            >
+            <Link to={`/lists/${list.id}`} key={list.id} className="btn-nav">
               {list.name}
             </Link>
           ))}

@@ -3,6 +3,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import mutation from "../mutations/Logout";
+import Loading from "./Loading";
 
 function AuthButton({ client, user, loading }) {
   const navigate = useNavigate();
@@ -17,8 +18,8 @@ function AuthButton({ client, user, loading }) {
   if (user) {
     return (
       <li className="right">
-        <button type="button" onClick={() => logout()}>
-          {mutationLoading ? <div className="spinner" /> : "Logout"}
+        <button type="button" className="btn-nav" onClick={() => logout()}>
+          {mutationLoading ? <Loading /> : "Logout"}
         </button>
       </li>
     );
@@ -27,8 +28,8 @@ function AuthButton({ client, user, loading }) {
   if (loading) {
     return (
       <li className="right">
-        <button type="button" disabled>
-          <div className="spinner" />
+        <button type="button" className="btn-nav" disabled>
+          <Loading />
           <span className="sr-only">Loading</span>
         </button>
       </li>
@@ -37,7 +38,9 @@ function AuthButton({ client, user, loading }) {
 
   return (
     <li className="right">
-      <Link to="/signin">Login</Link>
+      <Link to="/signin" className="btn-nav">
+        Login
+      </Link>
     </li>
   );
 }

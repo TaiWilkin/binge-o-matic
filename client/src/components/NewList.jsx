@@ -1,9 +1,10 @@
 import { useMutation } from "@apollo/client";
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import mutation from "../mutations/CreateList";
 import query from "../queries/Lists";
+import ContentWrapper from "./ContentWrapper";
 import Errors from "./Errors";
 import requireAuth from "./requireAuth";
 
@@ -37,27 +38,23 @@ function NewList() {
   };
 
   return (
-    <main>
-      <div className="subheader">
-        <h2>New List</h2>
-        <Link to="/" className="edit-link">
-          CANCEL
-        </Link>
-        <h3>Choose Title</h3>
-        <h3 className="error">{errorMsg}</h3>
-        <form className="search" onSubmit={addList}>
-          <input
-            type="text"
-            placeholder="Star Trek"
-            value={name}
-            required
-            onChange={onChange}
-          />
-          <Errors error={error} />
-          <button type="submit">CREATE</button>
-        </form>
-      </div>
-    </main>
+    <ContentWrapper title="New List" link="/" linkText="Cancel">
+      <h3>Choose Title</h3>
+      <h3 className="error">{errorMsg}</h3>
+      <form className="search" onSubmit={addList}>
+        <input
+          type="text"
+          placeholder="Star Trek"
+          value={name}
+          required
+          onChange={onChange}
+        />
+        <Errors error={error} />
+        <button type="submit" className="btn-primary">
+          CREATE
+        </button>
+      </form>
+    </ContentWrapper>
   );
 }
 

@@ -1,0 +1,23 @@
+.about {
+  margin: 24px auto;
+  box-shadow: var(--shadow-card);
+  border-radius: var(--border-radius);
+  background-color: var(--white);
+  width: 90%;
+  max-width: var(--max-about-width);
+  color: var(--dark-gray);
+  font-size: var(--font-size-sm);
+  line-height: 1.8;
+}
+.about h2 {
+  margin: 0;
+  padding: 0;
+  font-size: var(--font-size-xl);
+}
+.supporting-text {
+  padding: var(--spacing-lg);
+}
+.about span {
+  color: var(--dark-teal);
+  font-weight: bold;
+}

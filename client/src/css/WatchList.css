@@ -1,0 +1,52 @@
+.watchlist {
+  margin: var(--spacing-xl) auto;
+  border-left: 2px solid var(--primary-teal);
+  padding-left: var(--spacing-md);
+  width: 80%;
+  max-width: var(--max-content-width);
+  color: var(--dark-gray);
+}
+.watchlist::before {
+  margin-left: -45px;
+  background-color: var(--light-gray);
+  padding-bottom: var(--spacing-sm);
+  content: "START";
+  color: var(--medium-gray);
+  font-size: var(--font-size-xs);
+  line-height: var(--spacing-md);
+}
+.watchlist::after {
+  margin-left: -36px;
+  background-color: var(--light-gray);
+  padding-top: var(--spacing-sm);
+  content: "END";
+  color: var(--medium-gray);
+  font-size: var(--font-size-xs);
+  line-height: var(--spacing-md);
+}
+.watchlist h2 {
+  padding: 0;
+  line-height: var(--spacing-md);
+}
+
+.searchlist {
+  margin-top: 0;
+  border: none;
+}
+.searchlist::before,
+.searchlist::after {
+  content: "";
+}
+
+@media screen and (max-width: 600px) {
+  .watchlist {
+    border: none;
+    padding-left: 0;
+    width: 90%;
+  }
+  .watchlist::before,
+  .watchlist::after {
+    padding: 0;
+    content: "";
+  }
+}

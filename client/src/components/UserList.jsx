@@ -1,3 +1,5 @@
+import "../css/WatchList.css";
+
 import React, { useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 
@@ -5,7 +7,7 @@ import listQuery from "../queries/List";
 import ListHeader from "./ListHeader";
 import QueryHandler from "./QueryHandler";
 import UserListHeader from "./UserListHeader";
-import UserMovie from "./UserMovie";
+import UserMedia from "./UserMedia";
 
 const calculateHiddenChildren = (media, hideWatched) => {
   let parentsWithHiddenChildren = media.filter((movie) => !movie.show_children);
@@ -23,12 +25,12 @@ function UserList() {
   const [hideWatched, setHideWatched] = useState(true);
 
   const renderMovies = (media, isOwner) => {
-    const filteredMedia = hideWatched
+    const filteredList = hideWatched
       ? media.filter((movie) => !movie.isWatched)
       : media;
     const hideChildrenOf = calculateHiddenChildren(media, hideWatched);
-    return filteredMedia.map((movie) => (
-      <UserMovie
+    return filteredList.map((movie) => (
+      <UserMedia
         key={movie.id}
         isOwner={isOwner}
         {...movie}

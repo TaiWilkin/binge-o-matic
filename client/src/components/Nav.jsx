@@ -1,3 +1,5 @@
+import "../css/Nav.css";
+
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -12,7 +14,9 @@ function Nav() {
       <nav>
         <ul className="nav">
           <li>
-            <Link to="/about">About</Link>
+            <Link to="/about" className="btn-nav">
+              About
+            </Link>
           </li>
           <QueryHandler query={query} pollInterval={500} useCustomLoader>
             {({ data, client, loading }) =>
@@ -21,7 +25,7 @@ function Nav() {
                   <NavLists userId={data?.user?.id} title="Lists" excludeUser />
                   <NavLists userId={data?.user?.id} title="My Lists" />
                   <li>
-                    <Link to="/newlist" className="right">
+                    <Link to="/newlist" className="right btn-nav">
                       New List
                     </Link>
                   </li>
