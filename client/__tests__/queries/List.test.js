@@ -106,6 +106,7 @@ describe("List Query", () => {
           name
           media {
             id
+            __typename
             media_id
             title
             release_date

@@ -24,16 +24,19 @@ const defaultQueryMock = {
     data: {
       user: {
         id: "user123",
+        __typename: "UserType",
       },
       list: {
         id: "123",
         name: "My Test List",
+        __typename: "ListType",
         user: "user123",
         media: [
           {
             id: "media1",
             media_id: "tmdb123",
             title: "Test Movie",
+            __typename: "MediaType",
             release_date: "2023-01-01",
             poster_path: "/test.jpg",
             media_type: "movie",
@@ -58,16 +61,18 @@ const refetchQueryMock = {
   },
   result: {
     data: {
-      user: { id: "user123" },
+      user: { id: "user123", __typename: "UserType" },
       list: {
         id: "123",
         name: "Refetch Test",
         user: "user123",
+        __typename: "UserType",
         media: [
           {
             id: "media1",
             media_id: "tmdb123",
             title: "Test Movie",
+            __typename: "MediaType",
             release_date: "2023-01-01",
             poster_path: "/test.jpg",
             media_type: "movie",
@@ -456,7 +461,7 @@ describe("Edit Component", () => {
         },
         result: {
           data: {
-            user: { id: "user123" },
+            user: { id: "user123", __typename: "UserType" },
             list: null,
           },
         },
@@ -478,14 +483,16 @@ describe("Edit Component", () => {
         },
         result: {
           data: {
-            user: { id: "user123" },
+            user: { id: "user123", __typename: "UserType" },
             list: {
               id: "123",
               name: "Someone Else's List",
               user: "different-user", // Different user owns this list
+              __typename: "ListType",
               media: [
                 {
                   id: "media4",
+                  __typename: "MediaType",
                   media_id: "tmdb999",
                   title: "Unauthorized Movie",
                   release_date: "2023-04-01",
@@ -525,9 +532,11 @@ describe("Edit Component", () => {
               id: "123",
               name: "Some List",
               user: "user123",
+              __typename: "ListType",
               media: [
                 {
                   id: "media5",
+                  __typename: "MediaType",
                   media_id: "tmdb888",
                   title: "No User Movie",
                   release_date: "2023-05-01",
@@ -693,12 +702,13 @@ describe("Edit Component", () => {
         },
         result: {
           data: {
-            user: { id: "user123" },
+            user: { id: "user123", __typename: "UserType" },
             list: {
               id: "123",
               name: "My Test List",
               user: "user123",
               media: [],
+              __typename: "ListType",
             },
           },
         },

@@ -12,6 +12,7 @@ export default gql`
       name
       media {
         id
+        __typename
         media_id
         title
         release_date

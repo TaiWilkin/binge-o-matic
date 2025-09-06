@@ -26,6 +26,7 @@ const userMock = {
       user: {
         id: "1",
         email: "test@test.com",
+        __typename: "UserType",
       },
     },
   },
@@ -66,8 +67,8 @@ const fetchNav = {
   result: {
     data: {
       lists: [
-        { id: "1", name: "User List", user: "1" },
-        { id: "2", name: "Public List", user: "2" },
+        { id: "1", __typename: "ListType", name: "User List", user: "1" },
+        { id: "2", __typename: "ListType", name: "Public List", user: "2" },
       ],
     },
   },

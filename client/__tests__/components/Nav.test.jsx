@@ -36,6 +36,7 @@ const createUserLoggedInMock = () => ({
       user: {
         id: "1",
         email: "test@example.com",
+        __typename: "UserType",
       },
     },
   },

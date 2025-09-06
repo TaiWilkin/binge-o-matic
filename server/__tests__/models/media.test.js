@@ -30,6 +30,7 @@ describe("Media Model", () => {
     testMedia = new Media({
       name: "Test Movie",
       title: "Test Movie Title",
+      __typename: "MediaType",
       release_date: new Date("2023-01-01"),
       media_type: mediaTypes.movie,
       poster_path: "/test-poster.jpg",
@@ -333,6 +334,7 @@ describe("Media Model", () => {
     it("should handle movie media type", () => {
       const movie = new Media({
         name: "Test Movie",
+        __typename: "MediaType",
         media_type: mediaTypes.movie,
         media_id: "123",
       });
