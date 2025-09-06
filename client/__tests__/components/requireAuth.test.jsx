@@ -33,6 +33,7 @@ describe("requireAuth HOC", () => {
         user: {
           id: "1",
           email: "test@example.com",
+          __typename: "UserType",
         },
       },
     },
@@ -269,6 +270,7 @@ describe("requireAuth HOC", () => {
             user: {
               id: "2",
               email: "different@example.com",
+              __typename: "UserType",
             },
           },
         },

@@ -273,6 +273,7 @@ export function createUser(id = "507f1f77bcf86cd799439011") {
     id,
     _id: createObjectId(id),
     email: "test@example.com",
+    __typename: "UserType",
   };
 }
 
@@ -315,6 +316,7 @@ export function createMediaItem(
     _id: createObjectId(itemId),
     media_id: mediaId,
     title: "Test Movie",
+    __typename: "MediaType",
     release_date: new Date("2023-01-01"),
     poster_path: "/test.jpg",
     media_type: 0, // Use numeric value for database (0 = movie)
@@ -338,6 +340,7 @@ export function createTMDBSearchResponse() {
       {
         id: 12345,
         title: "Test Movie",
+        __typename: "MediaType",
         release_date: "2023-01-01",
         poster_path: "/test.jpg",
         media_type: "movie",
@@ -345,6 +348,7 @@ export function createTMDBSearchResponse() {
       {
         id: 67890,
         name: "Test TV Show",
+        __typename: "MediaType",
         first_air_date: "2023-02-01",
         poster_path: "/test-tv.jpg",
         media_type: "tv",
@@ -352,6 +356,7 @@ export function createTMDBSearchResponse() {
       {
         id: 11111,
         title: "Invalid Movie",
+        __typename: "MediaType",
         poster_path: "/invalid.jpg",
         media_type: "movie",
         // No release_date or first_air_date - should be filtered out
@@ -367,12 +372,14 @@ export function createTMDBSeasonsResponse() {
       {
         id: 11111,
         season_number: 1,
+        __typename: "MediaType",
         air_date: "2023-01-01",
         poster_path: "/season1.jpg",
       },
       {
         id: 22222,
         season_number: 2,
+        __typename: "MediaType",
         air_date: "2024-01-01",
         poster_path: "/season2.jpg",
       },
@@ -387,6 +394,7 @@ export function createTMDBEpisodesResponse() {
       {
         id: 33333,
         name: "Episode 1",
+        __typename: "MediaType",
         episode_number: 1,
         air_date: "2023-01-01",
         still_path: "/episode1.jpg",
@@ -394,6 +402,7 @@ export function createTMDBEpisodesResponse() {
       {
         id: 44444,
         name: "Episode 2",
+        __typename: "MediaType",
         episode_number: 2,
         air_date: "2023-01-08",
         still_path: "/episode2.jpg",
@@ -467,6 +476,7 @@ export function createMediaModel() {
     _id: createObjectId("507f1f77bcf86cd799439013"),
     media_id: "12345",
     title: "Test Movie",
+    __typename: "MediaType",
     release_date: new Date("2023-01-01"),
     poster_path: "/test.jpg",
     media_type: 0, // Use numeric value for database

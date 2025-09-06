@@ -16,6 +16,7 @@
   float: left;
   padding: var(--spacing-md);
   width: 132px;
+  height: auto;
 }
 .media-img.episode-img {
   width: 225px;

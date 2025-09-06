@@ -33,6 +33,7 @@ const currentUserMock = {
       user: {
         id: "1",
         email: "test@test.com",
+        __typename: "UserType",
       },
     },
   },
@@ -121,6 +122,7 @@ describe("QueryHandler Component", () => {
           user: {
             id: "123",
             email: "variable@test.com",
+            __typename: "UserType",
           },
         },
       },

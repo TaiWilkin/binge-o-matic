@@ -98,12 +98,15 @@ describe("List Query", () => {
       query List($id: ID) {
         user {
           id
+          __typename
         }
         list(id: $id) {
           id
+          __typename
           name
           media {
             id
+            __typename
             media_id
             title
             release_date

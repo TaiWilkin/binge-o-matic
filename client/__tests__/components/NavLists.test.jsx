@@ -11,6 +11,7 @@ const GET_LISTS = gql`
   query GetLists {
     lists {
       id
+      __typename
       name
       user
     }
@@ -25,9 +26,9 @@ const GET_LISTS_LOADING_MOCK = {
   result: {
     data: {
       lists: [
-        { id: "1", name: "My First List", user: "user1" },
-        { id: "2", name: "My Second List", user: "user1" },
-        { id: "3", name: "Public List", user: "user2" },
+        { id: "1", __typename: "List", name: "My First List", user: "user1" },
+        { id: "2", __typename: "List", name: "My Second List", user: "user1" },
+        { id: "3", __typename: "List", name: "Public List", user: "user2" },
       ],
     },
   },
@@ -42,9 +43,9 @@ const GET_LISTS_MOCK = {
   result: {
     data: {
       lists: [
-        { id: "1", name: "My First List", user: "user1" },
-        { id: "2", name: "My Second List", user: "user1" },
-        { id: "3", name: "Public List", user: "user2" },
+        { id: "1", __typename: "List", name: "My First List", user: "user1" },
+        { id: "2", __typename: "List", name: "My Second List", user: "user1" },
+        { id: "3", __typename: "List", name: "Public List", user: "user2" },
       ],
     },
   },
@@ -60,7 +61,7 @@ const GET_LISTS_ERROR_MOCK = {
 
 // Wrapper component to provide Router context and Apollo client
 const TestWrapper = ({ children, mocks = [GET_LISTS_MOCK] }) => (
-  <MockedProvider mocks={mocks}>
+  <MockedProvider mocks={mocks} addTypename={false}>
     <BrowserRouter>{children}</BrowserRouter>
   </MockedProvider>
 );

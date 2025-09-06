@@ -97,6 +97,7 @@ describe("Media Service", () => {
       expect(result[0]).toEqual({
         id: 12345,
         title: "Test Movie",
+        __typename: "MediaType",
         release_date: new Date("2023-01-01"),
         poster_path: "/test.jpg",
         media_type: "movie",
@@ -105,6 +106,7 @@ describe("Media Service", () => {
         id: 67890,
         title: "Test TV Show", // Transformed from 'name'
         name: "Test TV Show",
+        __typename: "MediaType",
         release_date: new Date("2023-02-01"), // Transformed from 'first_air_date'
         first_air_date: "2023-02-01",
         poster_path: "/test-tv.jpg",
@@ -135,6 +137,7 @@ describe("Media Service", () => {
           {
             id: 3,
             title: "Latest Movie",
+            __typename: "MediaType",
             release_date: "2023-12-01", // Latest
             poster_path: "/latest.jpg",
             media_type: "movie",
@@ -142,6 +145,7 @@ describe("Media Service", () => {
           {
             id: 1,
             name: "Old TV Show",
+            __typename: "MediaType",
             first_air_date: "2020-01-01", // Oldest
             poster_path: "/old-tv.jpg",
             media_type: "tv",
@@ -149,6 +153,7 @@ describe("Media Service", () => {
           {
             id: 2,
             title: "Mid Movie",
+            __typename: "MediaType",
             release_date: "2021-06-01", // Middle
             poster_path: "/mid.jpg",
             media_type: "movie",
@@ -175,6 +180,7 @@ describe("Media Service", () => {
       const media = {
         id: "12345",
         title: "Test Movie",
+        __typename: "MediaType",
         release_date: new Date("2023-01-01"),
         poster_path: "/test.jpg",
         media_type: "movie",
@@ -209,6 +215,7 @@ describe("Media Service", () => {
       const media = {
         id: "12345",
         title: "Test Movie",
+        __typename: "MediaType",
         release_date: new Date("2023-01-01"),
         poster_path: "/test.jpg",
         media_type: "movie",
@@ -276,11 +283,13 @@ describe("Media Service", () => {
       const mediaIds = [
         {
           item_id: "507f1f77bcf86cd799439013",
+          __typename: "MediaType",
           isWatched: false,
           show_children: false,
         },
         {
           item_id: "507f1f77bcf86cd799439014",
+          __typename: "MediaType",
           isWatched: false,
           show_children: false,
         },
@@ -435,6 +444,7 @@ describe("Media Service", () => {
               id: createObjectId("507f1f77bcf86cd799439013"),
               media_id: "12345",
               title: "Parent Show",
+              __typename: "MediaType",
               media_type: "tv",
             },
             {
@@ -442,6 +452,7 @@ describe("Media Service", () => {
               media_id: "67890",
               title: "Child Season",
               media_type: "season",
+              __typename: "MediaType",
               parent_show: createObjectId("507f1f77bcf86cd799439013"),
             },
           ]);
@@ -506,6 +517,7 @@ describe("Media Service", () => {
           {
             id: childId1,
             media_id: "67890",
+            __typename: "MediaType",
             title: "Season 1",
             media_type: "season",
             parent_show: parentId,
@@ -513,12 +525,14 @@ describe("Media Service", () => {
           {
             id: childId2,
             media_id: "67891",
+            __typename: "MediaType",
             title: "Season 2",
             media_type: "season",
             parent_show: parentId,
           },
           {
             id: createObjectId("507f1f77bcf86cd799439016"),
+            __typename: "MediaType",
             media_id: "67892",
             title: "Season from different show",
             media_type: "season",
@@ -549,12 +563,14 @@ describe("Media Service", () => {
           {
             id: parentSeasonId,
             media_id: "12345",
+            __typename: "MediaType",
             title: "Season 1",
             media_type: "season",
             parent_show: createObjectId("507f1f77bcf86cd799439010"),
           },
           {
             id: childEpisodeId1,
+            __typename: "MediaType",
             media_id: "67890",
             title: "Episode 1",
             media_type: "episode",
@@ -563,6 +579,7 @@ describe("Media Service", () => {
           },
           {
             id: childEpisodeId2,
+            __typename: "MediaType",
             media_id: "67891",
             title: "Episode 2",
             media_type: "episode",
@@ -571,6 +588,7 @@ describe("Media Service", () => {
           },
           {
             id: createObjectId("507f1f77bcf86cd799439016"),
+            __typename: "MediaType",
             media_id: "67892",
             title: "Episode from different season",
             media_type: "episode",
@@ -594,6 +612,7 @@ describe("Media Service", () => {
         Promise.resolve([
           {
             id: parentId,
+            __typename: "MediaType",
             media_id: "12345",
             title: "Parent Item with No Children",
             media_type: "movie",
@@ -601,6 +620,7 @@ describe("Media Service", () => {
           {
             id: createObjectId("507f1f77bcf86cd799439014"),
             media_id: "67890",
+            __typename: "MediaType",
             title: "Unrelated Item",
             media_type: "movie",
             // No parent relationships - should be filtered out
@@ -624,6 +644,7 @@ describe("Media Service", () => {
         Promise.resolve([
           {
             id: parentShowId,
+            __typename: "MediaType",
             media_id: "12345",
             title: "Parent TV Show",
             media_type: "tv",
@@ -631,6 +652,7 @@ describe("Media Service", () => {
           {
             id: seasonId,
             media_id: "67890",
+            __typename: "MediaType",
             title: "Season 1",
             media_type: "season",
             parent_show: parentShowId, // This should match
@@ -638,6 +660,7 @@ describe("Media Service", () => {
           {
             id: episodeId,
             media_id: "67891",
+            __typename: "MediaType",
             title: "Episode 1",
             media_type: "episode",
             parent_season: seasonId,
@@ -646,6 +669,7 @@ describe("Media Service", () => {
           {
             id: createObjectId("507f1f77bcf86cd799439016"),
             media_id: "67892",
+            __typename: "MediaType",
             title: "Different Show Season",
             media_type: "season",
             parent_show: createObjectId("507f1f77bcf86cd799439099"),
