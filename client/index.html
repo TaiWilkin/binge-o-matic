@@ -6,17 +6,25 @@
     <base href="/" />
     <title>Bingeomatic</title>
 
+    <!-- Preconnect to Google Fonts for faster connection -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Preload and asynchronously load the Google Fonts stylesheet -->
     <link
-      href="https://fonts.googleapis.com/css?family=Kumar+One|Raleway:400,700"
-      rel="stylesheet"
-      async
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css?family=Kumar+One|Raleway:400,700&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'"
     />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700"
-      type="text/css"
-      async
-    />
+
+    <!-- Fallback for browsers with JavaScript disabled -->
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Kumar+One|Raleway:400,700&display=swap"
+      />
+    </noscript>
   </head>
   <body>
     <div id="root"></div>
