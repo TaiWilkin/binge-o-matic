@@ -1,11 +1,11 @@
 import "../css/WatchList.css";
 
+import { useQuery } from "@apollo/client";
 import React, { useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
-import { useQuery, useApolloClient, gql } from "@apollo/client";
 
 import listQuery from "../queries/List";
-
+import Errors from "./Errors";
 import ListHeader from "./ListHeader";
 import UserListHeader from "./UserListHeader";
 import UserMedia from "./UserMedia";
