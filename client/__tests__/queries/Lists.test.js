@@ -52,6 +52,7 @@ describe("Lists Query", () => {
       query GetLists {
         lists {
           id
+          __typename
           name
           user
         }

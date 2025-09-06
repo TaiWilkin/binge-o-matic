@@ -46,6 +46,7 @@ describe("CurrentUser Query", () => {
       {
         user {
           id
+          __typename
           email
         }
       }
