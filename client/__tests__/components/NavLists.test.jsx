@@ -26,9 +26,19 @@ const GET_LISTS_LOADING_MOCK = {
   result: {
     data: {
       lists: [
-        { id: "1", __typename: "List", name: "My First List", user: "user1" },
-        { id: "2", __typename: "List", name: "My Second List", user: "user1" },
-        { id: "3", __typename: "List", name: "Public List", user: "user2" },
+        {
+          id: "1",
+          __typename: "ListType",
+          name: "My First List",
+          user: "user1",
+        },
+        {
+          id: "2",
+          __typename: "ListType",
+          name: "My Second List",
+          user: "user1",
+        },
+        { id: "3", __typename: "ListType", name: "Public List", user: "user2" },
       ],
     },
   },
@@ -43,9 +53,19 @@ const GET_LISTS_MOCK = {
   result: {
     data: {
       lists: [
-        { id: "1", __typename: "List", name: "My First List", user: "user1" },
-        { id: "2", __typename: "List", name: "My Second List", user: "user1" },
-        { id: "3", __typename: "List", name: "Public List", user: "user2" },
+        {
+          id: "1",
+          __typename: "ListType",
+          name: "My First List",
+          user: "user1",
+        },
+        {
+          id: "2",
+          __typename: "ListType",
+          name: "My Second List",
+          user: "user1",
+        },
+        { id: "3", __typename: "ListType", name: "Public List", user: "user2" },
       ],
     },
   },
