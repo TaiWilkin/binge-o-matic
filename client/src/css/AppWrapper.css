@@ -36,6 +36,7 @@ footer img {
   vertical-align: middle;
   padding: var(--spacing-sm);
   width: 70px;
+  height: auto;
 }
 .footer,
 .push {
