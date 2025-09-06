@@ -8,7 +8,24 @@ import Root from "./components/Root";
 
 const cache = new InMemoryCache({
   typePolicies: {
+    Query: {
+      fields: {
+        list: {
+          keyArgs: ["id"],
+          read(existing, { args, toReference }) {
+            return (
+              existing ||
+              toReference({
+                __typename: "ListType",
+                id: args?.id,
+              })
+            );
+          },
+        },
+      },
+    },
     ListType: {
+      keyFields: ["id"],
       fields: {
         media: {
           keyArgs: false,

@@ -4,9 +4,11 @@ export default gql`
   query List($id: ID) {
     user {
       id
+      __typename
     }
     list(id: $id) {
       id
+      __typename
       name
       media {
         id
