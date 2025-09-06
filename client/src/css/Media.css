@@ -12,9 +12,13 @@
 .media.season {
   margin-left: 70px;
 }
-.media img {
+.media-img {
   float: left;
   padding: var(--spacing-md);
+  width: 132px;
+}
+.media-img.episode-img {
+  width: 225px;
 }
 
 .media p {

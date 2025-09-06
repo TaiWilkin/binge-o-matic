@@ -22,7 +22,7 @@ export default function AppWrapper({ children }) {
       </div>
       <div className="push" />
       <footer className="footer">
-        <img src={TMDB} alt="poster" />
+        <img src={TMDB} alt="tmdb" />
         This product uses the TMDb API but is not endorsed or certified by TMDb.
         <p>
           Icon made by <a href="http://www.freepik.com/">Freepik</a> from{" "}

@@ -7,6 +7,7 @@ import CardActions from "./CardActions";
 import DeleteMedia from "./DeleteMedia";
 import ToggleChildren from "./ToggleChildren";
 import ToggleWatched from "./ToggleWatched";
+import MediaImage from "./MediaImage";
 
 function UserMedia(props) {
   const { id: listId } = useParams(); // get list id from route params
@@ -38,14 +39,7 @@ function UserMedia(props) {
     return null;
   }
 
-  const img = poster_path ? (
-    <img
-      src={`https://image.tmdb.org/t/p/${media_type === "episode" ? "w185" : "w92"}${poster_path}`}
-      alt="poster"
-    />
-  ) : (
-    <div className="no-image" />
-  );
+  const img = <MediaImage mediaType={media_type} posterPath={poster_path} />;
 
   let details = "";
   if (media_type === "season" && number) {
