@@ -8,6 +8,7 @@ import addToListMutation from "../mutations/AddToList";
 import removeFromListMutation from "../mutations/RemoveFromList";
 import listQuery from "../queries/List";
 import CardActions from "./CardActions";
+import MediaImage from "./MediaImage";
 
 function SearchMedia(props) {
   const { id, title, release_date, poster_path, media_type } = props;
@@ -75,18 +76,9 @@ function SearchMedia(props) {
     );
   };
 
-  const renderImage = () => {
-    if (!poster_path) {
-      return <div className="no-image" />;
-    }
-    return (
-      <img src={`https://image.tmdb.org/t/p/w92${poster_path}`} alt="poster" />
-    );
-  };
-
   return (
     <li id={id} className={onList ? "onList media" : "media"}>
-      {renderImage()}
+      <MediaImage mediaType={media_type} posterPath={poster_path} />
       <h2>{title}</h2>
       <p>{release_date}</p>
       {renderButtons()}

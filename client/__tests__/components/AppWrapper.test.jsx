@@ -95,7 +95,7 @@ describe("AppWrapper Component", () => {
         </AppWrapper>,
       );
 
-      const tmdbImage = screen.getByAltText("poster");
+      const tmdbImage = screen.getByAltText("tmdb");
       expect(tmdbImage).toBeInTheDocument();
       expect(tmdbImage.src).toContain("mock-tmdb.png");
     });
@@ -290,8 +290,8 @@ describe("AppWrapper Component", () => {
       const eyeImage = screen.getByAltText("o");
       expect(eyeImage).toBeInTheDocument();
 
-      const posterImage = screen.getByAltText("poster");
-      expect(posterImage).toBeInTheDocument();
+      const tmdbImage = screen.getByAltText("tmdb");
+      expect(tmdbImage).toBeInTheDocument();
     });
 
     it("should have accessible links in footer", () => {

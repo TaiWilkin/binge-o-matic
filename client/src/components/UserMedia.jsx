@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 
 import CardActions from "./CardActions";
 import DeleteMedia from "./DeleteMedia";
+import MediaImage from "./MediaImage";
 import ToggleChildren from "./ToggleChildren";
 import ToggleWatched from "./ToggleWatched";
 
@@ -38,14 +39,7 @@ function UserMedia(props) {
     return null;
   }
 
-  const img = poster_path ? (
-    <img
-      src={`https://image.tmdb.org/t/p/${media_type === "episode" ? "w185" : "w92"}${poster_path}`}
-      alt="poster"
-    />
-  ) : (
-    <div className="no-image" />
-  );
+  const img = <MediaImage mediaType={media_type} posterPath={poster_path} />;
 
   let details = "";
   if (media_type === "season" && number) {
