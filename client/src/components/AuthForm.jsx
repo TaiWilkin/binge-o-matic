@@ -1,7 +1,11 @@
+import "../css/AuthForm.css";
+
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
+import ContentWrapper from "./ContentWrapper";
 import Errors from "./Errors";
+import Loading from "./Loading";
 
 function AuthForm({ error, title, onSubmit }) {
   const [email, setEmail] = useState("");
@@ -24,46 +28,44 @@ function AuthForm({ error, title, onSubmit }) {
   };
 
   return (
-    <main>
-      <div className="subheader">
-        <h2>{title}</h2>
-        <Link to="/" className="edit-link">
-          Cancel
-        </Link>
-        <h3 className="error">{stateError}</h3>
-        <Link to={title === "Sign in" ? "/signup" : "/signin"}>
-          {title === "Sign in" ? "Sign up" : "Sign in"}
-        </Link>
-        <form className="login" onSubmit={handleSubmit}>
-          <label htmlFor="email">
-            Email
-            <input
-              id="email"
-              type="text"
-              placeholder="John_Doe@example.com"
-              value={email}
-              required
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </label>
-          <label htmlFor="password">
-            Password
-            <input
-              id="password"
-              type="password"
-              placeholder="password123"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </label>
-          <Errors error={error} />
-          <button className="standalone-btn" type="submit" disabled={loading}>
-            {loading ? <div className="spinner" /> : title}
-          </button>
-        </form>
-      </div>
-    </main>
+    <ContentWrapper title={title} link="/" linkText="Cancel">
+      <h3 className="error">{stateError}</h3>
+      <Link to={title === "Sign in" ? "/signup" : "/signin"}>
+        {title === "Sign in" ? "Sign up" : "Sign in"}
+      </Link>
+      <form className="login" onSubmit={handleSubmit}>
+        <label htmlFor="email">
+          Email
+          <input
+            id="email"
+            type="text"
+            placeholder="John_Doe@example.com"
+            value={email}
+            required
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </label>
+        <label htmlFor="password">
+          Password
+          <input
+            id="password"
+            type="password"
+            placeholder="password123"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </label>
+        <Errors error={error} />
+        <button
+          className="standalone-btn btn-primary"
+          type="submit"
+          disabled={loading}
+        >
+          {loading ? <Loading /> : title}
+        </button>
+      </form>
+    </ContentWrapper>
   );
 }
 

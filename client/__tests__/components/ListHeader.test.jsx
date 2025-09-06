@@ -50,35 +50,39 @@ describe("ListHeader Component", () => {
       );
 
       const header = container.querySelector(".header");
-      const headerInfo = container.querySelector(".header-info");
+      const subheader = container.querySelector(".subheader");
+      const headerSubtitle = container.querySelector(".header-subtitle");
       const heading = container.querySelector("h2");
       const paragraph = container.querySelector("p");
-      const link = container.querySelector(".edit-link");
+      const link = container.querySelector(".list-header-link");
 
       expect(header).toBeInTheDocument();
-      expect(headerInfo).toBeInTheDocument();
+      expect(subheader).toBeInTheDocument();
+      expect(headerSubtitle).toBeInTheDocument();
       expect(heading).toBeInTheDocument();
       expect(paragraph).toBeInTheDocument();
       expect(link).toBeInTheDocument();
 
       // Check hierarchy
-      expect(header).toContainElement(headerInfo);
-      expect(header).toContainElement(link);
-      expect(headerInfo).toContainElement(heading);
-      expect(headerInfo).toContainElement(paragraph);
+      expect(header).toContainElement(subheader);
+      expect(header).toContainElement(headerSubtitle);
+      expect(subheader).toContainElement(heading);
+      expect(subheader).toContainElement(link);
+      expect(headerSubtitle).toContainElement(paragraph);
     });
 
-    it("should apply inline styles to header-info", () => {
+    it("should have proper component structure", () => {
       const { container } = renderWithRouter(
         <ListHeader name="Test List" push={mockPush} />,
       );
 
-      const headerInfo = container.querySelector(".header-info");
-      expect(headerInfo).toHaveStyle({
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-      });
+      const header = container.querySelector(".header");
+      const subheader = container.querySelector(".subheader");
+      const headerSubtitle = container.querySelector(".header-subtitle");
+
+      expect(header).toBeInTheDocument();
+      expect(subheader).toBeInTheDocument();
+      expect(headerSubtitle).toBeInTheDocument();
     });
   });
 
@@ -308,21 +312,27 @@ describe("ListHeader Component", () => {
       );
 
       expect(container.querySelector(".header")).toBeInTheDocument();
-      expect(container.querySelector(".header-info")).toBeInTheDocument();
-      expect(container.querySelector(".edit-link")).toBeInTheDocument();
+      expect(container.querySelector(".subheader")).toBeInTheDocument();
+      expect(container.querySelector(".header-subtitle")).toBeInTheDocument();
+      expect(container.querySelector(".list-header-link")).toBeInTheDocument();
     });
 
-    it("should apply flex styling correctly", () => {
+    it("should render all required elements", () => {
       const { container } = renderWithRouter(
         <ListHeader name="Test" push={mockPush} />,
       );
 
-      const headerInfo = container.querySelector(".header-info");
-      const computedStyle = window.getComputedStyle(headerInfo);
+      const subheader = container.querySelector(".subheader");
+      const headerSubtitle = container.querySelector(".header-subtitle");
 
-      expect(computedStyle.display).toBe("flex");
-      expect(computedStyle.justifyContent).toBe("space-between");
-      expect(computedStyle.alignItems).toBe("center");
+      expect(subheader).toBeInTheDocument();
+      expect(headerSubtitle).toBeInTheDocument();
+
+      // Check that subheader contains both h2 and link
+      expect(subheader).toContainElement(container.querySelector("h2"));
+      expect(subheader).toContainElement(
+        container.querySelector(".list-header-link"),
+      );
     });
   });
 

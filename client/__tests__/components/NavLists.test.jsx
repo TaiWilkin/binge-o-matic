@@ -80,7 +80,7 @@ describe("NavLists Component", () => {
 
       const titleButton = screen.getByRole("button", { name: "My Lists" });
       expect(titleButton).toBeInTheDocument();
-      expect(titleButton).toHaveClass("dropbtn");
+      expect(titleButton).toHaveClass("btn-nav");
     });
 
     it("should trigger query on mouse enter and show loading", async () => {
@@ -243,7 +243,7 @@ describe("NavLists Component", () => {
 
       await waitFor(() => {
         const listLink = screen.getByRole("link", { name: "My First List" });
-        expect(listLink).toHaveClass("dropdown-btn");
+        expect(listLink).toHaveClass("btn-nav");
       });
     });
 
@@ -259,7 +259,7 @@ describe("NavLists Component", () => {
       // Title button should be a button, not a link
       expect(titleButton.tagName).toBe("BUTTON");
       expect(titleButton).not.toHaveAttribute("href");
-      expect(titleButton).toHaveClass("dropbtn");
+      expect(titleButton).toHaveClass("btn-nav");
     });
   });
 

@@ -1,5 +1,9 @@
+import "../css/About.css";
+
 import React from "react";
 import { Link } from "react-router-dom";
+
+import CardActions from "./CardActions";
 
 function About() {
   return (
@@ -42,9 +46,9 @@ function About() {
             The future of television beckons you.
           </p>
         </div>
-        <div className="card-actions">
+        <CardActions>
           <Link to="/newlist">CREATE A LIST</Link>
-        </div>
+        </CardActions>
       </div>
     </main>
   );

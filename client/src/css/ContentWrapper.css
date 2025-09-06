@@ -1,0 +1,54 @@
+.subcontent {
+  display: block;
+  margin: var(--spacing-md) auto;
+  box-shadow: var(--shadow-card);
+  background-color: var(--white);
+  padding: 18px var(--spacing-md);
+  width: 90%;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: left;
+  text-decoration: none;
+}
+
+.subcontent form {
+  margin: var(--font-size-xs) auto;
+  background-color: var(--accent-teal);
+  padding: var(--spacing-sm);
+  width: 450px;
+  font-size: var(--font-size-xs);
+  text-align: center;
+}
+
+.subcontent input {
+  margin-right: var(--spacing-xs);
+  border: none;
+  padding: var(--spacing-sm);
+  width: 300px;
+  font-size: var(--font-size-base);
+}
+.subcontent label {
+  display: block;
+  padding: var(--spacing-sm);
+  color: var(--dark-gray);
+  font-size: var(--font-size-xs);
+}
+.subcontent h3 {
+  display: block;
+  color: var(--dark-gray);
+  font-size: var(--font-size-base);
+}
+.subcontent h2 {
+  margin: 0;
+  padding: 0;
+  color: var(--dark-gray);
+  font-size: var(--font-size-lg);
+}
+
+@media screen and (max-width: 600px) {
+  .subcontent form {
+    width: 90%;
+  }
+  .subcontent form button {
+    margin: auto;
+  }
+}

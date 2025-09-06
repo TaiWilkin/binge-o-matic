@@ -40,8 +40,8 @@ describe("Errors Component", () => {
 
       const { container } = render(<Errors error={mockError} />);
 
-      const errorsContainer = container.querySelector(".errors");
-      const errorParagraph = container.querySelector(".error-small");
+      const errorsContainer = container.querySelector(".error");
+      const errorParagraph = container.querySelector("p.error");
 
       expect(errorsContainer).toBeInTheDocument();
       expect(errorParagraph).toBeInTheDocument();
@@ -59,7 +59,7 @@ describe("Errors Component", () => {
 
       const { container } = render(<Errors error={mockError} />);
 
-      const errorParagraphs = container.querySelectorAll(".error-small");
+      const errorParagraphs = container.querySelectorAll("p.error");
       expect(errorParagraphs).toHaveLength(3);
 
       expect(errorParagraphs[0]).toHaveTextContent("First error");
@@ -79,7 +79,7 @@ describe("Errors Component", () => {
 
       // Empty message should still render as a paragraph element
       const { container } = render(<Errors error={mockError} />);
-      const errorParagraphs = container.querySelectorAll(".error-small");
+      const errorParagraphs = container.querySelectorAll("p.error");
       expect(errorParagraphs).toHaveLength(2);
     });
 
@@ -131,15 +131,13 @@ describe("Errors Component", () => {
       expect(container.firstChild).toBeNull();
     });
 
-    it("should render empty div when graphQLErrors is empty array", () => {
+    it("should return null when graphQLErrors is empty array", () => {
       const mockError = {
         graphQLErrors: [],
       };
 
       const { container } = render(<Errors error={mockError} />);
-      const errorsDiv = container.querySelector(".errors");
-      expect(errorsDiv).toBeInTheDocument();
-      expect(errorsDiv.children).toHaveLength(0);
+      expect(container.firstChild).toBeNull();
     });
 
     it("should return null when no error prop is passed", () => {
@@ -197,7 +195,7 @@ describe("Errors Component", () => {
       expect(validError).toBeInTheDocument();
 
       const { container } = render(<Errors error={mockError} />);
-      const errorParagraphs = container.querySelectorAll(".error-small");
+      const errorParagraphs = container.querySelectorAll("p.error");
       expect(errorParagraphs).toHaveLength(2);
     });
   });
@@ -210,8 +208,8 @@ describe("Errors Component", () => {
 
       const { container } = render(<Errors error={mockError} />);
 
-      const errorsDiv = container.querySelector("div.errors");
-      const errorParagraph = errorsDiv.querySelector("p.error-small");
+      const errorsDiv = container.querySelector("div.error");
+      const errorParagraph = errorsDiv.querySelector("p.error");
 
       expect(errorsDiv).toBeInTheDocument();
       expect(errorParagraph).toBeInTheDocument();
@@ -228,8 +226,8 @@ describe("Errors Component", () => {
 
       const { container } = render(<Errors error={mockError} />);
 
-      const errorsDiv = container.querySelector("div.errors");
-      const errorParagraphs = errorsDiv.querySelectorAll("p.error-small");
+      const errorsDiv = container.querySelector("div.error");
+      const errorParagraphs = errorsDiv.querySelectorAll("p.error");
 
       expect(errorParagraphs).toHaveLength(2);
       errorParagraphs.forEach((p) => {

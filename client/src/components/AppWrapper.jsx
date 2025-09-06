@@ -1,3 +1,5 @@
+import "../css/AppWrapper.css";
+
 import React from "react";
 
 import BrightEye from "../assets/bright-eye.png";
@@ -6,7 +8,7 @@ import Nav from "./Nav";
 
 export default function AppWrapper({ children }) {
   return (
-    <div className="bingomatic">
+    <div>
       <div className="wrapper">
         <header>
           <h1>

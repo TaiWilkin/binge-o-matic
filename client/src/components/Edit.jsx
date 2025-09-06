@@ -1,10 +1,11 @@
 import { useMutation, useQuery } from "@apollo/client";
 import React, { useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import deleteListMutation from "../mutations/DeleteList";
 import editListMutation from "../mutations/EditList";
 import listQuery from "../queries/List";
+import ContentWrapper from "./ContentWrapper";
 import requireAuth from "./requireAuth";
 
 function Edit() {
@@ -53,30 +54,28 @@ function Edit() {
   };
 
   return (
-    <main>
-      <div className="subheader">
-        <h2>Editing {data.list.name}</h2>
-        <Link to={`/lists/${id}`} className="right">
-          RETURN TO LIST
-        </Link>
-
-        <h3 className="simple-header">Change Title</h3>
-        <form className="search" onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Enter new title"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-          />
-          <button type="submit">SUBMIT</button>
-        </form>
-
-        <h3 className="simple-header">Delete List</h3>
-        <button type="button" className="standalone-btn" onClick={handleDelete}>
-          DELETE
+    <ContentWrapper
+      title={`Editing ${data.list.name}`}
+      link={`/lists/${id}`}
+      linkText="Return to list"
+    >
+      <h3>Change Title</h3>
+      <form className="search" onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Enter new title"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+        />
+        <button type="submit" className="btn-primary">
+          SUBMIT
         </button>
-      </div>
-    </main>
+      </form>
+      <h3>Delete List</h3>
+      <button type="button" className="standalone-btn" onClick={handleDelete}>
+        DELETE
+      </button>
+    </ContentWrapper>
   );
 }
 

@@ -1,3 +1,5 @@
+import "../css/Media.css";
+
 import { useMutation, useQuery } from "@apollo/client";
 import React from "react";
 import { useParams } from "react-router-dom";
@@ -5,8 +7,9 @@ import { useParams } from "react-router-dom";
 import addToListMutation from "../mutations/AddToList";
 import removeFromListMutation from "../mutations/RemoveFromList";
 import listQuery from "../queries/List";
+import CardActions from "./CardActions";
 
-function SearchMovie(props) {
+function SearchMedia(props) {
   const { id, title, release_date, poster_path, media_type } = props;
   const params = useParams();
   // Query to fetch the list
@@ -32,7 +35,7 @@ function SearchMovie(props) {
   const renderButtons = () => {
     if (!onList) {
       return (
-        <div className="card-actions">
+        <CardActions>
           <button
             type="button"
             onClick={(e) => {
@@ -51,12 +54,12 @@ function SearchMovie(props) {
           >
             Add to List
           </button>
-        </div>
+        </CardActions>
       );
     }
 
     return (
-      <div className="card-actions">
+      <CardActions>
         <button
           type="button"
           onClick={(e) => {
@@ -68,7 +71,7 @@ function SearchMovie(props) {
         >
           Remove from List
         </button>
-      </div>
+      </CardActions>
     );
   };
 
@@ -82,7 +85,7 @@ function SearchMovie(props) {
   };
 
   return (
-    <li id={id} className={onList ? "onList" : ""}>
+    <li id={id} className={onList ? "onList media" : "media"}>
       {renderImage()}
       <h2>{title}</h2>
       <p>{release_date}</p>
@@ -91,4 +94,4 @@ function SearchMovie(props) {
   );
 }
 
-export default SearchMovie;
+export default SearchMedia;

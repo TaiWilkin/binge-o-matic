@@ -1,0 +1,67 @@
+/* Navigation button - for nav items */
+.btn-nav {
+  display: block;
+  padding: 18px var(--spacing-md);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: var(--font-size-base);
+  line-height: var(--btn-line-height);
+  text-align: left;
+  text-decoration: none;
+}
+
+.btn-nav:hover {
+  color: var(--white);
+}
+
+.btn-nav:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-nav:disabled:hover {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.nav {
+  box-shadow: var(--shadow-nav);
+  background: var(--secondary-teal);
+  overflow: hidden;
+}
+
+.nav li {
+  float: left;
+}
+
+.nav li.right {
+  float: right;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  z-index: 1;
+  box-shadow: var(--shadow-dropdown);
+  background-color: var(--secondary-teal);
+  min-width: 160px;
+}
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+@media screen and (max-width: 600px) {
+  .nav li.right {
+    float: none;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  margin: -1px;
+  padding: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+  white-space: nowrap;
+}

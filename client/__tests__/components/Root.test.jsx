@@ -29,7 +29,7 @@ jest.mock("../../src/components/NewList.jsx", () => {
   };
 });
 
-jest.mock("../../src/components/SearchMovies.jsx", () => {
+jest.mock("../../src/components/SearchList.jsx", () => {
   return function MockSearchMovies() {
     return <div data-testid="mock-search-movies">SearchMovies Component</div>;
   };

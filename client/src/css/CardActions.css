@@ -1,0 +1,18 @@
+.card-actions {
+  clear: both;
+  border-top: 1px solid var(--border-gray);
+  padding: 4px var(--spacing-sm);
+  overflow: auto;
+}
+
+@media screen and (max-width: 600px) {
+  .card-actions {
+    display: inline-block;
+    width: 100%;
+  }
+
+  .card-actions button {
+    display: block;
+    margin: var(--spacing-sm) auto;
+  }
+}

@@ -392,7 +392,7 @@ describe("NewList Component", () => {
       expect(
         screen.getByRole("button", { name: "CREATE" }),
       ).toBeInTheDocument();
-      expect(screen.getByRole("link", { name: "CANCEL" })).toBeInTheDocument();
+      expect(screen.getByRole("link", { name: "Cancel" })).toBeInTheDocument();
     });
 
     it("should have correct form attributes", async () => {
@@ -406,7 +406,7 @@ describe("NewList Component", () => {
       const createButton = screen.getByRole("button", { name: "CREATE" });
       expect(createButton).toHaveAttribute("type", "submit");
 
-      const cancelLink = screen.getByRole("link", { name: "CANCEL" });
+      const cancelLink = screen.getByRole("link", { name: "Cancel" });
       expect(cancelLink).toHaveAttribute("href", "/");
     });
   });
@@ -499,7 +499,7 @@ describe("NewList Component", () => {
       renderWithProviders();
       await waitForComponent();
 
-      const cancelLink = screen.getByRole("link", { name: "CANCEL" });
+      const cancelLink = screen.getByRole("link", { name: "Cancel" });
       expect(cancelLink).toHaveAttribute("href", "/");
     });
 
@@ -628,7 +628,7 @@ describe("NewList Component", () => {
       expect(
         screen.getByRole("button", { name: "CREATE" }),
       ).toBeInTheDocument();
-      expect(screen.getByRole("link", { name: "CANCEL" })).toBeInTheDocument();
+      expect(screen.getByRole("link", { name: "Cancel" })).toBeInTheDocument();
     });
 
     it("should have proper input placeholder", async () => {

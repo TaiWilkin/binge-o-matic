@@ -743,14 +743,14 @@ describe("Edit Component", () => {
       expect(screen.getByText("SUBMIT")).toBeInTheDocument();
       expect(screen.getByText("Delete List")).toBeInTheDocument();
       expect(screen.getByText("DELETE")).toBeInTheDocument();
-      expect(screen.getByText("RETURN TO LIST")).toBeInTheDocument();
+      expect(screen.getByText("Return to list")).toBeInTheDocument();
     });
 
     it("should have return to list link", async () => {
       renderWithProviders();
       await waitForComponent();
 
-      const returnLink = screen.getByText("RETURN TO LIST");
+      const returnLink = screen.getByText("Return to list");
       expect(returnLink).toBeInTheDocument();
       expect(returnLink).toHaveAttribute("href", "/lists/123");
     });
