@@ -5,9 +5,9 @@ import { useParams } from "react-router-dom";
 
 import CardActions from "./CardActions";
 import DeleteMedia from "./DeleteMedia";
+import MediaImage from "./MediaImage";
 import ToggleChildren from "./ToggleChildren";
 import ToggleWatched from "./ToggleWatched";
-import MediaImage from "./MediaImage";
 
 function UserMedia(props) {
   const { id: listId } = useParams(); // get list id from route params
