@@ -54,7 +54,11 @@ function Edit() {
   };
 
   return (
-    <ContentWrapper title="Edit List" link={`/lists/${id}`} linkText="Cancel">
+    <ContentWrapper
+      title={`Editing ${data.list.name}`}
+      link={`/lists/${id}`}
+      linkText="Return to list"
+    >
       <h3>Change Title</h3>
       <form className="search" onSubmit={handleSubmit}>
         <input

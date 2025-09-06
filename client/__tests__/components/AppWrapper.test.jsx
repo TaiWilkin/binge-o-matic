@@ -23,10 +23,9 @@ describe("AppWrapper Component", () => {
         </AppWrapper>,
       );
 
-      const mainWrapper = screen
-        .getByText("Test Content")
-        .closest(".bingomatic");
-      expect(mainWrapper).toBeInTheDocument();
+      const testContent = screen.getByText("Test Content");
+      const wrapper = testContent.closest(".wrapper");
+      expect(wrapper).toBeInTheDocument();
     });
 
     it("should render the header with title", () => {
@@ -178,14 +177,14 @@ describe("AppWrapper Component", () => {
         </AppWrapper>,
       );
 
-      const bingomatic = container.querySelector(".bingomatic");
-      expect(bingomatic).toBeInTheDocument();
-
       const wrapper = container.querySelector(".wrapper");
       expect(wrapper).toBeInTheDocument();
 
       const footer = container.querySelector(".footer");
       expect(footer).toBeInTheDocument();
+
+      const push = container.querySelector(".push");
+      expect(push).toBeInTheDocument();
     });
 
     it("should render all main sections", () => {
@@ -369,7 +368,7 @@ describe("AppWrapper Component", () => {
 
       expect(result).toBeDefined();
       expect(result.type).toBe("div");
-      expect(result.props.className).toBe("bingomatic");
+      expect(result.props.children).toBeDefined();
     });
 
     it("should not have any side effects during render", () => {

@@ -5,25 +5,25 @@ import Loading from "../../src/components/Loading.jsx";
 
 describe("Loading Component", () => {
   describe("Rendering", () => {
-    it("should render the loading message", () => {
-      render(<Loading />);
+    it("should render the loading spinner", () => {
+      const { container } = render(<Loading />);
 
-      const loadingText = screen.getByText("Loading...");
-      expect(loadingText).toBeInTheDocument();
+      const spinner = container.querySelector(".spinner");
+      expect(spinner).toBeInTheDocument();
     });
 
-    it("should render as a paragraph element", () => {
-      render(<Loading />);
+    it("should render as a div element", () => {
+      const { container } = render(<Loading />);
 
-      const loadingElement = screen.getByText("Loading...");
-      expect(loadingElement.tagName).toBe("P");
+      const spinner = container.querySelector(".spinner");
+      expect(spinner.tagName).toBe("DIV");
     });
 
-    it("should contain the exact text 'Loading...'", () => {
-      render(<Loading />);
+    it("should have the spinner class", () => {
+      const { container } = render(<Loading />);
 
-      const loadingText = screen.getByText(/^Loading\.\.\.$/);
-      expect(loadingText).toBeInTheDocument();
+      const spinner = container.querySelector(".spinner");
+      expect(spinner).toHaveClass("spinner");
     });
   });
 
@@ -32,36 +32,37 @@ describe("Loading Component", () => {
       expect(() => render(<Loading />)).not.toThrow();
     });
 
-    it("should render only a single paragraph element", () => {
+    it("should render only a single div element", () => {
       const { container } = render(<Loading />);
 
-      const paragraphs = container.querySelectorAll("p");
-      expect(paragraphs).toHaveLength(1);
+      const divs = container.querySelectorAll("div");
+      expect(divs).toHaveLength(1);
     });
 
-    it("should not render any other HTML elements", () => {
+    it("should render a spinner div with no child elements", () => {
       const { container } = render(<Loading />);
 
-      // Should only contain one child element (the paragraph)
+      // Should only contain one child element (the spinner div)
       expect(container.firstChild.children).toHaveLength(0);
-      expect(container.firstChild.tagName).toBe("P");
+      expect(container.firstChild.tagName).toBe("DIV");
+      expect(container.firstChild).toHaveClass("spinner");
     });
   });
 
   describe("Accessibility", () => {
-    it("should be accessible to screen readers", () => {
-      render(<Loading />);
+    it("should render a visible spinner", () => {
+      const { container } = render(<Loading />);
 
-      const loadingText = screen.getByText("Loading...");
-      expect(loadingText).toBeVisible();
+      const spinner = container.querySelector(".spinner");
+      expect(spinner).toBeVisible();
     });
 
-    it("should have text content that is screen reader friendly", () => {
-      render(<Loading />);
+    it("should be a visual loading indicator", () => {
+      const { container } = render(<Loading />);
 
-      const loadingText = screen.getByText("Loading...");
-      expect(loadingText).toHaveTextContent("Loading...");
-      expect(loadingText).toBeVisible();
+      const spinner = container.querySelector(".spinner");
+      expect(spinner).toBeInTheDocument();
+      expect(spinner).toHaveClass("spinner");
     });
   });
 
@@ -72,46 +73,51 @@ describe("Loading Component", () => {
     });
 
     it("should render consistently on multiple renders", () => {
-      const { rerender } = render(<Loading />);
+      const { container, rerender } = render(<Loading />);
 
-      let loadingText = screen.getByText("Loading...");
-      expect(loadingText).toBeInTheDocument();
+      let spinner = container.querySelector(".spinner");
+      expect(spinner).toBeInTheDocument();
 
       rerender(<Loading />);
 
-      loadingText = screen.getByText("Loading...");
-      expect(loadingText).toBeInTheDocument();
+      spinner = container.querySelector(".spinner");
+      expect(spinner).toBeInTheDocument();
     });
 
     it("should not accept or use any props", () => {
       // Loading component doesn't use props, so passing them should not affect rendering
-      render(<Loading someProp="test" anotherProp={123} />);
+      const { container } = render(
+        <Loading someProp="test" anotherProp={123} />,
+      );
 
-      const loadingText = screen.getByText("Loading...");
-      expect(loadingText).toBeInTheDocument();
-      expect(loadingText.tagName).toBe("P");
+      const spinner = container.querySelector(".spinner");
+      expect(spinner).toBeInTheDocument();
+      expect(spinner.tagName).toBe("DIV");
     });
   });
 
   describe("Content Validation", () => {
-    it("should not be empty", () => {
+    it("should render a spinner element", () => {
       const { container } = render(<Loading />);
 
-      expect(container.firstChild).not.toBeEmptyDOMElement();
+      expect(container.firstChild).toBeInTheDocument();
+      expect(container.firstChild).toHaveClass("spinner");
     });
 
-    it("should have the correct text content", () => {
-      render(<Loading />);
-
-      const loadingText = screen.getByText("Loading...");
-      expect(loadingText.textContent).toBe("Loading...");
-    });
-
-    it("should not contain any additional attributes", () => {
+    it("should have the correct structure", () => {
       const { container } = render(<Loading />);
 
-      const paragraph = container.firstChild;
-      expect(paragraph.attributes).toHaveLength(0);
+      const spinner = container.querySelector(".spinner");
+      expect(spinner).toBeInTheDocument();
+      expect(spinner.tagName).toBe("DIV");
+    });
+
+    it("should have the spinner class attribute", () => {
+      const { container } = render(<Loading />);
+
+      const spinner = container.firstChild;
+      expect(spinner.attributes).toHaveLength(1);
+      expect(spinner).toHaveClass("spinner");
     });
   });
 
@@ -125,8 +131,8 @@ describe("Loading Component", () => {
     it("should return JSX", () => {
       const result = Loading();
       expect(result).toBeDefined();
-      expect(result.type).toBe("p");
-      expect(result.props.children).toBe("Loading...");
+      expect(result.type).toBe("div");
+      expect(result.props.className).toBe("spinner");
     });
 
     it("should not have any side effects", () => {
