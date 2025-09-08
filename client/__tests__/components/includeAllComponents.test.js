@@ -7,7 +7,6 @@ const componentsDir = path.resolve(__dirname, "../../src/components");
 fs.readdirSync(componentsDir)
   .filter((file) => file.endsWith(".jsx"))
   .forEach((file) => {
-    // eslint-disable-next-line global-require, import/no-dynamic-require
     require(path.join(componentsDir, file));
   });
 
