@@ -16,13 +16,17 @@
     {
       "displayName": "client",
       "testEnvironment": "jsdom",
-      "testMatch": ["<rootDir>/client/**/*.test.js", "<rootDir>/client/**/*.test.jsx"],
-      "setupFilesAfterEnv": ["<rootDir>/client/__tests__/setupTests.js"],
+      "testMatch": [
+        "<rootDir>/client/**/*.test.js",
+        "<rootDir>/client/**/*.test.jsx"
+      ],
+      "setupFilesAfterEnv": ["<rootDir>/client/jest.setup.js"],
       "transform": {
         "^.+\\.[jt]sx?$": "babel-jest"
       },
       "moduleNameMapper": {
-        "\\.(css|less|scss|sass)$": "identity-obj-proxy"
+        "\\.(css|less|scss|sass)$": "identity-obj-proxy",
+        "\\.(gif|jpg|jpeg|tiff|png|webp|bmp|svg)$": "<rootDir>/client/__mocks__/fileMock.js"
       }
     }
   ]

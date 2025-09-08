@@ -7,6 +7,7 @@ import { Navigate, useParams } from "react-router-dom";
 import listQuery from "../queries/List";
 import Errors from "./Errors";
 import ListHeader from "./ListHeader";
+import Loading from "./Loading";
 import UserListHeader from "./UserListHeader";
 import UserMedia from "./UserMedia";
 
@@ -34,7 +35,9 @@ function UserList() {
     return <Errors error={error} />;
   }
 
-  const renderMovies = (media, isOwner) => {
+  if (!data) return <Loading />;
+
+  const renderMovies = ({ media = [], isOwner = false }) => {
     const filteredList = hideWatched
       ? media.filter((movie) => !movie.isWatched)
       : media;
@@ -67,7 +70,7 @@ function UserList() {
   }
 
   const isOwner =
-    data.user && data.list.user.toString() === data.user.id.toString();
+    data.user && data.list?.user?.toString() === data.user?.id?.toString();
   if ((!data.list.media || !data.list.media.length) && !loading) {
     if (!isOwner) {
       return (
@@ -83,7 +86,7 @@ function UserList() {
     <main>
       {renderHeader(data.list, isOwner)}
       <ul className="watchlist">
-        {renderMovies(data.list.media || [], isOwner)}
+        {renderMovies({ media: data?.list?.media, isOwner })}
       </ul>
     </main>
   );

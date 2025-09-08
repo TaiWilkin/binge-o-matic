@@ -1,3 +1,6 @@
+/* eslint-env node, browser, jest */
+/* global global, setTimeout */
+
 import "@testing-library/jest-dom";
 
 import { TextDecoder, TextEncoder } from "util";

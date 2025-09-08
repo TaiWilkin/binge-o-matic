@@ -52,7 +52,6 @@ describe("AppWrapper Component", () => {
       const eyeImage = screen.getByAltText("o");
       expect(eyeImage).toBeInTheDocument();
       expect(eyeImage).toHaveClass("eye");
-      expect(eyeImage.src).toContain("mock-bright-eye.png");
     });
 
     it("should render the Nav component", () => {
