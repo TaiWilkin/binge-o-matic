@@ -34,7 +34,8 @@
     "lint:fix": "eslint --fix .",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "build": "cd client && yarn build && cd .."
   },
   "devDependencies": {
     "@babel/core": "^7.28.3",

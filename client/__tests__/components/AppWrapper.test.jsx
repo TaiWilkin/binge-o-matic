@@ -12,7 +12,7 @@ jest.mock("../../src/components/Nav.jsx", () => {
 
 // Mock asset imports
 jest.mock("../../src/assets/bright-eye.png", () => "mock-bright-eye.png");
-jest.mock("../../src/assets/tmdb.png", () => "mock-tmdb.png");
+jest.mock("../../src/assets/tmdb.svg", () => "mock-tmdb.svg");
 
 describe("AppWrapper Component", () => {
   describe("Rendering", () => {
@@ -96,7 +96,7 @@ describe("AppWrapper Component", () => {
 
       const tmdbImage = screen.getByAltText("tmdb");
       expect(tmdbImage).toBeInTheDocument();
-      expect(tmdbImage.src).toContain("mock-tmdb.png");
+      expect(tmdbImage.src).toContain("mock-tmdb.svg");
     });
   });
 
@@ -131,7 +131,7 @@ describe("AppWrapper Component", () => {
         </AppWrapper>,
       );
 
-      const tmdbText = screen.getByText(/This product uses the TMDb API/);
+      const tmdbText = screen.getByText(/This product uses the TMDB API/);
       expect(tmdbText).toBeInTheDocument();
     });
 
