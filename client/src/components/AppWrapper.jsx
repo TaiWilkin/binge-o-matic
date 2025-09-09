@@ -3,7 +3,7 @@ import "../css/AppWrapper.css";
 import React from "react";
 
 import BrightEye from "../assets/bright-eye.png";
-import TMDB from "../assets/tmdb.png";
+import TMDB from "../assets/tmdb.svg";
 import Nav from "./Nav";
 
 export default function AppWrapper({ children }) {
@@ -23,7 +23,7 @@ export default function AppWrapper({ children }) {
       <div className="push" />
       <footer className="footer">
         <img src={TMDB} alt="tmdb" />
-        This product uses the TMDb API but is not endorsed or certified by TMDb.
+        This product uses the TMDB API but is not endorsed or certified by TMDB.
         <p>
           Icon made by <a href="http://www.freepik.com/">Freepik</a> from{" "}
           <a href="http://www.flaticon.com/">www.flaticon.com</a> is licensed by{" "}
